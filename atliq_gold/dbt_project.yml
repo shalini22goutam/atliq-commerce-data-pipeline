@@ -1,0 +1,27 @@
+name: 'atliq_gold'
+version: '1.0.0'
+profile: 'atliq_gold'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+
+models:
+  atliq_gold:
+
+    gold:
+      +materialized: table
+      +file_format: delta
+      +location_root: "abfss://lakehouse@atliqcommerce.dfs.core.windows.net/gold"
+
+
+    staging:
+      +materialized: ephemeral

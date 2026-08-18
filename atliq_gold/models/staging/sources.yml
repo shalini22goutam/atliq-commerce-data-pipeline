@@ -1,0 +1,13 @@
+sources:  
+    - name: silver    
+      catalog: atliq    
+      schema: silver
+      description: " TODO "    
+      tables: 
+        - name: customers
+        - name: orders
+        - name: order_items
+        - name: payments
+        - name: products 
+        - name: supplier_price_list
+

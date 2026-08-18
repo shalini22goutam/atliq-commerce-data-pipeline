@@ -1,0 +1,7 @@
+
+atliq_gold/target/
+atliq_gold/dbt_packages/
+atliq_gold/logs/
+.env
+/.venv
+/.git
