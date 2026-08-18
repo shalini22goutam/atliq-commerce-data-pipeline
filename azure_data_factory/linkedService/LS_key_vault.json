@@ -1,0 +1,12 @@
+{
+	"name": "LS_key_vault",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "This linked service creates connection to key vault.",
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://atliqcommerce.vault.azure.net/"
+		}
+	}
+}
