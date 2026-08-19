@@ -1,0 +1,15 @@
+{
+	"name": "atliq-commerce-adf",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Disabled",
+			"editable": true
+		}
+	},
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "9a194e1c-e32f-4605-90b5-5782d9ea3168",
+		"tenantId": "7621e2a0-3ae7-45f5-8747-a659eff22a77"
+	}
+}
