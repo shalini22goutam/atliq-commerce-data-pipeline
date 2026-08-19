@@ -531,18 +531,18 @@
 				}
 			},
 			{
-				"name": "Silver_Transformations",
-				"description": "This notebooks is used to perform transformations in silver layer.",
-				"type": "DatabricksNotebook",
+				"name": "Databricks_Job",
+				"description": "This job triggers the databricks pipeline for silver and gold data.",
+				"type": "DatabricksJob",
 				"dependsOn": [
 					{
-						"activity": "ForEach_Control_Table",
+						"activity": "Foreach_Source_CSV",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					},
 					{
-						"activity": "Foreach_Source_CSV",
+						"activity": "ForEach_Control_Table",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -557,12 +557,8 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/shalini22goutam@gmail.com/atliq-commerce-data-pipeline/databricks_notebooks/silver_transformations",
-					"baseParameters": {
-						"run_date": {
-							"value": "@formatDateTime(variables('run_start_at'),'yyyy-MM-dd')",
-							"type": "Expression"
-						}
+					"jobParameters": {
+						"run_date": "@formatDateTime(variables('run_start_at'),'yyyy-MM-dd')"
 					}
 				},
 				"linkedServiceName": {
