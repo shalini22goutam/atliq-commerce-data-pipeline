@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "atliq-commerce-adf"
+		},
+		"LS_storage_account_accountKey": {
+			"value": ""
+		},
+		"LS_azure_databricks_properties_typeProperties_existingClusterId": {
+			"value": "0818-034717-qk7hyzdn"
+		},
+		"LS_key_vault_properties_typeProperties_baseUrl": {
+			"value": "https://atliqcommerce.vault.azure.net/"
+		},
+		"LS_sql_db_properties_typeProperties_server": {
+			"value": "atliq-sql-server.database.windows.net"
+		},
+		"LS_sql_db_properties_typeProperties_database": {
+			"value": "atliq_commerce"
+		},
+		"LS_sql_db_properties_typeProperties_userName": {
+			"value": "atliq_admin"
+		},
+		"LS_storage_account_properties_typeProperties_url": {
+			"value": "https://atliqcommerce.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
