@@ -557,8 +557,12 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"jobId": "573381468266883",
 					"jobParameters": {
-						"run_date": "@formatDateTime(variables('run_start_at'),'yyyy-MM-dd')"
+						"run_date": {
+							"value": "@formatDateTime(variables('run_start_at'),'yyyy-MM-dd')",
+							"type": "Expression"
+						}
 					}
 				},
 				"linkedServiceName": {
