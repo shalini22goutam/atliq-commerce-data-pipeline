@@ -1,0 +1,26 @@
+product_id,product_name,supplier_name,supplier_cost,effective_date
+1,Wireless Earbuds,Prime Distributors,1408.33,2025-12-11
+2,Bluetooth Speaker,Everest Traders,2289.78,2025-12-24
+3,Power Bank 20000mAh,Metro Wholesale,1147.12,2025-12-01
+4,USB-C Charger 65W,Everest Traders,1089.64,2025-11-26
+5,Smartwatch,Prime Distributors,3100.61,2025-12-03
+6,Non-stick Frying Pan,Metro Wholesale,643.47,2025-12-13
+7,Electric Kettle,Nexus Supply Co,831.69,2025-12-25
+8,Steel Water Bottle,Prime Distributors,304.15,2025-12-11
+9,Storage Container Set,Everest Traders,423.07,2025-12-17
+10,LED Desk Lamp,BlueOcean Imports,581.6,2025-12-23
+11,Cotton T-Shirt,Nexus Supply Co,442.28,2025-12-22
+12,Running Shoes,Prime Distributors,1470.7,2025-11-27
+13,Leather Wallet,BlueOcean Imports,699.25,2025-12-17
+14,Backpack,Prime Distributors,1163.99,2025-12-17
+15,Sunglasses,Metro Wholesale,512.66,2025-12-14
+16,Face Wash,BlueOcean Imports,188.92,2025-11-22
+17,Moisturizer,Nexus Supply Co,270.77,2025-12-09
+18,Sunscreen SPF50,Everest Traders,328.03,2025-12-24
+19,Yoga Mat,Metro Wholesale,530.82,2025-11-26
+20,Dumbbell Set 10kg,Everest Traders,1065.15,2025-12-27
+21,Skipping Rope,Metro Wholesale,141.31,2025-11-27
+22,Data Engineering Guide,Metro Wholesale,398.01,2025-12-14
+23,Python Crash Course,Everest Traders,541.43,2025-12-22
+24,SQL for Analysts,Everest Traders,430.53,2025-12-08
+25,The Lean Startup,Prime Distributors,321.45,2025-12-11
