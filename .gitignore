@@ -5,3 +5,5 @@ atliq_gold/logs/
 .env
 /.venv
 /.git
+/.vscode
+.DS_Store
