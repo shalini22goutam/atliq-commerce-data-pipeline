@@ -9,7 +9,7 @@ models:
       - name: customer_id
         tests:
           - relationships:
-              to: ref('dim_customer')
+              to: ref('dim_customers')
               field: customer_id
 
       - name: product_id
