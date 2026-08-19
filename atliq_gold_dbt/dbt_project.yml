@@ -15,7 +15,7 @@ clean-targets:
 
 
 models:
-  atliq_gold:
+  atliq_gold_dbt:
 
     gold:
       +materialized: table
