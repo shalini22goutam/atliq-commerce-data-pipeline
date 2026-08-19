@@ -3,6 +3,5 @@ SELECT
     order_id, 
     product_id, 
     quantity,
-    item_price,
-    created_at
+    item_price
 FROM {{ source('silver', 'order_items') }}
