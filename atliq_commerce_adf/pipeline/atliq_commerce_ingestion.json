@@ -557,7 +557,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"notebookPath": "/Users/shalini22goutam@gmail.com/silver_atliq",
+					"notebookPath": "/Users/shalini22goutam@gmail.com/atliq-commerce-data-pipeline/databricks_notebooks/silver_transformations",
 					"baseParameters": {
 						"run_date": {
 							"value": "@formatDateTime(variables('run_start_at'),'yyyy-MM-dd')",
