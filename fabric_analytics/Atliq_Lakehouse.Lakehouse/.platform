@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Lakehouse",
+    "displayName": "Atliq_Lakehouse"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "0ce7ed87-e576-a081-4958-5ef3d1de7df1"
+  }
+}

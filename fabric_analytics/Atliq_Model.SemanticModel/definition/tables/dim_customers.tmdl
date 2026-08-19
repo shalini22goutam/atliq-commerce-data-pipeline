@@ -1,0 +1,58 @@
+table dim_customers
+	lineageTag: b49f709c-4095-4fae-b41e-be0ac63b96ea
+	sourceLineageTag: [gold].[dim_customers]
+
+	column customer_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 0e9eca2a-833a-4ead-b9f0-6805d0acfc64
+		sourceLineageTag: customer_id
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_name
+		dataType: string
+		lineageTag: e8b55682-0bff-4868-a2cc-c4b6c0f24236
+		sourceLineageTag: customer_name
+		summarizeBy: none
+		sourceColumn: customer_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column email
+		dataType: string
+		lineageTag: 6f0ebacc-f36e-41ba-ad7b-b39e63993893
+		sourceLineageTag: email
+		summarizeBy: none
+		sourceColumn: email
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: 25dd7ed2-3a37-4648-ad50-8665f9405aef
+		sourceLineageTag: city
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column signup_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 48f92a3d-7636-491a-a32b-508d9cc2b6b9
+		sourceLineageTag: signup_date
+		summarizeBy: none
+		sourceColumn: signup_date
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_customers = entity
+		mode: directLake
+		source
+			entityName: dim_customers
+			schemaName: gold
+			expressionSource: 'DirectLake - Atliq_Lakehouse'
+

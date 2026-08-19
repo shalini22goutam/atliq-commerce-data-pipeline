@@ -1,0 +1,75 @@
+table dim_products
+	lineageTag: 86b56073-5ce4-42a2-9eff-b748e67c086d
+	sourceLineageTag: [gold].[dim_products]
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: d48954b5-3d3e-4207-aee1-ec6025bad9aa
+		sourceLineageTag: product_id
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_name
+		dataType: string
+		lineageTag: f79c583c-e3ee-4ef8-bc8e-d1f75f751ac6
+		sourceLineageTag: product_name
+		summarizeBy: none
+		sourceColumn: product_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: 282e84ac-6e8b-49c5-bf24-9bca01cbad9b
+		sourceLineageTag: category
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit_price
+		dataType: decimal
+		formatString: "£"#,0.###############;-"£"#,0.###############;"£"#,0.###############
+		lineageTag: fef15c69-1cd7-49e3-b0e1-f43479b42a04
+		sourceLineageTag: unit_price
+		summarizeBy: none
+		sourceColumn: unit_price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	column supplier_cost
+		dataType: decimal
+		formatString: "£"#,0.###############;-"£"#,0.###############;"£"#,0.###############
+		lineageTag: 71abd285-8e74-4f7b-bd8b-821df42965c4
+		sourceLineageTag: supplier_cost
+		summarizeBy: none
+		sourceColumn: supplier_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	column unit_margin
+		dataType: decimal
+		formatString: "£"#,0.###############;-"£"#,0.###############;"£"#,0.###############
+		lineageTag: d3dbdde6-b019-4593-803c-8353362620eb
+		sourceLineageTag: unit_margin
+		summarizeBy: none
+		sourceColumn: unit_margin
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
+
+	partition dim_products = entity
+		mode: directLake
+		source
+			entityName: dim_products
+			schemaName: gold
+			expressionSource: 'DirectLake - Atliq_Lakehouse'
+
