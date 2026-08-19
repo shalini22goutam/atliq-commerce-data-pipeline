@@ -1,10 +1,12 @@
 
-atliq_gold/target/
-atliq_gold/dbt_packages/
-atliq_gold/logs/
+atliq_gold_dbt/target/
+atliq_gold_dbt/dbt_packages/
+atliq_gold_dbt/logs/
+atliq_gold_dbt/.user.yml
 /logs
 .env
 /.venv
 /.git
 /.vscode
 .DS_Store
+
