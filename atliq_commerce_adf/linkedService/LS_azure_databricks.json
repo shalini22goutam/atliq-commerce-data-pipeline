@@ -1,0 +1,22 @@
+{
+	"name": "LS_azure_databricks",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "This service is used to connect to Azure Databricks.",
+		"annotations": [],
+		"type": "AzureDatabricks",
+		"typeProperties": {
+			"domain": "https://adb-7405613786725931.11.azuredatabricks.net",
+			"accessToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_key_vault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "atliq-databricks-token",
+				"secretVersion": "8538aa80e4684a51941790f0c4ecec91"
+			},
+			"existingClusterId": "0818-034717-qk7hyzdn"
+		}
+	}
+}

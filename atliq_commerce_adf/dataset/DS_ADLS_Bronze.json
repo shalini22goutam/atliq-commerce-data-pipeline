@@ -1,0 +1,30 @@
+{
+	"name": "DS_ADLS_Bronze",
+	"properties": {
+		"description": "This parameterized dataset points to bronze container in ADLS gen2.",
+		"linkedServiceName": {
+			"referenceName": "LS_storage_account",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"table_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "bronze/@{dataset().table_name}",
+					"type": "Expression"
+				},
+				"fileSystem": "lakehouse"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

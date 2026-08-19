@@ -1,0 +1,26 @@
+{
+	"name": "LS_sql_db",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "This service created connection to SQL database.",
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "atliq-sql-server.database.windows.net",
+			"database": "atliq_commerce",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "atliq_admin",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_key_vault",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "atliq-sql-db",
+				"secretVersion": "a01706fa97704866b63b958c19f366ad"
+			}
+		}
+	}
+}
