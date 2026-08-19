@@ -1655,3 +1655,917 @@ Runtime Error
 [0m17:11:37.069092 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10de26c50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10dde3110>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10dde3f90>]}
 [0m17:11:37.069311 [debug] [MainThread]: Flushing usage events
 [0m17:11:38.576041 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m17:24:59.477910 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c74bed0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c5fc490>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c765a90>]}
+
+
+============================== 17:24:59.480789 | a590ac12-f8ec-4d91-9d7f-23cd53e52ad5 ==============================
+[0m17:24:59.480789 [info ] [MainThread]: Running with dbt=1.12.0
+[0m17:24:59.481127 [debug] [MainThread]: running dbt with arguments {'quiet': 'False', 'introspect': 'True', 'fail_fast': 'False', 'warn_error': 'None', 'log_path': '/Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/logs', 'log_format': 'default', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'hints_enabled': 'True', 'no_print': 'None', 'version_check': 'True', 'invocation_command': 'dbt debug', 'write_json': 'True', 'empty': 'None', 'debug': 'False', 'send_anonymous_usage_stats': 'True', 'printer_width': '80', 'cache_selected_only': 'False', 'use_experimental_parser': 'False', 'log_cache_events': 'False', 'partial_parse': 'True', 'use_colors': 'True', 'indirect_selection': 'eager', 'target_path': 'None', 'profiles_dir': '/Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt', 'static_parser': 'True', 'maximum_seed_size_mib': '1'}
+[0m17:24:59.490794 [info ] [MainThread]: dbt version: 1.12.0
+[0m17:24:59.491016 [info ] [MainThread]: python version: 3.11.15
+[0m17:24:59.491178 [info ] [MainThread]: python path: /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/.venv/bin/python
+[0m17:24:59.491322 [info ] [MainThread]: os info: macOS-26.5.1-arm64-arm-64bit
+[0m17:24:59.985941 [debug] [MainThread]: Spark adapter: Setting pyhive.hive logging to ERROR
+[0m17:24:59.986207 [debug] [MainThread]: Spark adapter: Setting thrift.transport logging to ERROR
+[0m17:24:59.986356 [debug] [MainThread]: Spark adapter: Setting thrift.protocol logging to ERROR
+[0m17:25:00.631060 [info ] [MainThread]: Using profiles dir at /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt
+[0m17:25:00.631343 [info ] [MainThread]: Using profiles.yml file at /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/profiles.yml
+[0m17:25:00.631508 [info ] [MainThread]: Using dbt_project.yml file at /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/dbt_project.yml
+[0m17:25:00.631663 [info ] [MainThread]: adapter type: databricks
+[0m17:25:00.631797 [info ] [MainThread]: adapter version: 1.12.4
+[0m17:25:00.676707 [info ] [MainThread]: Configuration:
+[0m17:25:00.676975 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m17:25:00.677133 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m17:25:00.677276 [info ] [MainThread]: Required dependencies:
+[0m17:25:00.677473 [debug] [MainThread]: Executing "git --help"
+[0m17:25:00.695144 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone      Clone a repository into a new directory\n   init       Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add        Add file contents to the index\n   mv         Move or rename a file, a directory, or a symlink\n   restore    Restore working tree files\n   rm         Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect     Use binary search to find the commit that introduced a bug\n   diff       Show changes between commits, commit and working tree, etc\n   grep       Print lines matching a pattern\n   log        Show commit logs\n   show       Show various types of objects\n   status     Show the working tree status\n\ngrow, mark and tweak your common history\n   backfill   Download missing objects in a partial clone\n   branch     List, create, or delete branches\n   commit     Record changes to the repository\n   merge      Join two or more development histories together\n   rebase     Reapply commits on top of another base tip\n   reset      Set `HEAD` or the index to a known state\n   switch     Switch branches\n   tag        Create, list, delete or verify tags\n\ncollaborate (see also: git help workflows)\n   fetch      Download objects and refs from another repository\n   pull       Fetch from and integrate with another repository or a local branch\n   push       Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m17:25:00.695766 [debug] [MainThread]: STDERR: "b''"
+[0m17:25:00.695969 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m17:25:00.696143 [info ] [MainThread]: Connection:
+[0m17:25:00.696339 [info ] [MainThread]:   host: adb-7405613786725931.11.azuredatabricks.net
+[0m17:25:00.696498 [info ] [MainThread]:   http_path: /sql/1.0/warehouses/ca0f9a13b145c8c5
+[0m17:25:00.696625 [info ] [MainThread]:   catalog: atliq
+[0m17:25:00.696942 [info ] [MainThread]:   schema: gold
+[0m17:25:00.697347 [info ] [MainThread]: Registered adapter: databricks=1.12.4
+[0m17:25:00.806873 [debug] [MainThread]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=debug) - Creating connection
+[0m17:25:00.807509 [debug] [MainThread]: Acquiring new databricks connection 'debug'
+[0m17:25:01.194661 [info ] [MainThread]: Databricks adapter:   SPOG host (host_type='workspace'): no
+[0m17:25:01.195374 [info ] [MainThread]: Databricks adapter:   workspace_id (from ?o= in http_path): None
+[0m17:25:01.195803 [info ] [MainThread]: Databricks adapter:   databricks-sql-connector version: 4.4.0 (supported)
+[0m17:25:01.196212 [info ] [MainThread]: Databricks adapter:   databricks-sdk version: 0.117.0 (supported)
+[0m17:25:01.196689 [debug] [MainThread]: Using databricks connection "debug"
+[0m17:25:01.197064 [debug] [MainThread]: On debug: select 1 as id
+[0m17:25:01.197422 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m17:25:02.271184 [debug] [MainThread]: Databricks adapter: Connection(session-id=01f19bc4-cf51-1371-9482-6f2f4b0cd11a) - Created
+[0m17:25:08.373854 [debug] [MainThread]: SQL status: OK in 7.180 seconds
+[0m17:25:08.376049 [debug] [MainThread]: Databricks adapter: Cursor(session-id=01f19bc4-cf51-1371-9482-6f2f4b0cd11a, command-id=01f19bc4-cf9a-14ee-bea5-18bffa886ec0) - Closing
+[0m17:25:08.584142 [debug] [MainThread]: On debug: Close
+[0m17:25:08.585466 [debug] [MainThread]: Databricks adapter: Connection(session-id=01f19bc4-cf51-1371-9482-6f2f4b0cd11a) - Closing
+[0m17:25:08.749257 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m17:25:08.750265 [info ] [MainThread]: [32mAll checks passed![0m
+[0m17:25:08.760628 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": true, "command_wall_clock_time": 9.332544, "process_in_blocks": "0", "process_kernel_time": 0.333466, "process_mem_max_rss": "266289152", "process_out_blocks": "0", "process_user_time": 1.636972}
+[0m17:25:08.761398 [debug] [MainThread]: Command `dbt debug` succeeded at 17:25:08.761253 after 9.33 seconds
+[0m17:25:08.762003 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10bfb1a10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c5fc7d0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c6aff50>]}
+[0m17:25:08.762573 [debug] [MainThread]: Flushing usage events
+[0m17:25:10.207327 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m17:25:17.495276 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10b141d90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e4acc10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e4ad9d0>]}
+
+
+============================== 17:25:17.497768 | b3b0fa3d-e47c-47fa-a209-a577362fc75f ==============================
+[0m17:25:17.497768 [info ] [MainThread]: Running with dbt=1.12.0
+[0m17:25:17.498112 [debug] [MainThread]: running dbt with arguments {'no_print': 'None', 'invocation_command': 'dbt debug', 'send_anonymous_usage_stats': 'True', 'empty': 'None', 'debug': 'False', 'hints_enabled': 'True', 'use_colors': 'True', 'log_path': '/Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/logs', 'fail_fast': 'False', 'log_format': 'default', 'partial_parse': 'True', 'indirect_selection': 'eager', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'introspect': 'True', 'static_parser': 'True', 'profiles_dir': '/Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt', 'warn_error': 'None', 'quiet': 'False', 'cache_selected_only': 'False', 'write_json': 'True', 'version_check': 'True', 'target_path': 'None', 'printer_width': '80', 'maximum_seed_size_mib': '1', 'use_experimental_parser': 'False', 'log_cache_events': 'False'}
+[0m17:25:17.506485 [info ] [MainThread]: dbt version: 1.12.0
+[0m17:25:17.506774 [info ] [MainThread]: python version: 3.11.15
+[0m17:25:17.506944 [info ] [MainThread]: python path: /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/.venv/bin/python
+[0m17:25:17.507090 [info ] [MainThread]: os info: macOS-26.5.1-arm64-arm-64bit
+[0m17:25:17.968221 [debug] [MainThread]: Spark adapter: Setting pyhive.hive logging to ERROR
+[0m17:25:17.968480 [debug] [MainThread]: Spark adapter: Setting thrift.transport logging to ERROR
+[0m17:25:17.968627 [debug] [MainThread]: Spark adapter: Setting thrift.protocol logging to ERROR
+[0m17:25:18.423826 [info ] [MainThread]: Using profiles dir at /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt
+[0m17:25:18.424127 [info ] [MainThread]: Using profiles.yml file at /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/profiles.yml
+[0m17:25:18.424295 [info ] [MainThread]: Using dbt_project.yml file at /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/dbt_project.yml
+[0m17:25:18.424443 [info ] [MainThread]: adapter type: databricks
+[0m17:25:18.424579 [info ] [MainThread]: adapter version: 1.12.4
+[0m17:25:18.469910 [info ] [MainThread]: Configuration:
+[0m17:25:18.470163 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m17:25:18.470319 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m17:25:18.470465 [info ] [MainThread]: Required dependencies:
+[0m17:25:18.470669 [debug] [MainThread]: Executing "git --help"
+[0m17:25:18.486003 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--no-lazy-fetch]\n           [--no-optional-locks] [--no-advice] [--bare] [--git-dir=<path>]\n           [--work-tree=<path>] [--namespace=<name>] [--config-env=<name>=<envvar>]\n           <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone      Clone a repository into a new directory\n   init       Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add        Add file contents to the index\n   mv         Move or rename a file, a directory, or a symlink\n   restore    Restore working tree files\n   rm         Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect     Use binary search to find the commit that introduced a bug\n   diff       Show changes between commits, commit and working tree, etc\n   grep       Print lines matching a pattern\n   log        Show commit logs\n   show       Show various types of objects\n   status     Show the working tree status\n\ngrow, mark and tweak your common history\n   backfill   Download missing objects in a partial clone\n   branch     List, create, or delete branches\n   commit     Record changes to the repository\n   merge      Join two or more development histories together\n   rebase     Reapply commits on top of another base tip\n   reset      Set `HEAD` or the index to a known state\n   switch     Switch branches\n   tag        Create, list, delete or verify tags\n\ncollaborate (see also: git help workflows)\n   fetch      Download objects and refs from another repository\n   pull       Fetch from and integrate with another repository or a local branch\n   push       Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m17:25:18.486556 [debug] [MainThread]: STDERR: "b''"
+[0m17:25:18.486719 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m17:25:18.486881 [info ] [MainThread]: Connection:
+[0m17:25:18.487079 [info ] [MainThread]:   host: adb-7405613786725931.11.azuredatabricks.net
+[0m17:25:18.487212 [info ] [MainThread]:   http_path: /sql/1.0/warehouses/ca0f9a13b145c8c5
+[0m17:25:18.487335 [info ] [MainThread]:   catalog: atliq
+[0m17:25:18.487456 [info ] [MainThread]:   schema: gold
+[0m17:25:18.487741 [info ] [MainThread]: Registered adapter: databricks=1.12.4
+[0m17:25:18.575297 [debug] [MainThread]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=debug) - Creating connection
+[0m17:25:18.575633 [debug] [MainThread]: Acquiring new databricks connection 'debug'
+[0m17:25:18.888465 [info ] [MainThread]: Databricks adapter:   SPOG host (host_type='workspace'): no
+[0m17:25:18.888862 [info ] [MainThread]: Databricks adapter:   workspace_id (from ?o= in http_path): None
+[0m17:25:18.889119 [info ] [MainThread]: Databricks adapter:   databricks-sql-connector version: 4.4.0 (supported)
+[0m17:25:18.889364 [info ] [MainThread]: Databricks adapter:   databricks-sdk version: 0.117.0 (supported)
+[0m17:25:18.889639 [debug] [MainThread]: Using databricks connection "debug"
+[0m17:25:18.889864 [debug] [MainThread]: On debug: select 1 as id
+[0m17:25:18.890069 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m17:25:19.831335 [debug] [MainThread]: Databricks adapter: Connection(session-id=01f19bc4-d9d1-1678-9f71-4e7d8927827a) - Created
+[0m17:25:20.229511 [debug] [MainThread]: SQL status: OK in 1.340 seconds
+[0m17:25:20.230582 [debug] [MainThread]: Databricks adapter: Cursor(session-id=01f19bc4-d9d1-1678-9f71-4e7d8927827a, command-id=01f19bc4-da11-1699-9f69-d96d87ef9436) - Closing
+[0m17:25:20.230993 [debug] [MainThread]: On debug: Close
+[0m17:25:20.231277 [debug] [MainThread]: Databricks adapter: Connection(session-id=01f19bc4-d9d1-1678-9f71-4e7d8927827a) - Closing
+[0m17:25:20.358542 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m17:25:20.359301 [info ] [MainThread]: [32mAll checks passed![0m
+[0m17:25:20.368904 [debug] [MainThread]: Resource report: {"command_name": "debug", "command_success": true, "command_wall_clock_time": 2.9158244, "process_in_blocks": "0", "process_kernel_time": 0.255028, "process_mem_max_rss": "266223616", "process_out_blocks": "0", "process_user_time": 1.581553}
+[0m17:25:20.369523 [debug] [MainThread]: Command `dbt debug` succeeded at 17:25:20.369408 after 2.92 seconds
+[0m17:25:20.370008 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e3f7c90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e40af50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10e40a9d0>]}
+[0m17:25:20.370477 [debug] [MainThread]: Flushing usage events
+[0m17:25:21.556126 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m17:25:32.358388 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c733750>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c733fd0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c749890>]}
+
+
+============================== 17:25:32.360482 | 21f2020d-9b32-4a3c-8a3a-99c98f65a2dd ==============================
+[0m17:25:32.360482 [info ] [MainThread]: Running with dbt=1.12.0
+[0m17:25:32.360819 [debug] [MainThread]: running dbt with arguments {'use_experimental_parser': 'False', 'hints_enabled': 'True', 'maximum_seed_size_mib': '1', 'debug': 'False', 'version_check': 'True', 'log_format': 'default', 'warn_error': 'None', 'partial_parse': 'True', 'fail_fast': 'False', 'send_anonymous_usage_stats': 'True', 'target_path': 'None', 'invocation_command': 'dbt build', 'write_json': 'True', 'log_cache_events': 'False', 'log_path': '/Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/logs', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'profiles_dir': '/Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt', 'cache_selected_only': 'False', 'static_parser': 'True', 'use_colors': 'True', 'printer_width': '80', 'quiet': 'False', 'introspect': 'True', 'empty': 'False', 'indirect_selection': 'eager', 'no_print': 'None'}
+[0m17:25:32.789267 [debug] [MainThread]: Spark adapter: Setting pyhive.hive logging to ERROR
+[0m17:25:32.789551 [debug] [MainThread]: Spark adapter: Setting thrift.transport logging to ERROR
+[0m17:25:32.789712 [debug] [MainThread]: Spark adapter: Setting thrift.protocol logging to ERROR
+[0m17:25:33.220545 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '21f2020d-9b32-4a3c-8a3a-99c98f65a2dd', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10f33f210>]}
+[0m17:25:33.247049 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '21f2020d-9b32-4a3c-8a3a-99c98f65a2dd', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c705110>]}
+[0m17:25:33.247405 [info ] [MainThread]: Registered adapter: databricks=1.12.4
+[0m17:25:33.345852 [debug] [MainThread]: checksum: 3dabc90a26d4ce16069c870bec04366c0025877206560e71de4d911f137c2fce, vars: {}, profile: atliq_gold_dbt, target: dev, version: 1.12.0
+[0m17:25:33.403511 [info ] [MainThread]: Unable to do partial parsing because config vars, config profile, or config target have changed
+[0m17:25:33.403757 [debug] [MainThread]: previous checksum: 3dabc90a26d4ce16069c870bec04366c0025877206560e71de4d911f137c2fce, current checksum: d06312230403c1f33ce09570357f14d2e447b3a35c12e4fba16b7a6cf48c702d
+[0m17:25:33.403910 [info ] [MainThread]: Unable to do partial parsing because a project dependency has been added
+[0m17:25:33.404088 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'partial_parser', 'label': '21f2020d-9b32-4a3c-8a3a-99c98f65a2dd', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1151c8590>]}
+[0m17:25:34.270759 [warn ] [MainThread]: [[33mWARNING[0m][MissingArgumentsPropertyInGenericTestDeprecation]: Deprecated
+functionality
+Found top-level arguments to test `relationships` defined on 'fact_sales' in
+package 'atliq_gold_dbt' (tests/schema.yml). Arguments to generic tests should
+be nested under the `arguments` property.
+[0m17:25:34.271140 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'deprecation', 'label': '21f2020d-9b32-4a3c-8a3a-99c98f65a2dd', 'property_': 'warn', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x114c44890>]}
+[0m17:25:34.382265 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '21f2020d-9b32-4a3c-8a3a-99c98f65a2dd', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x11504d810>]}
+[0m17:25:34.439837 [debug] [MainThread]: Wrote artifact WritableManifest to /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/target/manifest.json
+[0m17:25:34.443062 [debug] [MainThread]: Wrote artifact SemanticManifest to /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/target/semantic_manifest.json
+[0m17:25:34.454824 [debug] [MainThread]: Wrote artifact OsiDocument to /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/target/osi_document.json
+[0m17:25:34.468517 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '21f2020d-9b32-4a3c-8a3a-99c98f65a2dd', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x11577bfd0>]}
+[0m17:25:34.468780 [info ] [MainThread]: Found 10 models, 4 data tests, 6 sources, 773 macros
+[0m17:25:34.470092 [info ] [MainThread]: 
+[0m17:25:34.470280 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m17:25:34.470418 [info ] [MainThread]: 
+[0m17:25:34.470696 [debug] [MainThread]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=master) - Creating connection
+[0m17:25:34.470845 [debug] [MainThread]: Acquiring new databricks connection 'master'
+[0m17:25:34.473957 [debug] [ThreadPool]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=list_atliq) - Creating connection
+[0m17:25:34.474150 [debug] [ThreadPool]: Acquiring new databricks connection 'list_atliq'
+[0m17:25:34.479629 [debug] [ThreadPool]: Using databricks connection "list_atliq"
+[0m17:25:34.479827 [debug] [ThreadPool]: On list_atliq: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "connection_name": "list_atliq"} */
+
+    
+
+  SHOW SCHEMAS IN `atliq`
+
+
+  
+[0m17:25:34.479970 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m17:25:35.444534 [debug] [ThreadPool]: Databricks adapter: Connection(session-id=01f19bc4-e32f-1a14-bd13-e595302520b6) - Created
+[0m17:25:36.634124 [debug] [ThreadPool]: SQL status: OK in 2.150 seconds
+[0m17:25:36.661039 [debug] [ThreadPool]: Databricks adapter: Cursor(session-id=01f19bc4-e32f-1a14-bd13-e595302520b6, command-id=01f19bc4-e360-17a6-9a18-e0d7cc512f20) - Closing
+[0m17:25:36.661792 [debug] [ThreadPool]: On list_atliq: Close
+[0m17:25:36.662156 [debug] [ThreadPool]: Databricks adapter: Connection(session-id=01f19bc4-e32f-1a14-bd13-e595302520b6) - Closing
+[0m17:25:36.791901 [debug] [ThreadPool]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=list_atliq_gold) - Creating connection
+[0m17:25:36.792456 [debug] [ThreadPool]: Acquiring new databricks connection 'list_atliq_gold'
+[0m17:25:36.796161 [debug] [ThreadPool]: Using databricks connection "list_atliq_gold"
+[0m17:25:36.796545 [debug] [ThreadPool]: On list_atliq_gold: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "connection_name": "list_atliq_gold"} */
+
+    
+SELECT
+  table_name,
+  if(table_type IN ('EXTERNAL', 'MANAGED', 'MANAGED_SHALLOW_CLONE', 'EXTERNAL_SHALLOW_CLONE'), 'table', lower(table_type)) AS table_type,
+  lower(data_source_format) AS file_format,
+  table_owner,
+  if(
+    table_type IN (
+      'EXTERNAL',
+      'MANAGED',
+      'MANAGED_SHALLOW_CLONE',
+      'EXTERNAL_SHALLOW_CLONE'
+    ),
+    lower(table_type),
+    NULL
+  ) AS databricks_table_type
+FROM `system`.`information_schema`.`tables`
+WHERE table_catalog = 'atliq'
+  AND table_schema = 'gold'
+
+  
+[0m17:25:36.796823 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m17:25:37.140462 [debug] [ThreadPool]: Databricks adapter: Connection(session-id=01f19bc4-e44f-1542-83fe-37e18cf3986c) - Created
+[0m17:25:39.090042 [debug] [ThreadPool]: SQL status: OK in 2.290 seconds
+[0m17:25:39.093737 [debug] [ThreadPool]: Databricks adapter: Cursor(session-id=01f19bc4-e44f-1542-83fe-37e18cf3986c, command-id=01f19bc4-e462-1203-94a0-a9a90e24c814) - Closing
+[0m17:25:39.094530 [debug] [ThreadPool]: On list_atliq_gold: Close
+[0m17:25:39.094903 [debug] [ThreadPool]: Databricks adapter: Connection(session-id=01f19bc4-e44f-1542-83fe-37e18cf3986c) - Closing
+[0m17:25:39.226790 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '21f2020d-9b32-4a3c-8a3a-99c98f65a2dd', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x11506c550>]}
+[0m17:25:39.231406 [debug] [Thread-3 (]: Began running node model.atliq_gold_dbt.dim_date
+[0m17:25:39.231804 [debug] [Thread-4 (]: Began running node model.atliq_gold_dbt.stg_customers
+[0m17:25:39.232130 [debug] [Thread-5 (]: Began running node model.atliq_gold_dbt.stg_order_items
+[0m17:25:39.232872 [debug] [Thread-6 (]: Began running node model.atliq_gold_dbt.stg_orders
+[0m17:25:39.232598 [info ] [Thread-3 (]: 1 of 8 START sql table model gold.dim_date ..................................... [RUN]
+[0m17:25:39.233568 [debug] [Thread-4 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=model.atliq_gold_dbt.stg_customers) - Creating connection
+[0m17:25:39.234012 [debug] [Thread-5 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=model.atliq_gold_dbt.stg_order_items) - Creating connection
+[0m17:25:39.234427 [debug] [Thread-6 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=model.atliq_gold_dbt.stg_orders) - Creating connection
+[0m17:25:39.235081 [debug] [Thread-3 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=model.atliq_gold_dbt.dim_date) - Creating connection
+[0m17:25:39.235405 [debug] [Thread-4 (]: Acquiring new databricks connection 'model.atliq_gold_dbt.stg_customers'
+[0m17:25:39.235688 [debug] [Thread-5 (]: Acquiring new databricks connection 'model.atliq_gold_dbt.stg_order_items'
+[0m17:25:39.235998 [debug] [Thread-6 (]: Acquiring new databricks connection 'model.atliq_gold_dbt.stg_orders'
+[0m17:25:39.236292 [debug] [Thread-3 (]: Acquiring new databricks connection 'model.atliq_gold_dbt.dim_date'
+[0m17:25:39.236614 [debug] [Thread-4 (]: Began compiling node model.atliq_gold_dbt.stg_customers
+[0m17:25:39.236897 [debug] [Thread-5 (]: Began compiling node model.atliq_gold_dbt.stg_order_items
+[0m17:25:39.237152 [debug] [Thread-6 (]: Began compiling node model.atliq_gold_dbt.stg_orders
+[0m17:25:39.237394 [debug] [Thread-3 (]: Began compiling node model.atliq_gold_dbt.dim_date
+[0m17:25:39.242599 [debug] [Thread-4 (]: Writing injected SQL for node "model.atliq_gold_dbt.stg_customers"
+[0m17:25:39.243847 [debug] [Thread-5 (]: Writing injected SQL for node "model.atliq_gold_dbt.stg_order_items"
+[0m17:25:39.245104 [debug] [Thread-6 (]: Writing injected SQL for node "model.atliq_gold_dbt.stg_orders"
+[0m17:25:39.246286 [debug] [Thread-3 (]: Writing injected SQL for node "model.atliq_gold_dbt.dim_date"
+[0m17:25:39.247665 [debug] [Thread-6 (]: Finished running node model.atliq_gold_dbt.stg_orders
+[0m17:25:39.248070 [debug] [Thread-5 (]: Finished running node model.atliq_gold_dbt.stg_order_items
+[0m17:25:39.248641 [debug] [Thread-4 (]: Finished running node model.atliq_gold_dbt.stg_customers
+[0m17:25:39.248943 [debug] [Thread-6 (]: Began running node model.atliq_gold_dbt.stg_payments
+[0m17:25:39.249280 [debug] [Thread-3 (]: Began executing node model.atliq_gold_dbt.dim_date
+[0m17:25:39.249631 [debug] [Thread-5 (]: Began running node model.atliq_gold_dbt.stg_products
+[0m17:25:39.249985 [debug] [Thread-4 (]: Began running node model.atliq_gold_dbt.stg_supplier_price_list
+[0m17:25:39.250402 [debug] [Thread-6 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=model.atliq_gold_dbt.stg_payments) - Creating connection
+[0m17:25:39.261643 [debug] [Thread-3 (]: MATERIALIZING TABLE
+[0m17:25:39.261992 [debug] [Thread-5 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=model.atliq_gold_dbt.stg_products) - Creating connection
+[0m17:25:39.262319 [debug] [Thread-4 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=model.atliq_gold_dbt.stg_supplier_price_list) - Creating connection
+[0m17:25:39.262547 [debug] [Thread-6 (]: Acquiring new databricks connection 'model.atliq_gold_dbt.stg_payments'
+[0m17:25:39.281224 [debug] [Thread-5 (]: Acquiring new databricks connection 'model.atliq_gold_dbt.stg_products'
+[0m17:25:39.281940 [debug] [Thread-3 (]: Using databricks connection "model.atliq_gold_dbt.dim_date"
+[0m17:25:39.282151 [debug] [Thread-4 (]: Acquiring new databricks connection 'model.atliq_gold_dbt.stg_supplier_price_list'
+[0m17:25:39.282359 [debug] [Thread-6 (]: Began compiling node model.atliq_gold_dbt.stg_payments
+[0m17:25:39.282558 [debug] [Thread-5 (]: Began compiling node model.atliq_gold_dbt.stg_products
+[0m17:25:39.282786 [debug] [Thread-3 (]: On model.atliq_gold_dbt.dim_date: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.dim_date"} */
+SELECT
+    table_catalog,
+    table_schema,
+    table_name,
+    filter_name,
+    target_columns
+  FROM `atliq`.`information_schema`.`row_filters`
+  WHERE table_catalog = 'atliq'
+    AND table_schema = 'gold'
+    AND table_name = 'dim_date'
+[0m17:25:39.282987 [debug] [Thread-4 (]: Began compiling node model.atliq_gold_dbt.stg_supplier_price_list
+[0m17:25:39.283914 [debug] [Thread-6 (]: Writing injected SQL for node "model.atliq_gold_dbt.stg_payments"
+[0m17:25:39.284654 [debug] [Thread-5 (]: Writing injected SQL for node "model.atliq_gold_dbt.stg_products"
+[0m17:25:39.284847 [debug] [Thread-3 (]: Opening a new connection, currently in state init
+[0m17:25:39.286024 [debug] [Thread-4 (]: Writing injected SQL for node "model.atliq_gold_dbt.stg_supplier_price_list"
+[0m17:25:39.286751 [debug] [Thread-5 (]: Finished running node model.atliq_gold_dbt.stg_products
+[0m17:25:39.287087 [debug] [Thread-6 (]: Finished running node model.atliq_gold_dbt.stg_payments
+[0m17:25:39.287520 [debug] [Thread-5 (]: Began running node model.atliq_gold_dbt.fact_sales
+[0m17:25:39.287871 [debug] [Thread-6 (]: Began running node model.atliq_gold_dbt.dim_customers
+[0m17:25:39.288154 [debug] [Thread-4 (]: Finished running node model.atliq_gold_dbt.stg_supplier_price_list
+[0m17:25:39.288416 [info ] [Thread-5 (]: 2 of 8 START sql incremental model gold.fact_sales ............................. [RUN]
+[0m17:25:39.288683 [info ] [Thread-6 (]: 3 of 8 START sql table model gold.dim_customers ................................ [RUN]
+[0m17:25:39.289055 [debug] [Thread-5 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=model.atliq_gold_dbt.fact_sales) - Creating connection
+[0m17:25:39.289217 [debug] [Thread-4 (]: Began running node model.atliq_gold_dbt.dim_products
+[0m17:25:39.289472 [debug] [Thread-6 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=model.atliq_gold_dbt.dim_customers) - Creating connection
+[0m17:25:39.289644 [debug] [Thread-5 (]: Acquiring new databricks connection 'model.atliq_gold_dbt.fact_sales'
+[0m17:25:39.289863 [info ] [Thread-4 (]: 4 of 8 START sql table model gold.dim_products ................................. [RUN]
+[0m17:25:39.290047 [debug] [Thread-6 (]: Acquiring new databricks connection 'model.atliq_gold_dbt.dim_customers'
+[0m17:25:39.290214 [debug] [Thread-5 (]: Began compiling node model.atliq_gold_dbt.fact_sales
+[0m17:25:39.290452 [debug] [Thread-4 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=model.atliq_gold_dbt.dim_products) - Creating connection
+[0m17:25:39.290737 [debug] [Thread-6 (]: Began compiling node model.atliq_gold_dbt.dim_customers
+[0m17:25:39.294987 [debug] [Thread-5 (]: Writing injected SQL for node "model.atliq_gold_dbt.fact_sales"
+[0m17:25:39.295259 [debug] [Thread-4 (]: Acquiring new databricks connection 'model.atliq_gold_dbt.dim_products'
+[0m17:25:39.298662 [debug] [Thread-6 (]: Writing injected SQL for node "model.atliq_gold_dbt.dim_customers"
+[0m17:25:39.298933 [debug] [Thread-4 (]: Began compiling node model.atliq_gold_dbt.dim_products
+[0m17:25:39.301006 [debug] [Thread-4 (]: Writing injected SQL for node "model.atliq_gold_dbt.dim_products"
+[0m17:25:39.301192 [debug] [Thread-5 (]: Began executing node model.atliq_gold_dbt.fact_sales
+[0m17:25:39.312093 [debug] [Thread-6 (]: Began executing node model.atliq_gold_dbt.dim_customers
+[0m17:25:39.321298 [debug] [Thread-5 (]: MATERIALIZING INCREMENTAL
+[0m17:25:39.321859 [debug] [Thread-6 (]: MATERIALIZING TABLE
+[0m17:25:39.322038 [debug] [Thread-4 (]: Began executing node model.atliq_gold_dbt.dim_products
+[0m17:25:39.333288 [debug] [Thread-5 (]: Using databricks connection "model.atliq_gold_dbt.fact_sales"
+[0m17:25:39.334108 [debug] [Thread-6 (]: Using databricks connection "model.atliq_gold_dbt.dim_customers"
+[0m17:25:39.334720 [debug] [Thread-4 (]: MATERIALIZING TABLE
+[0m17:25:39.334912 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.fact_sales"} */
+SELECT column_name
+  FROM `atliq`.`information_schema`.`columns`
+  WHERE table_catalog = 'atliq' 
+    AND table_schema = 'gold'
+    AND table_name = 'fact_sales'
+    AND is_nullable = 'NO';
+  
+[0m17:25:39.335148 [debug] [Thread-6 (]: On model.atliq_gold_dbt.dim_customers: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.dim_customers"} */
+SELECT
+    table_catalog,
+    table_schema,
+    table_name,
+    filter_name,
+    target_columns
+  FROM `atliq`.`information_schema`.`row_filters`
+  WHERE table_catalog = 'atliq'
+    AND table_schema = 'gold'
+    AND table_name = 'dim_customers'
+[0m17:25:39.335979 [debug] [Thread-4 (]: Using databricks connection "model.atliq_gold_dbt.dim_products"
+[0m17:25:39.336171 [debug] [Thread-5 (]: Opening a new connection, currently in state init
+[0m17:25:39.336340 [debug] [Thread-6 (]: Opening a new connection, currently in state init
+[0m17:25:39.336985 [debug] [Thread-4 (]: On model.atliq_gold_dbt.dim_products: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.dim_products"} */
+SELECT
+    table_catalog,
+    table_schema,
+    table_name,
+    filter_name,
+    target_columns
+  FROM `atliq`.`information_schema`.`row_filters`
+  WHERE table_catalog = 'atliq'
+    AND table_schema = 'gold'
+    AND table_name = 'dim_products'
+[0m17:25:39.337351 [debug] [Thread-4 (]: Opening a new connection, currently in state init
+[0m17:25:39.655797 [debug] [Thread-3 (]: Databricks adapter: Connection(session-id=01f19bc4-e5cf-128b-810f-39e346a32cc4) - Created
+[0m17:25:39.678936 [debug] [Thread-5 (]: Databricks adapter: Connection(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555) - Created
+[0m17:25:39.680221 [debug] [Thread-6 (]: Databricks adapter: Connection(session-id=01f19bc4-e5d6-16d6-b4e4-a24b199a10e2) - Created
+[0m17:25:39.681111 [debug] [Thread-4 (]: Databricks adapter: Connection(session-id=01f19bc4-e5d1-1d0c-afc9-58951a24da4d) - Created
+[0m17:25:40.321450 [debug] [Thread-5 (]: SQL status: OK in 0.980 seconds
+[0m17:25:40.322506 [debug] [Thread-6 (]: SQL status: OK in 0.990 seconds
+[0m17:25:40.323370 [debug] [Thread-4 (]: SQL status: OK in 0.990 seconds
+[0m17:25:40.324140 [debug] [Thread-3 (]: SQL status: OK in 1.040 seconds
+[0m17:25:40.327938 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555, command-id=01f19bc4-e5e5-148d-b86d-e9a8f628acdf) - Closing
+[0m17:25:40.335155 [debug] [Thread-5 (]: Using databricks connection "model.atliq_gold_dbt.fact_sales"
+[0m17:25:40.335886 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.fact_sales"} */
+SELECT kcu.constraint_name, kcu.column_name
+  FROM `atliq`.information_schema.key_column_usage kcu
+  WHERE kcu.table_catalog = 'atliq' 
+    AND kcu.table_schema = 'gold'
+    AND kcu.table_name = 'fact_sales' 
+    AND kcu.constraint_name = (
+      SELECT constraint_name
+      FROM `atliq`.information_schema.table_constraints
+      WHERE table_catalog = 'atliq'
+        AND table_schema = 'gold'
+        AND table_name = 'fact_sales' 
+        AND constraint_type = 'PRIMARY KEY'
+    )
+  ORDER BY kcu.ordinal_position;
+  
+[0m17:25:40.337404 [debug] [Thread-6 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d6-16d6-b4e4-a24b199a10e2, command-id=01f19bc4-e5e5-1a01-ba41-24b65bdad0f6) - Closing
+[0m17:25:40.340008 [debug] [Thread-4 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1d0c-afc9-58951a24da4d, command-id=01f19bc4-e5e6-177f-b19e-3f9318aa5ced) - Closing
+[0m17:25:40.342232 [debug] [Thread-3 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5cf-128b-810f-39e346a32cc4, command-id=01f19bc4-e5e1-1eb0-a434-0fa9a4f7cbc1) - Closing
+[0m17:25:40.358397 [debug] [Thread-6 (]: Writing runtime sql for node "model.atliq_gold_dbt.dim_customers"
+[0m17:25:40.359470 [debug] [Thread-4 (]: Writing runtime sql for node "model.atliq_gold_dbt.dim_products"
+[0m17:25:40.360471 [debug] [Thread-3 (]: Writing runtime sql for node "model.atliq_gold_dbt.dim_date"
+[0m17:25:40.361139 [debug] [Thread-6 (]: Using databricks connection "model.atliq_gold_dbt.dim_customers"
+[0m17:25:40.361328 [debug] [Thread-4 (]: Using databricks connection "model.atliq_gold_dbt.dim_products"
+[0m17:25:40.361517 [debug] [Thread-3 (]: Using databricks connection "model.atliq_gold_dbt.dim_date"
+[0m17:25:40.361771 [debug] [Thread-6 (]: On model.atliq_gold_dbt.dim_customers: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.dim_customers"} */
+
+  
+    
+        create or replace table `atliq`.`gold`.`dim_customers`
+      
+      
+    using delta
+  
+      
+      
+      
+      
+      
+      location 'abfss://lakehouse@atliqcommerce.dfs.core.windows.net/gold/dim_customers'
+      
+      
+      as
+      with __dbt__cte__stg_customers as (
+SELECT 
+    customer_id, 
+    customer_name, 
+    email, 
+    city,
+    signup_date
+FROM `atliq`.`silver`.`customers`
+) -- models/gold/dim_customer.sql
+
+SELECT
+    customer_id,
+    customer_name,
+    email,
+    city,
+    signup_date
+
+FROM __dbt__cte__stg_customers
+  
+[0m17:25:40.362095 [debug] [Thread-4 (]: On model.atliq_gold_dbt.dim_products: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.dim_products"} */
+
+  
+    
+        create or replace table `atliq`.`gold`.`dim_products`
+      
+      
+    using delta
+  
+      
+      
+      
+      
+      
+      location 'abfss://lakehouse@atliqcommerce.dfs.core.windows.net/gold/dim_products'
+      
+      
+      as
+      with __dbt__cte__stg_products as (
+SELECT 
+    product_id, 
+    product_name, 
+    category, 
+    unit_price
+FROM `atliq`.`silver`.`products`
+),  __dbt__cte__stg_supplier_price_list as (
+SELECT 
+    product_id, 
+    product_name, 
+    supplier_name,
+    supplier_cost,
+    effective_date
+FROM `atliq`.`silver`.`supplier_price_list`
+) -- models/gold/dim_product.sql
+
+SELECT
+    p.product_id,
+    p.product_name,
+    p.category,
+    p.unit_price,
+    s.supplier_cost,
+    (p.unit_price - s.supplier_cost) AS unit_margin
+
+FROM __dbt__cte__stg_products AS p
+
+LEFT JOIN __dbt__cte__stg_supplier_price_list AS s
+    ON p.product_id = s.product_id
+  
+[0m17:25:40.362426 [debug] [Thread-3 (]: On model.atliq_gold_dbt.dim_date: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.dim_date"} */
+
+  
+    
+        create or replace table `atliq`.`gold`.`dim_date`
+      
+      
+    using delta
+  
+      
+      
+      
+      
+      
+      location 'abfss://lakehouse@atliqcommerce.dfs.core.windows.net/gold/dim_date'
+      
+      
+      as
+      WITH date_spine AS (
+
+    SELECT
+        explode(
+            sequence(
+                to_date('2024-01-01'),
+                to_date('2026-12-31'),
+                interval 1 day
+            )
+        ) AS date_day
+
+)
+
+SELECT
+    date_day,
+    CAST(date_format(date_day, 'yyyyMMdd') AS INT) AS date_key,
+    year(date_day) AS year,
+    quarter(date_day) AS quarter,
+    month(date_day) AS month,
+    monthname(date_day) AS month_name,
+    weekofyear(date_day) AS week_of_year,
+    dayofmonth(date_day) AS day_of_month,
+    dayofweek(date_day) AS day_of_week,
+    dayname(date_day) AS day_name
+
+FROM date_spine
+  
+[0m17:25:41.650066 [debug] [Thread-5 (]: SQL status: OK in 1.310 seconds
+[0m17:25:41.654755 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555, command-id=01f19bc4-e64a-176d-ac94-5da4a9dd65f4) - Closing
+[0m17:25:41.664265 [debug] [Thread-5 (]: Using databricks connection "model.atliq_gold_dbt.fact_sales"
+[0m17:25:41.664977 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.fact_sales"} */
+SELECT
+    kcu.constraint_name,
+    kcu.column_name AS from_column,
+    ukcu.table_catalog AS to_catalog,
+    ukcu.table_schema AS to_schema,
+    ukcu.table_name AS to_table,
+    ukcu.column_name AS to_column
+  FROM `atliq`.information_schema.key_column_usage kcu
+  JOIN `atliq`.information_schema.referential_constraints rc
+    ON kcu.constraint_name = rc.constraint_name
+  JOIN `atliq`.information_schema.key_column_usage ukcu
+    ON rc.unique_constraint_name = ukcu.constraint_name
+    AND kcu.ordinal_position = ukcu.ordinal_position
+  WHERE kcu.table_catalog = 'atliq'
+    AND kcu.table_schema = 'gold'
+    AND kcu.table_name = 'fact_sales'
+    AND kcu.constraint_name IN (
+      SELECT constraint_name
+      FROM `atliq`.information_schema.table_constraints
+      WHERE table_catalog = 'atliq'
+        AND table_schema = 'gold'
+        AND table_name = 'fact_sales'
+        AND constraint_type = 'FOREIGN KEY'
+    )
+  ORDER BY kcu.ordinal_position;
+  
+[0m17:25:43.293905 [debug] [Thread-5 (]: SQL status: OK in 1.630 seconds
+[0m17:25:43.296393 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555, command-id=01f19bc4-e714-1546-92c1-492aff1a2814) - Closing
+[0m17:25:43.300576 [debug] [Thread-5 (]: Using databricks connection "model.atliq_gold_dbt.fact_sales"
+[0m17:25:43.300938 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.fact_sales"} */
+SELECT 
+    column_name,
+    mask_name,
+    using_columns
+  FROM `system`.`information_schema`.`column_masks`
+  WHERE table_catalog = 'atliq'
+    AND table_schema = 'gold'
+    AND table_name = 'fact_sales';
+  
+[0m17:25:43.801138 [debug] [Thread-5 (]: SQL status: OK in 0.500 seconds
+[0m17:25:43.805645 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555, command-id=01f19bc4-e80d-1eb4-b435-70e6b89518fb) - Closing
+[0m17:25:43.808231 [debug] [Thread-5 (]: Using databricks connection "model.atliq_gold_dbt.fact_sales"
+[0m17:25:43.808895 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.fact_sales"} */
+SELECT
+    table_catalog,
+    table_schema,
+    table_name,
+    filter_name,
+    target_columns
+  FROM `atliq`.`information_schema`.`row_filters`
+  WHERE table_catalog = 'atliq'
+    AND table_schema = 'gold'
+    AND table_name = 'fact_sales'
+[0m17:25:44.308639 [debug] [Thread-5 (]: SQL status: OK in 0.500 seconds
+[0m17:25:44.310561 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555, command-id=01f19bc4-e85c-104f-8f27-b505ce0c43e9) - Closing
+[0m17:25:44.312681 [debug] [Thread-5 (]: Using databricks connection "model.atliq_gold_dbt.fact_sales"
+[0m17:25:44.313009 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.fact_sales"} */
+SHOW TBLPROPERTIES `atliq`.`gold`.`fact_sales`
+  
+[0m17:25:44.789519 [debug] [Thread-5 (]: SQL status: OK in 0.480 seconds
+[0m17:25:44.794074 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555, command-id=01f19bc4-e8a7-1db0-9350-d23397139ee9) - Closing
+[0m17:25:44.799387 [debug] [Thread-5 (]: Using databricks connection "model.atliq_gold_dbt.fact_sales"
+[0m17:25:44.800174 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.fact_sales"} */
+describe extended `atliq`.`gold`.`fact_sales`
+  
+[0m17:25:45.339763 [debug] [Thread-5 (]: SQL status: OK in 0.540 seconds
+[0m17:25:45.346931 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555, command-id=01f19bc4-e8f3-1b9c-91f6-1db3f36a3143) - Closing
+[0m17:25:45.347816 [debug] [Thread-5 (]: Databricks adapter: Getting diff for ColumnCommentsConfig: comments={'order_item_id': '', 'customer_id': '', 'product_id': ''} persist=False and comments={'order_item_id': '', 'order_id': '', 'customer_id': '', 'product_id': '', 'order_date': '', 'quantity': '', 'item_price': '', 'gross_revenue': '', 'status': '', '': ''} persist=False
+[0m17:25:45.350970 [debug] [Thread-5 (]: Using databricks connection "model.atliq_gold_dbt.fact_sales"
+[0m17:25:45.351367 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.fact_sales"} */
+
+  
+    create or replace temporary view `fact_sales__dbt_tmp` as
+      with __dbt__cte__stg_order_items as (
+SELECT 
+    order_item_id, 
+    order_id, 
+    product_id, 
+    quantity,
+    item_price
+FROM `atliq`.`silver`.`order_items`
+),  __dbt__cte__stg_orders as (
+-- models/staging/stg_orders.sql
+SELECT 
+    order_id, 
+    customer_id, 
+    order_date, 
+    status, 
+    order_amount
+FROM 
+    `atliq`.`silver`.`orders`
+) -- models/gold/fact_sales.sql
+-- Grain: one row per order item
+
+
+
+
+
+-- Grain: one row per order item
+
+SELECT
+    oi.order_item_id,
+    o.order_id,
+    o.customer_id,
+    oi.product_id,
+    o.order_date,
+    oi.quantity,
+    oi.item_price,
+    oi.quantity * oi.item_price AS gross_revenue,
+    o.status
+
+FROM __dbt__cte__stg_order_items AS oi
+
+INNER JOIN __dbt__cte__stg_orders AS o
+    ON oi.order_id = o.order_id
+
+
+
+WHERE oi.order_item_id > (
+    SELECT COALESCE(MAX(order_item_id), 0)
+    FROM `atliq`.`gold`.`fact_sales`
+)
+  
+[0m17:25:45.953542 [debug] [Thread-5 (]: SQL status: OK in 0.600 seconds
+[0m17:25:45.954498 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555, command-id=01f19bc4-e946-1925-9155-e78642418e1c) - Closing
+[0m17:25:45.977636 [debug] [Thread-5 (]: Using databricks connection "model.atliq_gold_dbt.fact_sales"
+[0m17:25:45.978069 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.fact_sales"} */
+
+    
+  DESCRIBE TABLE EXTENDED `atliq`.`gold`.`fact_sales` AS JSON
+
+  
+[0m17:25:46.218279 [debug] [Thread-6 (]: SQL status: OK in 5.860 seconds
+[0m17:25:46.219137 [debug] [Thread-3 (]: SQL status: OK in 5.860 seconds
+[0m17:25:46.221003 [debug] [Thread-6 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d6-16d6-b4e4-a24b199a10e2, command-id=01f19bc4-e64d-1b97-ae54-b42ebc402f30) - Closing
+[0m17:25:46.222053 [debug] [Thread-3 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5cf-128b-810f-39e346a32cc4, command-id=01f19bc4-e64e-14ee-9905-f291e8619f55) - Closing
+[0m17:25:46.345569 [debug] [Thread-5 (]: SQL status: OK in 0.370 seconds
+[0m17:25:46.351203 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555, command-id=01f19bc4-e9a6-1e61-a2ba-a1dcf5c1b414) - Closing
+[0m17:25:46.352854 [debug] [Thread-5 (]: Using databricks connection "model.atliq_gold_dbt.fact_sales"
+[0m17:25:46.353372 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.fact_sales"} */
+
+    
+  DESCRIBE TABLE EXTENDED `fact_sales__dbt_tmp` AS JSON
+
+  
+[0m17:25:46.409688 [debug] [Thread-3 (]: Applying tags to relation None
+[0m17:25:46.410919 [debug] [Thread-6 (]: Applying tags to relation None
+[0m17:25:46.423222 [debug] [Thread-3 (]: On model.atliq_gold_dbt.dim_date: Close
+[0m17:25:46.424338 [debug] [Thread-3 (]: Databricks adapter: Connection(session-id=01f19bc4-e5cf-128b-810f-39e346a32cc4) - Closing
+[0m17:25:46.455362 [debug] [Thread-4 (]: SQL status: OK in 6.090 seconds
+[0m17:25:46.456070 [debug] [Thread-4 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1d0c-afc9-58951a24da4d, command-id=01f19bc4-e64e-1cb7-98f8-ededb459acea) - Closing
+[0m17:25:46.557304 [debug] [Thread-6 (]: On model.atliq_gold_dbt.dim_customers: Close
+[0m17:25:46.557816 [debug] [Thread-6 (]: Databricks adapter: Connection(session-id=01f19bc4-e5d6-16d6-b4e4-a24b199a10e2) - Closing
+[0m17:25:46.582979 [debug] [Thread-5 (]: SQL status: OK in 0.230 seconds
+[0m17:25:46.586830 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555, command-id=01f19bc4-e9e0-182d-9a2c-13dfdabeccf1) - Closing
+[0m17:25:46.597486 [debug] [Thread-5 (]: Writing runtime sql for node "model.atliq_gold_dbt.fact_sales"
+[0m17:25:46.611889 [debug] [Thread-4 (]: Applying tags to relation None
+[0m17:25:46.687126 [debug] [Thread-5 (]: Using databricks connection "model.atliq_gold_dbt.fact_sales"
+[0m17:25:46.687661 [debug] [Thread-4 (]: On model.atliq_gold_dbt.dim_products: Close
+[0m17:25:46.688294 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "model.atliq_gold_dbt.fact_sales"} */
+-- back compat for old kwarg name
+  
+  
+  
+  
+  
+  
+      
+          
+          
+      
+  
+
+    merge
+    into
+        `atliq`.`gold`.`fact_sales` as DBT_INTERNAL_DEST
+    using
+        `fact_sales__dbt_tmp` as DBT_INTERNAL_SOURCE
+    on
+        
+              DBT_INTERNAL_SOURCE.`order_item_id` <=> DBT_INTERNAL_DEST.`order_item_id`
+          
+    when matched
+        then update set
+            *
+    when not matched
+        then insert
+            *
+
+[0m17:25:46.688913 [debug] [Thread-4 (]: Databricks adapter: Connection(session-id=01f19bc4-e5d1-1d0c-afc9-58951a24da4d) - Closing
+[0m17:25:46.690395 [debug] [Thread-3 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '21f2020d-9b32-4a3c-8a3a-99c98f65a2dd', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x115868390>]}
+[0m17:25:46.691201 [info ] [Thread-3 (]: 1 of 8 OK created sql table model gold.dim_date ................................ [[32mOK[0m in 7.45s]
+[0m17:25:46.691830 [debug] [Thread-3 (]: Finished running node model.atliq_gold_dbt.dim_date
+[0m17:25:46.827731 [debug] [Thread-6 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '21f2020d-9b32-4a3c-8a3a-99c98f65a2dd', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x11578d7d0>]}
+[0m17:25:46.828490 [debug] [Thread-4 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '21f2020d-9b32-4a3c-8a3a-99c98f65a2dd', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x11583d250>]}
+[0m17:25:46.829746 [info ] [Thread-6 (]: 3 of 8 OK created sql table model gold.dim_customers ........................... [[32mOK[0m in 7.54s]
+[0m17:25:46.830952 [info ] [Thread-4 (]: 4 of 8 OK created sql table model gold.dim_products ............................ [[32mOK[0m in 7.54s]
+[0m17:25:46.831990 [debug] [Thread-6 (]: Finished running node model.atliq_gold_dbt.dim_customers
+[0m17:25:46.832692 [debug] [Thread-4 (]: Finished running node model.atliq_gold_dbt.dim_products
+[0m17:25:51.344044 [debug] [Thread-5 (]: SQL status: OK in 4.650 seconds
+[0m17:25:51.345841 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555, command-id=01f19bc4-ea13-17aa-a84d-2a88dcccf2cc) - Closing
+[0m17:25:51.349163 [debug] [Thread-5 (]: On model.atliq_gold_dbt.fact_sales: Close
+[0m17:25:51.349735 [debug] [Thread-5 (]: Databricks adapter: Connection(session-id=01f19bc4-e5d1-1750-8bd3-e8b32668f555) - Closing
+[0m17:25:51.509320 [debug] [Thread-5 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '21f2020d-9b32-4a3c-8a3a-99c98f65a2dd', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x11576cad0>]}
+[0m17:25:51.509924 [info ] [Thread-5 (]: 2 of 8 OK created sql incremental model gold.fact_sales ........................ [[32mOK[0m in 12.22s]
+[0m17:25:51.510347 [debug] [Thread-5 (]: Finished running node model.atliq_gold_dbt.fact_sales
+[0m17:25:51.511098 [debug] [Thread-3 (]: Began running node test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf
+[0m17:25:51.511431 [debug] [Thread-6 (]: Began running node test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47
+[0m17:25:51.511946 [debug] [Thread-4 (]: Began running node test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b
+[0m17:25:51.511721 [info ] [Thread-3 (]: 5 of 8 START test not_null_fact_sales_order_item_id ............................ [RUN]
+[0m17:25:51.512325 [debug] [Thread-5 (]: Began running node test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761
+[0m17:25:51.512579 [info ] [Thread-6 (]: 6 of 8 START test relationships_fact_sales_customer_id__customer_id__ref_dim_customers_  [RUN]
+[0m17:25:51.512887 [info ] [Thread-4 (]: 7 of 8 START test relationships_fact_sales_product_id__product_id__ref_dim_products_  [RUN]
+[0m17:25:51.513354 [debug] [Thread-3 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf) - Creating connection
+[0m17:25:51.513642 [info ] [Thread-5 (]: 8 of 8 START test unique_fact_sales_order_item_id .............................. [RUN]
+[0m17:25:51.514003 [debug] [Thread-6 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47) - Creating connection
+[0m17:25:51.514338 [debug] [Thread-4 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b) - Creating connection
+[0m17:25:51.514594 [debug] [Thread-3 (]: Acquiring new databricks connection 'test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf'
+[0m17:25:51.514920 [debug] [Thread-5 (]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761) - Creating connection
+[0m17:25:51.515161 [debug] [Thread-6 (]: Acquiring new databricks connection 'test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47'
+[0m17:25:51.515384 [debug] [Thread-4 (]: Acquiring new databricks connection 'test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b'
+[0m17:25:51.515611 [debug] [Thread-3 (]: Began compiling node test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf
+[0m17:25:51.515836 [debug] [Thread-5 (]: Acquiring new databricks connection 'test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761'
+[0m17:25:51.516058 [debug] [Thread-6 (]: Began compiling node test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47
+[0m17:25:51.516278 [debug] [Thread-4 (]: Began compiling node test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b
+[0m17:25:51.525313 [debug] [Thread-3 (]: Writing injected SQL for node "test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf"
+[0m17:25:51.525581 [debug] [Thread-5 (]: Began compiling node test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761
+[0m17:25:51.534401 [debug] [Thread-6 (]: Writing injected SQL for node "test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47"
+[0m17:25:51.542615 [debug] [Thread-4 (]: Writing injected SQL for node "test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b"
+[0m17:25:51.547970 [debug] [Thread-5 (]: Writing injected SQL for node "test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761"
+[0m17:25:51.548484 [debug] [Thread-4 (]: Began executing node test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b
+[0m17:25:51.548712 [debug] [Thread-6 (]: Began executing node test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47
+[0m17:25:51.548875 [debug] [Thread-3 (]: Began executing node test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf
+[0m17:25:51.557153 [debug] [Thread-4 (]: Writing runtime sql for node "test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b"
+[0m17:25:51.557353 [debug] [Thread-5 (]: Began executing node test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761
+[0m17:25:51.558264 [debug] [Thread-6 (]: Writing runtime sql for node "test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47"
+[0m17:25:51.559135 [debug] [Thread-3 (]: Writing runtime sql for node "test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf"
+[0m17:25:51.560018 [debug] [Thread-5 (]: Writing runtime sql for node "test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761"
+[0m17:25:51.560475 [debug] [Thread-4 (]: Using databricks connection "test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b"
+[0m17:25:51.560634 [debug] [Thread-3 (]: Using databricks connection "test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf"
+[0m17:25:51.560784 [debug] [Thread-6 (]: Using databricks connection "test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47"
+[0m17:25:51.560935 [debug] [Thread-5 (]: Using databricks connection "test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761"
+[0m17:25:51.561119 [debug] [Thread-4 (]: On test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+with child as (
+    select product_id as from_field
+    from `atliq`.`gold`.`fact_sales`
+    where product_id is not null
+),
+
+parent as (
+    select product_id as to_field
+    from `atliq`.`gold`.`dim_products`
+)
+
+select
+    from_field
+
+from child
+left join parent
+    on child.from_field = parent.to_field
+
+where parent.to_field is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m17:25:51.561327 [debug] [Thread-3 (]: On test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select order_item_id
+from `atliq`.`gold`.`fact_sales`
+where order_item_id is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m17:25:51.561533 [debug] [Thread-6 (]: On test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+with child as (
+    select customer_id as from_field
+    from `atliq`.`gold`.`fact_sales`
+    where customer_id is not null
+),
+
+parent as (
+    select customer_id as to_field
+    from `atliq`.`gold`.`dim_customers`
+)
+
+select
+    from_field
+
+from child
+left join parent
+    on child.from_field = parent.to_field
+
+where parent.to_field is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m17:25:51.561746 [debug] [Thread-5 (]: On test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761: /* {"app": "dbt", "dbt_version": "1.12.0", "dbt_databricks_version": "1.12.4", "databricks_sql_connector_version": "4.4.0", "profile_name": "atliq_gold_dbt", "target_name": "dev", "invocation_id": "21f2020d-9b32-4a3c-8a3a-99c98f65a2dd", "node_id": "test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+select
+    order_item_id as unique_field,
+    count(*) as n_records
+
+from `atliq`.`gold`.`fact_sales`
+where order_item_id is not null
+group by order_item_id
+having count(*) > 1
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m17:25:51.561921 [debug] [Thread-4 (]: Opening a new connection, currently in state init
+[0m17:25:51.562077 [debug] [Thread-3 (]: Opening a new connection, currently in state init
+[0m17:25:51.562247 [debug] [Thread-6 (]: Opening a new connection, currently in state init
+[0m17:25:51.562415 [debug] [Thread-5 (]: Opening a new connection, currently in state init
+[0m17:25:51.864269 [debug] [Thread-3 (]: Databricks adapter: Connection(session-id=01f19bc4-ed17-166e-b9e2-060a38ec84ae) - Created
+[0m17:25:51.903533 [debug] [Thread-6 (]: Databricks adapter: Connection(session-id=01f19bc4-ed1e-12c8-b15a-aea5e556e99c) - Created
+[0m17:25:51.904604 [debug] [Thread-5 (]: Databricks adapter: Connection(session-id=01f19bc4-ed1c-1c9b-a85f-123dcfc6250a) - Created
+[0m17:25:51.905639 [debug] [Thread-4 (]: Databricks adapter: Connection(session-id=01f19bc4-ed1c-1f76-8f09-ea9c86225468) - Created
+[0m17:25:52.595560 [debug] [Thread-3 (]: SQL status: OK in 1.030 seconds
+[0m17:25:52.596302 [debug] [Thread-5 (]: SQL status: OK in 1.030 seconds
+[0m17:25:52.603918 [debug] [Thread-5 (]: Databricks adapter: Cursor(session-id=01f19bc4-ed1c-1c9b-a85f-123dcfc6250a, command-id=01f19bc4-ed2e-15ae-b804-029524f3c4ae) - Closing
+[0m17:25:52.605600 [debug] [Thread-3 (]: Databricks adapter: Cursor(session-id=01f19bc4-ed17-166e-b9e2-060a38ec84ae, command-id=01f19bc4-ed28-17bd-a015-24e913b0865b) - Closing
+[0m17:25:52.608897 [debug] [Thread-5 (]: On test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761: Close
+[0m17:25:52.609629 [debug] [Thread-5 (]: Databricks adapter: Connection(session-id=01f19bc4-ed1c-1c9b-a85f-123dcfc6250a) - Closing
+[0m17:25:52.749672 [debug] [Thread-3 (]: On test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf: Close
+[0m17:25:52.750208 [debug] [Thread-3 (]: Databricks adapter: Connection(session-id=01f19bc4-ed17-166e-b9e2-060a38ec84ae) - Closing
+[0m17:25:52.841479 [debug] [Thread-4 (]: SQL status: OK in 1.280 seconds
+[0m17:25:52.843603 [debug] [Thread-4 (]: Databricks adapter: Cursor(session-id=01f19bc4-ed1c-1f76-8f09-ea9c86225468, command-id=01f19bc4-ed2f-11f0-ae3c-76a00b9137f9) - Closing
+[0m17:25:52.894314 [info ] [Thread-5 (]: 8 of 8 PASS unique_fact_sales_order_item_id .................................... [[32mPASS[0m in 1.38s]
+[0m17:25:52.894877 [debug] [Thread-4 (]: On test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b: Close
+[0m17:25:52.895330 [debug] [Thread-6 (]: SQL status: OK in 1.330 seconds
+[0m17:25:52.895743 [debug] [Thread-5 (]: Finished running node test.atliq_gold_dbt.unique_fact_sales_order_item_id.4f7c479761
+[0m17:25:52.896103 [debug] [Thread-4 (]: Databricks adapter: Connection(session-id=01f19bc4-ed1c-1f76-8f09-ea9c86225468) - Closing
+[0m17:25:52.897725 [debug] [Thread-6 (]: Databricks adapter: Cursor(session-id=01f19bc4-ed1e-12c8-b15a-aea5e556e99c, command-id=01f19bc4-ed2f-1a64-b5ea-7ebeeeb30607) - Closing
+[0m17:25:53.025539 [debug] [Thread-6 (]: On test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47: Close
+[0m17:25:53.024679 [info ] [Thread-3 (]: 5 of 8 PASS not_null_fact_sales_order_item_id .................................. [[32mPASS[0m in 1.51s]
+[0m17:25:53.026539 [debug] [Thread-6 (]: Databricks adapter: Connection(session-id=01f19bc4-ed1e-12c8-b15a-aea5e556e99c) - Closing
+[0m17:25:53.027259 [debug] [Thread-3 (]: Finished running node test.atliq_gold_dbt.not_null_fact_sales_order_item_id.7707ac1abf
+[0m17:25:53.164185 [info ] [Thread-4 (]: 7 of 8 PASS relationships_fact_sales_product_id__product_id__ref_dim_products_ . [[32mPASS[0m in 1.65s]
+[0m17:25:53.164866 [info ] [Thread-6 (]: 6 of 8 PASS relationships_fact_sales_customer_id__customer_id__ref_dim_customers_  [[32mPASS[0m in 1.65s]
+[0m17:25:53.165902 [debug] [Thread-4 (]: Finished running node test.atliq_gold_dbt.relationships_fact_sales_product_id__product_id__ref_dim_products_.c768410e5b
+[0m17:25:53.166518 [debug] [Thread-6 (]: Finished running node test.atliq_gold_dbt.relationships_fact_sales_customer_id__customer_id__ref_dim_customers_.540baa6d47
+[0m17:25:53.168277 [debug] [MainThread]: Databricks adapter: DatabricksDBTConnection(session-id=None, name=master) - Creating connection
+[0m17:25:53.168660 [debug] [MainThread]: Acquiring new databricks connection 'master'
+[0m17:25:53.169232 [info ] [MainThread]: 
+[0m17:25:53.169580 [info ] [MainThread]: Finished running 1 incremental model, 3 table models, 4 data tests in 0 hours 0 minutes and 18.70 seconds (18.70s).
+[0m17:25:53.171084 [debug] [MainThread]: Command end result
+[0m17:25:53.220414 [debug] [MainThread]: Wrote artifact WritableManifest to /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/target/manifest.json
+[0m17:25:53.222145 [debug] [MainThread]: Wrote artifact SemanticManifest to /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/target/semantic_manifest.json
+[0m17:25:53.223651 [debug] [MainThread]: Wrote artifact OsiDocument to /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/target/osi_document.json
+[0m17:25:53.227788 [debug] [MainThread]: Wrote artifact RunExecutionResult to /Users/shalinigoutam/Desktop/Codebasics/bootcamp-projects/atliq-commerce-data-pipeline/atliq_gold_dbt/target/run_results.json
+[0m17:25:53.227976 [info ] [MainThread]: 
+[0m17:25:53.228189 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m17:25:53.228352 [info ] [MainThread]: 
+[0m17:25:53.228516 [info ] [MainThread]: Done. PASS=8 WARN=0 ERROR=0 SKIP=0 NO-OP=0 REUSED=0 TOTAL=8
+[0m17:25:53.228817 [warn ] [MainThread]: [[33mWARNING[0m][DeprecationsSummary]: Deprecated functionality
+Summary of encountered deprecations:
+- MissingArgumentsPropertyInGenericTestDeprecation: 2 occurrences
+To see all deprecation instances instead of just the first occurrence of each,
+run command again with the `--show-all-deprecations` flag. You may also need to
+run with `--no-partial-parse` as some deprecations are only encountered during
+parsing.
+[0m17:25:53.232535 [debug] [MainThread]: Resource report: {"command_name": "build", "command_success": true, "command_wall_clock_time": 20.914549, "process_in_blocks": "0", "process_kernel_time": 0.355709, "process_mem_max_rss": "317390848", "process_out_blocks": "0", "process_user_time": 3.546815}
+[0m17:25:53.232863 [debug] [MainThread]: Command `dbt build` succeeded at 17:25:53.232820 after 20.91 seconds
+[0m17:25:53.233063 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c62fdd0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c643090>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c643f50>]}
+[0m17:25:53.233241 [debug] [MainThread]: Flushing usage events
+[0m17:25:54.754904 [debug] [MainThread]: An error was encountered while trying to flush usage events
