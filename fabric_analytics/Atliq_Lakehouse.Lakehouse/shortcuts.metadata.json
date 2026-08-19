@@ -1,0 +1,14 @@
+[
+  {
+    "name": "gold",
+    "path": "/Tables",
+    "target": {
+      "type": "AdlsGen2",
+      "adlsGen2": {
+        "connectionId": "9ae33f1d-7956-4ba6-be3b-7d23a1ce5267",
+        "location": "https://atliqcommerce.dfs.core.windows.net",
+        "subpath": "/lakehouse/gold"
+      }
+    }
+  }
+]
