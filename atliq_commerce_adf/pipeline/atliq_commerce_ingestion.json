@@ -852,8 +852,6 @@
 				"name": "Get_Metadata_CSV",
 				"description": "It finds the list of source csv files.",
 				"type": "GetMetadata",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set_Run_Start_At",
@@ -892,8 +890,6 @@
 				"name": "Foreach_Source_CSV",
 				"description": "It iterates over the source CSV files provided by metadata activity.",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Get_Metadata_CSV",
