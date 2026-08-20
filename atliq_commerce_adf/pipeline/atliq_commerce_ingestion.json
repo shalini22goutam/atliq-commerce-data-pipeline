@@ -526,6 +526,104 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Stored procedure1",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy_Source_CSV",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[etl].[usp_audit_log]",
+								"storedProcedureParameters": {
+									"activity_name": {
+										"value": "Copy CSV Files",
+										"type": "String"
+									},
+									"end_time": {
+										"value": {
+											"value": "@utcNow()",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"error_message": {
+										"value": null,
+										"type": "String"
+									},
+									"job_name": {
+										"value": null,
+										"type": "String"
+									},
+									"job_run_id": {
+										"value": null,
+										"type": "String"
+									},
+									"layer": {
+										"value": "Bronze",
+										"type": "String"
+									},
+									"load_type": {
+										"value": "Full",
+										"type": "String"
+									},
+									"orchestrator": {
+										"value": "ADF",
+										"type": "String"
+									},
+									"pipeline_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "String"
+									},
+									"pipeline_run_id": {
+										"value": "@pipeline().RunId",
+										"type": "String"
+									},
+									"row_count": {
+										"value": "@activity('Copy Customers').output.rowsCopied",
+										"type": "Int64"
+									},
+									"source_name": {
+										"value": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"start_time": {
+										"value": {
+											"value": "@utcNow()",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"status": {
+										"value": "Success",
+										"type": "String"
+									},
+									"task_run_id": {
+										"value": null,
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_sql_db",
+								"type": "LinkedServiceReference"
+							}
 						}
 					]
 				}
