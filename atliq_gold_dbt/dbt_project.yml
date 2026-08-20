@@ -20,8 +20,7 @@ models:
     gold:
       +materialized: table
       +file_format: delta
-      +location_root: "abfss://lakehouse@atliqcommerce.dfs.core.windows.net/gold"
-      
+      +location_root: "{{ 'abfss://lakehouse@atliqcommerce.dfs.core.windows.net/gold' if target.name == 'dev' else 'abfss://lakehouse@atliqcommerce.dfs.core.windows.net/gold_ci' }}"
 
     staging:
       +materialized: ephemeral

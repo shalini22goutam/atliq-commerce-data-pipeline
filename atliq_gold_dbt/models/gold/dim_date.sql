@@ -1,7 +1,3 @@
-{{ config(
-    materialized='table'
-) }}
-
 WITH date_spine AS (
 
     SELECT

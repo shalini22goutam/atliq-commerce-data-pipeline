@@ -19,7 +19,7 @@ SELECT
     o.order_date,
     oi.quantity,
     oi.item_price,
-    oi.quantity * oi.item_price AS gross_revenue,
+    oi.quantity * oi.item_price AS revenue,
     o.status
 
 FROM {{ ref('stg_order_items') }} AS oi
