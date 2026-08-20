@@ -238,7 +238,7 @@
 								],
 								"ifTrueActivities": [
 									{
-										"name": "Copy_Incremental_Load",
+										"name": "Copy_SQL_Incremental_Load",
 										"description": "It copies data in incremental batches.",
 										"type": "Copy",
 										"dependsOn": [
@@ -321,7 +321,7 @@
 										"type": "SqlServerStoredProcedure",
 										"dependsOn": [
 											{
-												"activity": "Copy_Incremental_Load",
+												"activity": "Copy_SQL_Incremental_Load",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -396,6 +396,228 @@
 												"recursive": true,
 												"enablePartitionDiscovery": false
 											}
+										}
+									},
+									{
+										"name": "Copy_Incremental_Audit_Fail",
+										"description": "This activity logs failure event post copy activity.",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "Copy_SQL_Incremental_Load",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[etl].[usp_audit_log]",
+											"storedProcedureParameters": {
+												"activity_name": {
+													"value": {
+														"value": "@activity('Copy_SQL_Incremental_Load').name",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"end_time": {
+													"value": {
+														"value": "@utcNow()",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"error_message": {
+													"value": {
+														"value": "@activity('Copy_SQL_Incremental_Load').error.message",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"job_name": {
+													"value": null,
+													"type": "String"
+												},
+												"job_run_id": {
+													"value": null,
+													"type": "String"
+												},
+												"layer": {
+													"value": "Bronze",
+													"type": "String"
+												},
+												"load_type": {
+													"value": "Incremental",
+													"type": "String"
+												},
+												"orchestrator": {
+													"value": "ADF",
+													"type": "String"
+												},
+												"pipeline_name": {
+													"value": {
+														"value": "@pipeline().Pipeline",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"pipeline_run_id": {
+													"value": {
+														"value": "@pipeline().RunId",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"row_count": {
+													"value": null,
+													"type": "Int64"
+												},
+												"source_name": {
+													"value": {
+														"value": "@item().table_name",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"start_time": {
+													"value": {
+														"value": "@activity('Copy_SQL_Incremental_Load').ExecutionStartTime\n",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"status": {
+													"value": "Fail",
+													"type": "String"
+												},
+												"task_run_id": {
+													"value": null,
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "LS_sql_db",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "Copy_Incremental_Audit_Success",
+										"description": "This activity logs failure event post copy activity.",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "Copy_SQL_Incremental_Load",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": "[etl].[usp_audit_log]",
+											"storedProcedureParameters": {
+												"activity_name": {
+													"value": {
+														"value": "@activity('Copy_SQL_Incremental_Load').name",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"end_time": {
+													"value": {
+														"value": "@utcNow()",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"error_message": {
+													"value": null,
+													"type": "String"
+												},
+												"job_name": {
+													"value": null,
+													"type": "String"
+												},
+												"job_run_id": {
+													"value": null,
+													"type": "String"
+												},
+												"layer": {
+													"value": "Bronze",
+													"type": "String"
+												},
+												"load_type": {
+													"value": "Incremental",
+													"type": "String"
+												},
+												"orchestrator": {
+													"value": "ADF",
+													"type": "String"
+												},
+												"pipeline_name": {
+													"value": {
+														"value": "@pipeline().Pipeline",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"pipeline_run_id": {
+													"value": {
+														"value": "@pipeline().RunId",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"row_count": {
+													"value": {
+														"value": "@activity('Copy_SQL_Incremental_Load').output.rowsCopied",
+														"type": "Expression"
+													},
+													"type": "Int64"
+												},
+												"source_name": {
+													"value": {
+														"value": "@item().schema_name",
+														"type": "Expression"
+													},
+													"type": "String"
+												},
+												"start_time": {
+													"value": {
+														"value": "@activity('Copy_SQL_Incremental_Load').ExecutionStartTime",
+														"type": "Expression"
+													},
+													"type": "DateTime"
+												},
+												"status": {
+													"value": "Success",
+													"type": "String"
+												},
+												"task_run_id": {
+													"value": null,
+													"type": "String"
+												}
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "LS_sql_db",
+											"type": "LinkedServiceReference"
 										}
 									}
 								]
@@ -528,7 +750,8 @@
 							]
 						},
 						{
-							"name": "Stored procedure1",
+							"name": "Copy_CSV_Audit_Success",
+							"description": "This activity logs success event post copy activity.",
 							"type": "SqlServerStoredProcedure",
 							"dependsOn": [
 								{
@@ -585,15 +808,24 @@
 										"type": "String"
 									},
 									"pipeline_name": {
-										"value": "@pipeline().Pipeline",
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"pipeline_run_id": {
-										"value": "@pipeline().RunId",
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"row_count": {
-										"value": "@activity('Copy Customers').output.rowsCopied",
+										"value": {
+											"value": "@activity('Copy_Source_CSV').output.rowsCopied",
+											"type": "Expression"
+										},
 										"type": "Int64"
 									},
 									"source_name": {
@@ -612,6 +844,111 @@
 									},
 									"status": {
 										"value": "Success",
+										"type": "String"
+									},
+									"task_run_id": {
+										"value": null,
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "LS_sql_db",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Copy_CSV_Audit_Failure",
+							"description": "This activity logs failure event post copy activity.",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy_Source_CSV",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[etl].[usp_audit_log]",
+								"storedProcedureParameters": {
+									"activity_name": {
+										"value": "Copy CSV FIles",
+										"type": "String"
+									},
+									"end_time": {
+										"value": {
+											"value": "@utcNow()",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"error_message": {
+										"value": "",
+										"type": "String"
+									},
+									"job_name": {
+										"value": null,
+										"type": "String"
+									},
+									"job_run_id": {
+										"value": null,
+										"type": "String"
+									},
+									"layer": {
+										"value": "Bronze",
+										"type": "String"
+									},
+									"load_type": {
+										"value": "Full",
+										"type": "String"
+									},
+									"orchestrator": {
+										"value": "ADF",
+										"type": "String"
+									},
+									"pipeline_name": {
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"pipeline_run_id": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"row_count": {
+										"value": null,
+										"type": "Int64"
+									},
+									"source_name": {
+										"value": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"start_time": {
+										"value": {
+											"value": "@utcNow()",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"status": {
+										"value": "Failed",
 										"type": "String"
 									},
 									"task_run_id": {
