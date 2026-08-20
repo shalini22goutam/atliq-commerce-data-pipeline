@@ -704,7 +704,7 @@
 												},
 												"source_name": {
 													"value": {
-														"value": "@item().table_name",
+														"value": "@concat(item().source_schema, '.', item().table_name)",
 														"type": "Expression"
 													},
 													"type": "String"
@@ -815,7 +815,7 @@
 												},
 												"source_name": {
 													"value": {
-														"value": "@item().table_name",
+														"value": "@concat(item().source_schema, '.', item().table_name)",
 														"type": "Expression"
 													},
 													"type": "String"
