@@ -1,0 +1,154 @@
+resources:
+  jobs:
+    atliq_commerce_silver:
+
+      name: atliq-commerce-silver
+
+      # ---------------------------------------------------------
+      # Job Parameters
+      # ---------------------------------------------------------
+
+      parameters:
+        - name: pipeline_name
+          default: "atliq_commerce"
+
+        - name: pipeline_run_id
+          default: ""
+
+        - name: run_date
+          default: ""
+
+      # ---------------------------------------------------------
+      # Tasks
+      # ---------------------------------------------------------
+
+      tasks:
+
+        # -------------------------------------------------------
+        # Customers
+        # -------------------------------------------------------
+
+        - task_key: customers
+
+          python_wheel_task:
+            package_name: databricks_jobs
+            entry_point: silver_customers
+
+            named_parameters:
+              pipeline_name: "{{job.parameters.pipeline_name}}"
+              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
+              job_name: "{{job.name}}"
+              job_run_id: "{{job.run_id}}"
+              task_name: "customers"
+              task_run_id: "{{task.run_id}}"
+
+        # -------------------------------------------------------
+        # Products
+        # -------------------------------------------------------
+
+        - task_key: products
+
+          python_wheel_task:
+            package_name: databricks_jobs
+            entry_point: silver_products
+
+            named_parameters:
+              pipeline_name: "{{job.parameters.pipeline_name}}"
+              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
+              job_name: "{{job.name}}"
+              job_run_id: "{{job.run_id}}"
+              task_name: "products"
+              task_run_id: "{{task.run_id}}"
+
+        # -------------------------------------------------------
+        # Marketing Spend
+        # -------------------------------------------------------
+
+        - task_key: marketing_spend
+
+          python_wheel_task:
+            package_name: databricks_jobs
+            entry_point: silver_marketing_spend
+
+            named_parameters:
+              pipeline_name: "{{job.parameters.pipeline_name}}"
+              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
+              job_name: "{{job.name}}"
+              job_run_id: "{{job.run_id}}"
+              task_name: "marketing_spend"
+              task_run_id: "{{task.run_id}}"
+
+        # -------------------------------------------------------
+        # Supplier Price List
+        # -------------------------------------------------------
+
+        - task_key: supplier_price_list
+
+          python_wheel_task:
+            package_name: databricks_jobs
+            entry_point: silver_supplier_price_list
+
+            named_parameters:
+              pipeline_name: "{{job.parameters.pipeline_name}}"
+              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
+              job_name: "{{job.name}}"
+              job_run_id: "{{job.run_id}}"
+              task_name: "supplier_price_list"
+              task_run_id: "{{task.run_id}}"
+
+        # -------------------------------------------------------
+        # Order Items
+        # -------------------------------------------------------
+
+        - task_key: order_items
+
+          python_wheel_task:
+            package_name: databricks_jobs
+            entry_point: silver_order_items
+
+            named_parameters:
+              run_date: "{{job.parameters.run_date}}"
+              pipeline_name: "{{job.parameters.pipeline_name}}"
+              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
+              job_name: "{{job.name}}"
+              job_run_id: "{{job.run_id}}"
+              task_name: "order_items"
+              task_run_id: "{{task.run_id}}"
+
+        # -------------------------------------------------------
+        # Orders
+        # -------------------------------------------------------
+
+        - task_key: orders
+
+          python_wheel_task:
+            package_name: databricks_jobs
+            entry_point: silver_orders
+
+            named_parameters:
+              run_date: "{{job.parameters.run_date}}"
+              pipeline_name: "{{job.parameters.pipeline_name}}"
+              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
+              job_name: "{{job.name}}"
+              job_run_id: "{{job.run_id}}"
+              task_name: "orders"
+              task_run_id: "{{task.run_id}}"
+
+        # -------------------------------------------------------
+        # Payments
+        # -------------------------------------------------------
+
+        - task_key: payments
+
+          python_wheel_task:
+            package_name: databricks_jobs
+            entry_point: silver_payments
+
+            named_parameters:
+              run_date: "{{job.parameters.run_date}}"
+              pipeline_name: "{{job.parameters.pipeline_name}}"
+              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
+              job_name: "{{job.name}}"
+              job_run_id: "{{job.run_id}}"
+              task_name: "payments"
+              task_run_id: "{{task.run_id}}"
