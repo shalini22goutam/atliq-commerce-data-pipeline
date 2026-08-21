@@ -30,11 +30,11 @@ resources:
 
         - task_key: customers
 
-          python_wheel_task:
+          spark_python_task:
             package_name: databricks_jobs
             entry_point: silver_customers
 
-            named_parameters:
+            parameters:
               pipeline_name: "{{job.parameters.pipeline_name}}"
               pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
               job_name: "{{job.name}}"
