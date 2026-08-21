@@ -2,7 +2,7 @@ import argparse
 from datetime import datetime, timezone
 from pyspark.sql import DataFrame, SparkSession, functions as F
 
-from databricks_jobs.src.audit.audit import write_audit_log
+from databricks_jobs.src.audit.audit_logger import write_audit_log
 from databricks_jobs.src.common.logger import get_logger
 from databricks_jobs.src.common.silver_utils import (
     get_silver_table,
