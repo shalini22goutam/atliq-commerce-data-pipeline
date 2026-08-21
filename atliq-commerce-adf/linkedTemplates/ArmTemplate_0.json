@@ -1556,6 +1556,14 @@
 								"run_date": {
 									"value": "@formatDateTime(variables('run_start_at'),'yyyy-MM-dd')",
 									"type": "Expression"
+								},
+								"pipeline_run_id": {
+									"value": "@pipeline().RunId",
+									"type": "Expression"
+								},
+								"pipeline_name": {
+									"value": "@pipeline().Pipeline",
+									"type": "Expression"
 								}
 							}
 						},
