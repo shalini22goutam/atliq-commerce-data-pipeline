@@ -87,6 +87,8 @@ def transform(
 
 def run(
     spark: SparkSession,
+    username: str,
+    password: str,
     run_date: str,
     pipeline_run_id: str,
     pipeline_name: str,
@@ -216,6 +218,8 @@ def run(
 
         write_audit_log(
             spark=spark,
+            username=username,
+            password=password,
             pipeline_run_id=pipeline_run_id,
             pipeline_name=pipeline_name,
             job_name=job_name,
@@ -250,6 +254,8 @@ def run(
 
             write_audit_log(
                 spark=spark,
+                username=username,
+                password=password,
                 pipeline_run_id=pipeline_run_id,
                 pipeline_name=pipeline_name,
                 job_name=job_name,
@@ -340,8 +346,20 @@ def main() -> None:
         .getOrCreate()
     )
 
+    username = dbutils.secrets.get(
+        scope="azure-sql-scope",
+        key="sql-db-username",
+    )
+
+    password = dbutils.secrets.get(
+        scope="azure-sql-scope",
+        key="sql-db-password",
+    )
+
     run(
         spark=spark,
+        username=username,
+        password=password,
         run_date=args.run_date,
         pipeline_run_id=args.pipeline_run_id,
         pipeline_name=args.pipeline_name,
