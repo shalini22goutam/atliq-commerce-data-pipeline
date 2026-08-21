@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame, functions as F
 
-from databricks_notebooks.src.common.logger import get_logger
-from databricks_notebooks.src.common.silver_utils import (
+src.common.logger import get_logger
+src.common.silver_utils import (
     get_silver_table,
     read_bronze_full,
     write_silver_full_refresh,
