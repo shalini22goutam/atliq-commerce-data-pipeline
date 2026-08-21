@@ -1,204 +1,177 @@
-import argparse
-from datetime import datetime, timezone
-from pyspark.sql import DataFrame, SparkSession, functions as F
+from pyspark.sql import DataFrame, SparkSession
 
-from databricks_jobs.src.audit.audit_logger import write_audit_log
-from databricks_jobs.src.common.logger import get_logger
-from databricks_jobs.src.common.silver_utils import (
-    get_silver_table,
-    read_bronze_full,
-    write_silver_full_refresh,
+from databricks_jobs.src.common.constants import (
+    BRONZE_SCHEMA,
+    CATALOG_NAME,
+    SILVER_SCHEMA,
 )
 
 
-TABLE_NAME = "customers"
-SILVER_TABLE = get_silver_table(TABLE_NAME)
+# ---------------------------------------------------------
+# Table Utilities
+# ---------------------------------------------------------
 
-logger = get_logger(__name__)
-
-
-def transform(spark: SparkSession) -> DataFrame:
+def get_silver_table(
+    table_name: str,
+) -> str:
     """
-    Read Bronze customers data and apply Silver transformations.
-
-    Transformations:
-    - Trim and standardize city.
-    - Convert signup_date to date.
-    - Remove records with null customer_id.
-    - Deduplicate customers by customer_id.
+    Return the fully qualified Silver table name.
     """
 
-    logger.info(
-        "Reading Bronze data for table=%s",
-        TABLE_NAME,
+    return f"{CATALOG_NAME}.{SILVER_SCHEMA}.{table_name}"
+
+
+# ---------------------------------------------------------
+# Bronze Read Utilities
+# ---------------------------------------------------------
+
+def read_bronze_full(
+    spark: SparkSession,
+    table_name: str,
+) -> DataFrame:
+    """
+    Read the complete Bronze table.
+    """
+
+    bronze_table = f"{CATALOG_NAME}.{BRONZE_SCHEMA}.{table_name}"
+
+    return spark.table(bronze_table)
+
+
+def read_bronze_batch(
+    spark: SparkSession,
+    table_name: str,
+    run_date: str,
+) -> DataFrame:
+    """
+    Read a specific ingestion-date partition from Bronze.
+    """
+
+    bronze_table = f"{CATALOG_NAME}.{BRONZE_SCHEMA}.{table_name}"
+
+    return (
+        spark.table(bronze_table)
+        .filter(
+            f"ingestion_date = '{run_date}'"
+        )
     )
 
-    bronze_df = read_bronze_full(
-        spark=spark,
-        table_name=TABLE_NAME,
-    )
 
-    logger.info(
-        "Applying Silver transformations for table=%s",
-        TABLE_NAME,
+# ---------------------------------------------------------
+# Data Transformation Utilities
+# ---------------------------------------------------------
+
+def dedupe_latest(
+    df: DataFrame,
+    key_col: str,
+    order_col: str,
+) -> DataFrame:
+    """
+    Keep the latest record for each key based on the
+    specified ordering column.
+    """
+
+    from pyspark.sql import Window
+    from pyspark.sql import functions as F
+
+    window_spec = (
+        Window
+        .partitionBy(key_col)
+        .orderBy(F.col(order_col).desc())
     )
 
     return (
-        bronze_df
+        df
         .withColumn(
-            "city",
-            F.initcap(F.trim(F.col("city"))),
-        )
-        .withColumn(
-            "signup_date",
-            F.to_date(F.col("signup_date")),
+            "_row_number",
+            F.row_number().over(window_spec),
         )
         .filter(
-            F.col("customer_id").isNotNull()
+            F.col("_row_number") == 1
         )
-        .dropDuplicates(["customer_id"])
+        .drop("_row_number")
     )
 
 
-def run(
+# ---------------------------------------------------------
+# Silver Write Utilities
+# ---------------------------------------------------------
+
+def write_silver_full_refresh(
     spark: SparkSession,
-    pipeline_run_id: str,
-    pipeline_name: str,
-    job_name: str,
-    job_run_id: str,
-    task_name: str,
-    task_run_id: str,
+    df: DataFrame,
+    table_name: str,
 ) -> None:
     """
-    Run the Bronze-to-Silver customers pipeline.
+    Write a DataFrame to a Silver table using full refresh.
     """
 
-    start_time = datetime.now(timezone.utc)
-
-    try:
-        silver_df = transform(spark)
-
-        logger.info(
-            "Writing Silver table=%s using full refresh",
-            SILVER_TABLE,
-        )
-
-        write_silver_full_refresh(
-            spark=spark,
-            df=silver_df,
-            table_name=SILVER_TABLE,
-        )
-
-        # Count after successful write to avoid
-        # recomputing the Bronze-to-Silver transformation.
-        row_count = spark.table(SILVER_TABLE).count()
-
-        logger.info(
-            "Records written to Silver table=%s: %s",
-            SILVER_TABLE,
-            row_count,
-        )
-
-        end_time = datetime.now(timezone.utc)
-
-        logger.info(
-            "Successfully completed Silver pipeline for table=%s",
-            TABLE_NAME,
-        )
-
-        write_audit_log(
-            spark=spark,
-            pipeline_run_id=pipeline_run_id,
-            pipeline_name=pipeline_name,
-            job_name=job_name,
-            job_run_id=job_run_id,
-            task_name=task_name,
-            task_run_id=task_run_id,
-            layer="Silver",
-            source_name=TABLE_NAME,
-            load_type="FULL_REFRESH",
-            status="SUCCESS",
-            row_count=row_count,
-            error_message=None,
-            start_time=start_time,
-            end_time=end_time,
-        )
-
-    except Exception as e:
-
-        end_time = datetime.now(timezone.utc)
-
-        logger.exception(
-            "Silver pipeline failed for table=%s",
-            TABLE_NAME,
-        )
-
-        try:
-            write_audit_log(
-                spark=spark,
-                pipeline_run_id=pipeline_run_id,
-                pipeline_name=pipeline_name,
-                job_name=job_name,
-                job_run_id=job_run_id,
-                task_name=task_name,
-                task_run_id=task_run_id,
-                layer="Silver",
-                source_name=TABLE_NAME,
-                load_type="FULL_REFRESH",
-                status="FAILED",
-                row_count=None,
-                error_message=str(e)[:4000],
-                start_time=start_time,
-                end_time=end_time,
-            )
-
-        except Exception:
-            logger.exception(
-                "Failed to write audit record for table=%s",
-                TABLE_NAME,
-            )
-
-        raise
-
-
-def parse_args() -> argparse.Namespace:
-    """Parse Databricks Job parameters."""
-
-    parser = argparse.ArgumentParser(
-        description="Silver customers pipeline",
-    )
-
-    parser.add_argument("--pipeline_name", required=True)
-    parser.add_argument("--pipeline_run_id", required=True)
-    parser.add_argument("--job_name", required=True)
-    parser.add_argument("--job_run_id", required=True)
-    parser.add_argument("--task_name", required=True)
-    parser.add_argument("--task_run_id", required=True)
-
-    return parser.parse_args()
-
-
-def main() -> None:
-    """Application entry point."""
-
-    args = parse_args()
-
-    spark = (
-        SparkSession.builder
-        .appName(args.task_name)
-        .getOrCreate()
-    )
-
-    run(
-        spark=spark,
-        pipeline_run_id=args.pipeline_run_id,
-        pipeline_name=args.pipeline_name,
-        job_name=args.job_name,
-        job_run_id=args.job_run_id,
-        task_name=args.task_name,
-        task_run_id=args.task_run_id,
+    (
+        df.write
+        .format("delta")
+        .mode("overwrite")
+        .saveAsTable(table_name)
     )
 
 
-if __name__ == "__main__":
-    main()
+def insert_to_silver(
+    spark: SparkSession,
+    df: DataFrame,
+    table_name: str,
+    merge_key: str,
+) -> None:
+    """
+    Insert records into Silver when they do not already exist.
+    """
+
+    from delta.tables import DeltaTable
+
+    target = DeltaTable.forName(
+        spark,
+        table_name,
+    )
+
+    (
+        target.alias("target")
+        .merge(
+            df.alias("source"),
+            merge_key,
+        )
+        .whenNotMatchedInsertAll()
+        .execute()
+    )
+
+
+def upsert_to_silver(
+    spark: SparkSession,
+    df: DataFrame,
+    table_name: str,
+    merge_key: str,
+    update_condition: str,
+) -> None:
+    """
+    Upsert records into Silver.
+
+    Existing records are updated only when the supplied
+    update condition is satisfied. New records are inserted.
+    """
+
+    from delta.tables import DeltaTable
+
+    target = DeltaTable.forName(
+        spark,
+        table_name,
+    )
+
+    (
+        target.alias("target")
+        .merge(
+            df.alias("source"),
+            merge_key,
+        )
+        .whenMatchedUpdateAll(
+            condition=update_condition,
+        )
+        .whenNotMatchedInsertAll()
+        .execute()
+    )
