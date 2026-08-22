@@ -30,6 +30,3 @@ CREATE TABLE etl.audit_log
     created_at        DATETIME2 DEFAULT GETDATE()
 );
 GO
-
-
-
