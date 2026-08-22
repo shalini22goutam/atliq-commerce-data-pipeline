@@ -1191,8 +1191,6 @@
 				"name": "Databricks_Job",
 				"description": "This job triggers the databricks pipeline for silver and gold data.",
 				"type": "DatabricksJob",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Foreach_Source_CSV",
