@@ -33,4 +33,3 @@ GO
 
 
 
-SELECT * from etl.audit_log
