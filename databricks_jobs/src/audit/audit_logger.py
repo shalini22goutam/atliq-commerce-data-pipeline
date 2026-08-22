@@ -21,6 +21,7 @@ JDBC_URL = (
 
 
 AUDIT_SCHEMA = StructType([
+    StructField("run_date", StringType(), True),
     StructField("pipeline_run_id", StringType(), True),
     StructField("pipeline_name", StringType(), True),
     StructField("orchestrator", StringType(), True),
@@ -45,6 +46,7 @@ AUDIT_SCHEMA = StructType([
 
 def write_audit_log(
     spark: SparkSession,
+    run_date: str,
     pipeline_run_id: str,
     pipeline_name: str,
     orchestrator: str,
@@ -76,6 +78,7 @@ def write_audit_log(
         [
             (
                 pipeline_run_id,
+                run_date,
                 pipeline_name,
                 orchestrator,
                 job_name,

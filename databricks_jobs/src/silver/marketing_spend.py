@@ -76,6 +76,7 @@ def run(
 
         write_audit_log(
             spark=spark,
+            run_date=None,
             pipeline_run_id=pipeline_run_id,
             pipeline_name=pipeline_name,
             orchestrator = "Databricks Job",
@@ -104,6 +105,7 @@ def run(
 
             write_audit_log(
                 spark=spark,
+                run_date=None,
                 pipeline_run_id=pipeline_run_id,
                 pipeline_name=pipeline_name,
                 orchestrator = "Databricks Job",
