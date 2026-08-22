@@ -1,154 +1,184 @@
 resources:
   jobs:
-    atliq_commerce_silver:
-
-      name: atliq-commerce-silver
-
-      # ---------------------------------------------------------
-      # Job Parameters
-      # ---------------------------------------------------------
-
+    Atliq_Data_Transformation:
+      name: Atliq_Data_Transformation
+      email_notifications:
+        on_failure:
+          - shalini22goutam@gmail.com
+      tasks:
+        - task_key: Create_Catalog_Schema
+          sql_task:
+            file:
+              path: databricks_jobs/src/setup/create_catalog_schemas.sql
+              source: GIT
+            warehouse_id: ca0f9a13b145c8c5
+        - task_key: Transform_Customers
+          depends_on:
+            - task_key: Create_Catalog_Schema
+          spark_python_task:
+            python_file: databricks_jobs/src/silver/customers.py
+            parameters:
+              - --pipeline_name
+              - "{{job.parameters.pipeline_name}}"
+              - --pipeline_run_id
+              - "{{job.parameters.pipeline_run_id}}"
+              - --job_name
+              - "{{job.name}}"
+              - --job_run_id
+              - "{{job.run_id}}"
+              - --task_name
+              - "{{task.name}}"
+              - --task_run_id
+              - "{{task.run_id}}"
+            source: GIT
+          existing_cluster_id: 0818-034717-qk7hyzdn
+        - task_key: Transform_Marketing_Spend
+          spark_python_task:
+            python_file: databricks_jobs/src/silver/marketing_spend.py
+            parameters:
+              - --pipeline_name
+              - "{{job.parameters.pipeline_name}}"
+              - --pipeline_run_id
+              - "{{job.parameters.pipeline_run_id}}"
+              - --job_name
+              - "{{job.name}}"
+              - --job_run_id
+              - "{{job.run_id}}"
+              - --task_name
+              - "{{task.name}}"
+              - --task_run_id
+              - "{{task.run_id}}"
+            source: GIT
+          existing_cluster_id: 0818-034717-qk7hyzdn
+        - task_key: Transform_Order_Items
+          spark_python_task:
+            python_file: databricks_jobs/src/silver/order_items.py
+            parameters:
+              - --run_date
+              - "{{job.parameters.run_date}}"
+              - --pipeline_name
+              - "{{job.parameters.pipeline_name}}"
+              - --pipeline_run_id
+              - "{{job.parameters.pipeline_run_id}}"
+              - --job_name
+              - "{{job.name}}"
+              - --job_run_id
+              - "{{job.run_id}}"
+              - --task_name
+              - "{{task.name}}"
+              - --task_run_id
+              - "{{task.run_id}}"
+            source: GIT
+          existing_cluster_id: 0818-034717-qk7hyzdn
+        - task_key: Transform_Orders
+          spark_python_task:
+            python_file: databricks_jobs/src/silver/orders.py
+            parameters:
+              - --run_date
+              - "{{job.parameters.run_date}}"
+              - --pipeline_name
+              - "{{job.parameters.pipeline_name}}"
+              - --pipeline_run_id
+              - "{{job.parameters.pipeline_run_id}}"
+              - --job_name
+              - "{{job.name}}"
+              - --job_run_id
+              - "{{job.run_id}}"
+              - --task_name
+              - "{{task.name}}"
+              - --task_run_id
+              - "{{task.run_id}}"
+            source: GIT
+          existing_cluster_id: 0818-034717-qk7hyzdn
+        - task_key: Transform_Payments
+          spark_python_task:
+            python_file: databricks_jobs/src/silver/payments.py
+            parameters:
+              - --run_date
+              - "{{job.parameters.run_date}}"
+              - --pipeline_name
+              - "{{job.parameters.pipeline_name}}"
+              - --pipeline_run_id
+              - "{{job.parameters.pipeline_run_id}}"
+              - --job_name
+              - "{{job.name}}"
+              - --job_run_id
+              - "{{job.run_id}}"
+              - --task_name
+              - "{{task.name}}"
+              - --task_run_id
+              - "{{task.run_id}}"
+            source: GIT
+          existing_cluster_id: 0818-034717-qk7hyzdn
+        - task_key: Transform_Products
+          spark_python_task:
+            python_file: databricks_jobs/src/silver/products.py
+            parameters:
+              - --pipeline_name
+              - "{{job.parameters.pipeline_name}}"
+              - --pipeline_run_id
+              - "{{job.parameters.pipeline_run_id}}"
+              - --job_name
+              - "{{job.name}}"
+              - --job_run_id
+              - "{{job.run_id}}"
+              - --task_name
+              - "{{task.name}}"
+              - --task_run_id
+              - "{{task.run_id}}"
+            source: GIT
+          existing_cluster_id: 0818-034717-qk7hyzdn
+        - task_key: Transform_Supplier_Price_List
+          spark_python_task:
+            python_file: databricks_jobs/src/silver/supplier_price_list.py
+            parameters:
+              - --pipeline_name
+              - "{{job.parameters.pipeline_name}}"
+              - --pipeline_run_id
+              - "{{job.parameters.pipeline_run_id}}"
+              - --job_name
+              - "{{job.name}}"
+              - --job_run_id
+              - "{{job.run_id}}"
+              - --task_name
+              - "{{task.name}}"
+              - --task_run_id
+              - "{{task.run_id}}"
+            source: GIT
+          existing_cluster_id: 0818-034717-qk7hyzdn
+        - task_key: DBT_Gold_Build
+          depends_on:
+            - task_key: Transform_Supplier_Price_List
+            - task_key: Transform_Customers
+            - task_key: Transform_Payments
+            - task_key: Transform_Orders
+            - task_key: Transform_Marketing_Spend
+            - task_key: Transform_Order_Items
+            - task_key: Transform_Products
+          dbt_task:
+            project_directory: atliq_gold
+            commands:
+              - dbt build
+            schema: gold
+            warehouse_id: ca0f9a13b145c8c5
+            catalog: atliq
+            source: GIT
+          existing_cluster_id: 0818-034717-qk7hyzdn
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+          min_retry_interval_millis: 900000
+      git_source:
+        git_url: https://github.com/shalini22goutam/atliq-commerce-data-pipeline.git
+        git_provider: gitHub
+        git_branch: main
+      queue:
+        enabled: true
       parameters:
         - name: pipeline_name
-          default: "atliq_commerce"
-
+          default: ""
         - name: pipeline_run_id
           default: ""
-
         - name: run_date
           default: ""
-
-      # ---------------------------------------------------------
-      # Tasks
-      # ---------------------------------------------------------
-
-      tasks:
-
-        # -------------------------------------------------------
-        # Customers
-        # -------------------------------------------------------
-
-        - task_key: customers
-
-          spark_python_task:
-            package_name: databricks_jobs
-            entry_point: silver_customers
-
-            parameters:
-              pipeline_name: "{{job.parameters.pipeline_name}}"
-              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
-              job_name: "{{job.name}}"
-              job_run_id: "{{job.run_id}}"
-              task_name: "customers"
-              task_run_id: "{{task.run_id}}"
-
-        # -------------------------------------------------------
-        # Products
-        # -------------------------------------------------------
-
-        - task_key: products
-
-          python_wheel_task:
-            package_name: databricks_jobs
-            entry_point: silver_products
-
-            named_parameters:
-              pipeline_name: "{{job.parameters.pipeline_name}}"
-              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
-              job_name: "{{job.name}}"
-              job_run_id: "{{job.run_id}}"
-              task_name: "products"
-              task_run_id: "{{task.run_id}}"
-
-        # -------------------------------------------------------
-        # Marketing Spend
-        # -------------------------------------------------------
-
-        - task_key: marketing_spend
-
-          python_wheel_task:
-            package_name: databricks_jobs
-            entry_point: silver_marketing_spend
-
-            named_parameters:
-              pipeline_name: "{{job.parameters.pipeline_name}}"
-              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
-              job_name: "{{job.name}}"
-              job_run_id: "{{job.run_id}}"
-              task_name: "marketing_spend"
-              task_run_id: "{{task.run_id}}"
-
-        # -------------------------------------------------------
-        # Supplier Price List
-        # -------------------------------------------------------
-
-        - task_key: supplier_price_list
-
-          python_wheel_task:
-            package_name: databricks_jobs
-            entry_point: silver_supplier_price_list
-
-            named_parameters:
-              pipeline_name: "{{job.parameters.pipeline_name}}"
-              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
-              job_name: "{{job.name}}"
-              job_run_id: "{{job.run_id}}"
-              task_name: "supplier_price_list"
-              task_run_id: "{{task.run_id}}"
-
-        # -------------------------------------------------------
-        # Order Items
-        # -------------------------------------------------------
-
-        - task_key: order_items
-
-          python_wheel_task:
-            package_name: databricks_jobs
-            entry_point: silver_order_items
-
-            named_parameters:
-              run_date: "{{job.parameters.run_date}}"
-              pipeline_name: "{{job.parameters.pipeline_name}}"
-              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
-              job_name: "{{job.name}}"
-              job_run_id: "{{job.run_id}}"
-              task_name: "order_items"
-              task_run_id: "{{task.run_id}}"
-
-        # -------------------------------------------------------
-        # Orders
-        # -------------------------------------------------------
-
-        - task_key: orders
-
-          python_wheel_task:
-            package_name: databricks_jobs
-            entry_point: silver_orders
-
-            named_parameters:
-              run_date: "{{job.parameters.run_date}}"
-              pipeline_name: "{{job.parameters.pipeline_name}}"
-              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
-              job_name: "{{job.name}}"
-              job_run_id: "{{job.run_id}}"
-              task_name: "orders"
-              task_run_id: "{{task.run_id}}"
-
-        # -------------------------------------------------------
-        # Payments
-        # -------------------------------------------------------
-
-        - task_key: payments
-
-          python_wheel_task:
-            package_name: databricks_jobs
-            entry_point: silver_payments
-
-            named_parameters:
-              run_date: "{{job.parameters.run_date}}"
-              pipeline_name: "{{job.parameters.pipeline_name}}"
-              pipeline_run_id: "{{job.parameters.pipeline_run_id}}"
-              job_name: "{{job.name}}"
-              job_run_id: "{{job.run_id}}"
-              task_name: "payments"
-              task_run_id: "{{task.run_id}}"
+      performance_target: STANDARD
