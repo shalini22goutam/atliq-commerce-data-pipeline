@@ -1,6 +1,7 @@
 -- models/gold/dim_customer.sql
 
 SELECT
+    {{ dbt_utils.generate_surrogate_key(['customer_id']) }} AS customer_key,
     customer_id,
     customer_name,
     email,

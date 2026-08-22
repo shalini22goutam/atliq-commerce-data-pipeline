@@ -4,6 +4,7 @@ SELECT
     customer_id, 
     order_date, 
     status, 
-    order_amount
+    order_amount,
+    updated_at
 FROM 
     {{ source('silver', 'orders') }}

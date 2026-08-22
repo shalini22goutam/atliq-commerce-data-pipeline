@@ -26,4 +26,4 @@ models:
       +materialized: ephemeral
 
 
-    #else 'abfss://lakehouse@atliqcommerce.dfs.core.windows.net/gold_ci'
+   

@@ -1,6 +1,7 @@
 -- models/gold/dim_product.sql
 
 SELECT
+    {{ dbt_utils.generate_surrogate_key(['p.product_id']) }} AS product_key,
     p.product_id,
     p.product_name,
     p.category,
