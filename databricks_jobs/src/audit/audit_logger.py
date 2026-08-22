@@ -1,10 +1,14 @@
 from datetime import datetime, timezone
 from pyspark.sql import DataFrame, SparkSession, functions as F
+from pyspark.dbutils import DBUtils
 
-# ---------------------------------------------------------
 # SQL connection configuration
-# ---------------------------------------------------------
 
+spark = SparkSession.builder.getOrCreate()
+db_utils = DBUtils(spark)
+
+USERNAME = dbutils.secrets.get(scope="azure-sql-scope", key="sql-db-username")
+PASSWORD = dbutils.secrets.get(scope="azure-sql-scope", key="sql-db-password")
 SERVER = "atliq-sql-server.database.windows.net"
 DATABASE = "atliq_commerce"
 
@@ -17,16 +21,12 @@ JDBC_URL = (
     "loginTimeout=30;"
 )
 
-
 # ---------------------------------------------------------
 # Audit log writer
 # ---------------------------------------------------------
 
 def write_audit_log(
     spark: SparkSession,
-    jdbc_url: str,
-    username: str,
-    password: str,
     pipeline_run_id: str,
     pipeline_name: str,
     orchestrator: str,
@@ -75,10 +75,10 @@ def write_audit_log(
     (
         audit_df.write
         .format("jdbc")
-        .option("url", jdbc_url)
+        .option("url", JDBC_URL)
         .option("dbtable", "etl.audit_log")
-        .option("user", username)
-        .option("password", password)
+        .option("user", USERNAME)
+        .option("password", PASSWORD)
         .mode("append")
         .save()
     )
