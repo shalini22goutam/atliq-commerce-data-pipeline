@@ -123,6 +123,7 @@ def run(
                 task_run_id=task_run_id,
                 layer="Silver",
                 source_name=TABLE_NAME,
+                activity_name="Data Transformation: Customers",
                 load_type="FULL_REFRESH",
                 status="FAIL",
                 row_count=None,

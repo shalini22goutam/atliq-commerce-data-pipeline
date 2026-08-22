@@ -4,11 +4,6 @@ from pyspark.dbutils import DBUtils
 
 # SQL connection configuration
 
-spark = SparkSession.builder.getOrCreate()
-db_utils = DBUtils(spark)
-
-USERNAME = dbutils.secrets.get(scope="azure-sql-scope", key="sql-db-username")
-PASSWORD = dbutils.secrets.get(scope="azure-sql-scope", key="sql-db-password")
 SERVER = "atliq-sql-server.database.windows.net"
 DATABASE = "atliq_commerce"
 
@@ -45,6 +40,11 @@ def write_audit_log(
     end_time: datetime | None = None,
 ) -> None:
     """Write one pipeline execution record to the Azure SQL audit table."""
+
+    dbutils = DBUtils(spark)
+
+    USERNAME = dbutils.secrets.get(scope="azure-sql-scope", key="sql-db-username")
+    PASSWORD = dbutils.secrets.get(scope="azure-sql-scope", key="sql-db-password")
 
     start_time = start_time or datetime.now(timezone.utc)
     end_time = end_time or datetime.now(timezone.utc)
