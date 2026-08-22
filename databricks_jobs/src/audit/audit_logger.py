@@ -76,9 +76,8 @@ def write_audit_log(
 
     audit_df = spark.createDataFrame(
         [
-            (
+            (   run_date,
                 pipeline_run_id,
-                run_date,
                 pipeline_name,
                 orchestrator,
                 job_name,
