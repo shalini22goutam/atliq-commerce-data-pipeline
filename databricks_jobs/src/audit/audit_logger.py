@@ -1,6 +1,9 @@
 from datetime import datetime, timezone
-from pyspark.sql import DataFrame, SparkSession, functions as F
 from pyspark.dbutils import DBUtils
+from pyspark.sql import SparkSession
+from pyspark.sql.types import (
+    StructType, StructField, StringType, IntegerType, TimestampType
+)
 
 # SQL connection configuration
 
@@ -15,6 +18,26 @@ JDBC_URL = (
     "hostNameInCertificate=*.database.windows.net;"
     "loginTimeout=30;"
 )
+
+
+AUDIT_SCHEMA = StructType([
+    StructField("pipeline_run_id", StringType(), True),
+    StructField("pipeline_name", StringType(), True),
+    StructField("orchestrator", StringType(), True),
+    StructField("job_name", StringType(), True),
+    StructField("job_run_id", StringType(), True),
+    StructField("task_name", StringType(), True),
+    StructField("task_run_id", StringType(), True),
+    StructField("layer", StringType(), True),
+    StructField("source_name", StringType(), True),
+    StructField("activity_name", StringType(), True),
+    StructField("load_type", StringType(), True),
+    StructField("status", StringType(), True),
+    StructField("row_count", IntegerType(), True),
+    StructField("error_message", StringType(), True),
+    StructField("start_time", TimestampType(), True),
+    StructField("end_time", TimestampType(), True),
+])
 
 # ---------------------------------------------------------
 # Audit log writer
@@ -70,6 +93,7 @@ def write_audit_log(
                 end_time,
             )
         ],
+         schema=AUDIT_SCHEMA,
     )
 
     (
