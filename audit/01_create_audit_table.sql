@@ -10,11 +10,13 @@ GO
 CREATE TABLE etl.audit_log
 (
     audit_id          BIGINT IDENTITY(1,1) PRIMARY KEY,
+    run_date          VARCHAR(20)
     pipeline_run_id   VARCHAR(100),
     pipeline_name     VARCHAR(200),
     orchestrator      VARCHAR(50),
     job_name          VARCHAR(200),
     job_run_id        VARCHAR(100),
+    task_name         VARCHAR(100),
     task_run_id       VARCHAR(100),
     layer             VARCHAR(50),
     source_name       VARCHAR(200),
