@@ -16,7 +16,7 @@ from databricks_jobs.src.common.silver_utils import (
 # Configuration
 # ---------------------------------------------------------
 
-ADLS_DIR = "customers"
+TABLE_NAME = "customers"
 SILVER_TABLE = get_silver_table(TABLE_NAME)
 
 logger = get_logger(__name__)
@@ -37,11 +37,11 @@ def transform(spark: SparkSession) -> DataFrame:
     - Deduplicate customers by customer_id.
     """
 
-    logger.info("Reading Bronze data for table=%s", ADLS_DIR,)
+    logger.info("Reading Bronze data for table=%s", TABLE_NAME,)
 
-    bronze_df = read_bronze_full(spark=spark, adls_dir=ADLS_DIR,)
+    bronze_df = read_bronze_full(spark=spark, adls_dir=TABLE_NAME,)
 
-    logger.info("Applying Silver transformations for table=%s", ADLS_DIR,)
+    logger.info("Applying Silver transformations for table=%s", TABLE_NAME,)
 
     return (
         bronze_df.withColumn("city", F.initcap(F.trim(F.col("city"))),)
