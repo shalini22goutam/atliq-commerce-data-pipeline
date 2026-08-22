@@ -156,8 +156,9 @@ resources:
             - task_key: Transform_Order_Items
             - task_key: Transform_Products
           dbt_task:
-            project_directory: atliq_gold
+            project_directory: atliq_gold_dbt
             commands:
+              - dbt deps
               - dbt build
             schema: gold
             warehouse_id: ca0f9a13b145c8c5
