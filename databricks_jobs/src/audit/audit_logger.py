@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-
+from pyspark.sql import DataFrame, SparkSession, functions as F
 
 # ---------------------------------------------------------
 # SQL connection configuration
@@ -23,6 +23,7 @@ JDBC_URL = (
 # ---------------------------------------------------------
 
 def write_audit_log(
+    spark: SparkSession,
     jdbc_url: str,
     username: str,
     password: str,
