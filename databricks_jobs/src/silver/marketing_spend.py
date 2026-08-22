@@ -4,7 +4,7 @@ from pyspark.sql import DataFrame, SparkSession, functions as F
 
 from databricks_jobs.src.audit.audit_logger import write_audit_log
 from databricks_jobs.src.common.logger import get_logger
-from databricks_jobs.src.common.silver_utils import  get_silver_table, read_bronze_full, write_silver_full_refresh,
+from databricks_jobs.src.common.silver_utils import  get_silver_table, read_bronze_full, write_silver_full_refresh
 
 logger = get_logger(__name__)
 
