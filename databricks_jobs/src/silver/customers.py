@@ -16,7 +16,7 @@ from databricks_jobs.src.common.silver_utils import (
 # Configuration
 # ---------------------------------------------------------
 
-TABLE_NAME = "customers"
+ADLS_DIR = "customers"
 SILVER_TABLE = get_silver_table(TABLE_NAME)
 
 logger = get_logger(__name__)
@@ -37,35 +37,17 @@ def transform(spark: SparkSession) -> DataFrame:
     - Deduplicate customers by customer_id.
     """
 
-    logger.info(
-        "Reading Bronze data for table=%s",
-        TABLE_NAME,
-    )
+    logger.info("Reading Bronze data for table=%s", ADLS_DIR,)
 
-    bronze_df = read_bronze_full(
-        spark=spark,
-        table_name=TABLE_NAME,
-    )
+    bronze_df = read_bronze_full(spark=spark, adls_dir=ADLS_DIR,)
 
-    logger.info(
-        "Applying Silver transformations for table=%s",
-        TABLE_NAME,
-    )
+    logger.info("Applying Silver transformations for table=%s", ADLS_DIR,)
 
     return (
-        bronze_df
-        .withColumn(
-            "city",
-            F.initcap(F.trim(F.col("city"))),
-        )
-        .withColumn(
-            "signup_date",
-            F.to_date(F.col("signup_date")),
-        )
-        .filter(
-            F.col("customer_id").isNotNull()
-        )
-        .dropDuplicates(["customer_id"])
+        bronze_df.withColumn("city", F.initcap(F.trim(F.col("city"))),)
+                 .withColumn("signup_date", F.to_date(F.col("signup_date")),)
+                 .filter(F.col("customer_id").isNotNull())
+                 .dropDuplicates(["customer_id"])
     )
 
 
@@ -102,33 +84,19 @@ def run(
         # Write Silver table
         # -------------------------------------------------
 
-        logger.info(
-            "Writing Silver table=%s using full refresh",
-            SILVER_TABLE,
-        )
+        logger.info("Writing Silver table=%s using full refresh", SILVER_TABLE,)
 
-        write_silver_full_refresh(
-            spark=spark,
-            df=silver_df,
-            table_name=SILVER_TABLE,
-        )
+        write_silver_full_refresh(spark=spark, df=silver_df, table_name=SILVER_TABLE,)
 
         # Count after successful write to avoid
         # recomputing the Bronze-to-Silver transformation.
         row_count = spark.table(SILVER_TABLE).count()
 
-        logger.info(
-            "Records written to Silver table=%s: %s",
-            SILVER_TABLE,
-            row_count,
-        )
+        logger.info("Records written to Silver table=%s: %s", SILVER_TABLE, row_count,)
 
         end_time = datetime.now(timezone.utc)
 
-        logger.info(
-            "Successfully completed Silver pipeline for table=%s",
-            TABLE_NAME,
-        )
+        logger.info("Successfully completed Silver pipeline for table=%s", TABLE_NAME,)
 
         # -------------------------------------------------
         # Audit SUCCESS
@@ -158,10 +126,7 @@ def run(
 
         end_time = datetime.now(timezone.utc)
 
-        logger.exception(
-            "Silver pipeline failed for table=%s",
-            TABLE_NAME,
-        )
+        logger.exception("Silver pipeline failed for table=%s", TABLE_NAME,)
 
         # -------------------------------------------------
         # Audit FAILURE
@@ -190,10 +155,7 @@ def run(
             )
 
         except Exception:
-            logger.exception(
-                "Failed to write audit record for table=%s",
-                TABLE_NAME,
-            )
+            logger.exception("Failed to write audit record for table=%s", TABLE_NAME,)
 
         # Preserve the original pipeline failure.
         raise
@@ -206,39 +168,14 @@ def run(
 def parse_args() -> argparse.Namespace:
     """Parse Databricks Job parameters."""
 
-    parser = argparse.ArgumentParser(
-        description="Silver customers pipeline",
-    )
+    parser = argparse.ArgumentParser(description="Silver customers pipeline",)
 
-    parser.add_argument(
-        "--pipeline_name",
-        required=True,
-    )
-
-    parser.add_argument(
-        "--pipeline_run_id",
-        required=True,
-    )
-
-    parser.add_argument(
-        "--job_name",
-        required=True,
-    )
-
-    parser.add_argument(
-        "--job_run_id",
-        required=True,
-    )
-
-    parser.add_argument(
-        "--task_name",
-        required=True,
-    )
-
-    parser.add_argument(
-        "--task_run_id",
-        required=True,
-    )
+    parser.add_argument("--pipeline_name", required=True,)
+    parser.add_argument("--pipeline_run_id",required=True,)
+    parser.add_argument("--job_name", required=True,)
+    parser.add_argument("--job_run_id", required=True,)
+    parser.add_argument("--task_name", required=True,)
+    parser.add_argument("--task_run_id", required=True,)
 
     return parser.parse_args()
 
@@ -252,11 +189,8 @@ def main() -> None:
 
     args = parse_args()
 
-    spark = (
-        SparkSession.builder
-        .appName(args.task_name)
-        .getOrCreate()
-    )
+    spark = SparkSession.builder.appName(args.task_name).getOrCreate()
+    
     username = dbutils.secrets.get(
         scope="azure-sql-scope",
         key="sql-db-username",

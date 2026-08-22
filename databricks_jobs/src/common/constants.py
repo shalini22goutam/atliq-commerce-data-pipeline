@@ -10,6 +10,5 @@ BRONZE_PATH = (
 # Unity Catalog objects
 CATALOG_NAME = "atliq"
 
-BRONZE_SCHEMA = "bronze"
 SILVER_SCHEMA = "silver"
 GOLD_SCHEMA = "gold"

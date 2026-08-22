@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame, SparkSession
 
 from databricks_jobs.src.common.constants import (
-    BRONZE_SCHEMA,
+    BRONZE_PATH,
     CATALOG_NAME,
     SILVER_SCHEMA,
 )
@@ -27,15 +27,15 @@ def get_silver_table(
 
 def read_bronze_full(
     spark: SparkSession,
-    table_name: str,
+    dir_name: str,
 ) -> DataFrame:
     """
     Read the complete Bronze table.
     """
 
-    bronze_table = f"{CATALOG_NAME}.{BRONZE_SCHEMA}.{table_name}"
+    bronze_dir = f"{BRONZE_PATH}/{dir_name}"
 
-    return spark.table(bronze_table)
+    return spark.read.parquet(bronze_dir)
 
 
 def read_bronze_batch(
