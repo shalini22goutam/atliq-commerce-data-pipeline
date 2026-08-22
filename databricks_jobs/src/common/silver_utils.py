@@ -30,8 +30,8 @@ def read_bronze_batch(spark: SparkSession, adls_dir: str, run_date: str) -> Data
     """
 
     return (
-        spark.read.parquet(f"{BRONZE_PATH}/{adls_dir}/{run_date}")
-    )
+    spark.read.parquet(f"{BRONZE_PATH}/{adls_dir}/ingest_date={run_date}")
+)
 
 def dedupe_latest(df: DataFrame, key_col: str, order_col: str) -> DataFrame:
     """
