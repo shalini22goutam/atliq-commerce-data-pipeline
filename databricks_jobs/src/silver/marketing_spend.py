@@ -63,7 +63,7 @@ def run(
 
         logger.info("Writing Silver table=%s using full refresh",SILVER_TABLE)
 
-        write_silver_full_refresh(spark=spark, df=silver_df, table_name=SILVER_TABLE)
+        write_silver_full_refresh(spark=spark, df=silver_marketing_spend_df, table_name=SILVER_TABLE)
 
         # Count after successful write to avoid recomputing the Bronze-to-Silver transformation.
         row_count = spark.table(SILVER_TABLE).count()
