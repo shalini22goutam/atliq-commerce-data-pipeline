@@ -27,13 +27,13 @@ def get_silver_table(
 
 def read_bronze_full(
     spark: SparkSession,
-    dir_name: str,
+    adls_dir: str,
 ) -> DataFrame:
     """
     Read the complete Bronze table.
     """
 
-    bronze_dir = f"{BRONZE_PATH}/{dir_name}"
+    bronze_dir = f"{BRONZE_PATH}/{adls_dir}"
 
     return spark.read.parquet(bronze_dir)
 
