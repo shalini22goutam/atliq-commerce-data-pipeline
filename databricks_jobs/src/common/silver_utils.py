@@ -1,5 +1,5 @@
-from pyspark.sql import DataFrame, SparkSession
-
+from pyspark.sql import DataFrame, SparkSession, Window, functions as F
+from delta.tables import DeltaTable
 from databricks_jobs.src.common.constants import (
     BRONZE_PATH,
     CATALOG_NAME,
@@ -7,28 +7,14 @@ from databricks_jobs.src.common.constants import (
 )
 
 
-# ---------------------------------------------------------
-# Table Utilities
-# ---------------------------------------------------------
-
-def get_silver_table(
-    table_name: str,
-) -> str:
+def get_silver_table(table_name: str) -> str:
     """
     Return the fully qualified Silver table name.
     """
 
     return f"{CATALOG_NAME}.{SILVER_SCHEMA}.{table_name}"
 
-
-# ---------------------------------------------------------
-# Bronze Read Utilities
-# ---------------------------------------------------------
-
-def read_bronze_full(
-    spark: SparkSession,
-    adls_dir: str,
-) -> DataFrame:
+def read_bronze_full(spark: SparkSession, adls_dir: str) -> DataFrame:
     """
     Read the complete Bronze table.
     """
@@ -38,41 +24,20 @@ def read_bronze_full(
     return spark.read.parquet(bronze_dir)
 
 
-def read_bronze_batch(
-    spark: SparkSession,
-    table_name: str,
-    run_date: str,
-) -> DataFrame:
+def read_bronze_batch(spark: SparkSession, adls_dir: str, run_date: str) -> DataFrame:
     """
-    Read a specific ingestion-date partition from Bronze.
+    Read a specific date based directory from Bronze.
     """
-
-    bronze_table = f"{CATALOG_NAME}.{BRONZE_SCHEMA}.{table_name}"
 
     return (
-        spark.table(bronze_table)
-        .filter(
-            f"ingestion_date = '{run_date}'"
-        )
+        spark.read.parquet(f"{BRONZE_PATH}/{adls_dir}/{run_date}")
     )
 
-
-# ---------------------------------------------------------
-# Data Transformation Utilities
-# ---------------------------------------------------------
-
-def dedupe_latest(
-    df: DataFrame,
-    key_col: str,
-    order_col: str,
-) -> DataFrame:
+def dedupe_latest(df: DataFrame, key_col: str, order_col: str) -> DataFrame:
     """
     Keep the latest record for each key based on the
     specified ordering column.
     """
-
-    from pyspark.sql import Window
-    from pyspark.sql import functions as F
 
     window_spec = (
         Window
@@ -82,26 +47,12 @@ def dedupe_latest(
 
     return (
         df
-        .withColumn(
-            "_row_number",
-            F.row_number().over(window_spec),
-        )
-        .filter(
-            F.col("_row_number") == 1
-        )
+        .withColumn("_row_number", F.row_number().over(window_spec))
+        .filter( F.col("_row_number") == 1)
         .drop("_row_number")
     )
 
-
-# ---------------------------------------------------------
-# Silver Write Utilities
-# ---------------------------------------------------------
-
-def write_silver_full_refresh(
-    spark: SparkSession,
-    df: DataFrame,
-    table_name: str,
-) -> None:
+def write_silver_full_refresh(spark: SparkSession, df: DataFrame,table_name: str) -> None:
     """
     Write a DataFrame to a Silver table using full refresh.
     """
@@ -123,9 +74,6 @@ def insert_to_silver(
     """
     Insert records into Silver when they do not already exist.
     """
-
-    from delta.tables import DeltaTable
-
     target = DeltaTable.forName(
         spark,
         table_name,
@@ -155,8 +103,6 @@ def upsert_to_silver(
     Existing records are updated only when the supplied
     update condition is satisfied. New records are inserted.
     """
-
-    from delta.tables import DeltaTable
 
     target = DeltaTable.forName(
         spark,
