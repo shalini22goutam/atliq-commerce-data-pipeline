@@ -301,18 +301,15 @@
 												},
 												"userProperties": [],
 												"typeProperties": {
-													"storedProcedureName": "[[etl].[usp_audit_log]",
+													"storedProcedureName": "[[etl].[usp_log_adf_activity]",
 													"storedProcedureParameters": {
 														"activity_name": {
-															"value": {
-																"value": "Copy_SQL_Full_Load",
-																"type": "Expression"
-															},
+															"value": "Copy_SQL_Full_Load",
 															"type": "String"
 														},
 														"end_time": {
 															"value": {
-																"value": "@utcNow()",
+																"value": "@activity('Copy_SQL_Full_Load').ExecutionEndTime",
 																"type": "Expression"
 															},
 															"type": "DateTime"
@@ -321,31 +318,12 @@
 															"value": null,
 															"type": "String"
 														},
-														"job_name": {
-															"value": null,
-															"type": "String"
-														},
-														"job_run_id": {
-															"value": null,
-															"type": "String"
-														},
 														"layer": {
 															"value": "Bronze",
 															"type": "String"
 														},
 														"load_type": {
-															"value": "Incremental",
-															"type": "String"
-														},
-														"orchestrator": {
-															"value": "ADF",
-															"type": "String"
-														},
-														"pipeline_name": {
-															"value": {
-																"value": "@pipeline().Pipeline",
-																"type": "Expression"
-															},
+															"value": "Full",
 															"type": "String"
 														},
 														"pipeline_run_id": {
@@ -364,7 +342,7 @@
 														},
 														"source_name": {
 															"value": {
-																"value": "@item().table_name",
+																"value": "@concat(item().source_schema, '.', item().table_name)",
 																"type": "Expression"
 															},
 															"type": "String"
@@ -378,10 +356,6 @@
 														},
 														"status": {
 															"value": "Success",
-															"type": "String"
-														},
-														"task_run_id": {
-															"value": null,
 															"type": "String"
 														}
 													}
@@ -412,35 +386,24 @@
 												},
 												"userProperties": [],
 												"typeProperties": {
-													"storedProcedureName": "[[etl].[usp_audit_log]",
+													"storedProcedureName": "[[etl].[usp_log_adf_activity]",
 													"storedProcedureParameters": {
 														"activity_name": {
-															"value": {
-																"value": "Copy_SQL_Full_Load",
-																"type": "Expression"
-															},
+															"value": "Copy_SQL_Full_Load",
 															"type": "String"
 														},
 														"end_time": {
 															"value": {
-																"value": "@utcNow()",
+																"value": "@activity('Copy_SQL_Full_Load').ExecutionEndTime",
 																"type": "Expression"
 															},
 															"type": "DateTime"
 														},
 														"error_message": {
 															"value": {
-																"value": "@activity('Copy_SQL_Full_Load').error.message",
+																"value": "@activity('Copy_SQL_Full_Load').output.errors\n",
 																"type": "Expression"
 															},
-															"type": "String"
-														},
-														"job_name": {
-															"value": null,
-															"type": "String"
-														},
-														"job_run_id": {
-															"value": null,
 															"type": "String"
 														},
 														"layer": {
@@ -449,17 +412,6 @@
 														},
 														"load_type": {
 															"value": "Full",
-															"type": "String"
-														},
-														"orchestrator": {
-															"value": "ADF",
-															"type": "String"
-														},
-														"pipeline_name": {
-															"value": {
-																"value": "@pipeline().Pipeline",
-																"type": "Expression"
-															},
 															"type": "String"
 														},
 														"pipeline_run_id": {
@@ -475,24 +427,20 @@
 														},
 														"source_name": {
 															"value": {
-																"value": "@item().table_name",
+																"value": "@concat(item().source_schema, '.', item().table_name)",
 																"type": "Expression"
 															},
 															"type": "String"
 														},
 														"start_time": {
 															"value": {
-																"value": "@activity('Copy_SQL_Full_Load').ExecutionStartTime\n",
+																"value": "@activity('Copy_SQL_Full_Load').ExecutionStartTime",
 																"type": "Expression"
 															},
 															"type": "DateTime"
 														},
 														"status": {
 															"value": "Fail",
-															"type": "String"
-														},
-														"task_run_id": {
-															"value": null,
 															"type": "String"
 														}
 													}
@@ -686,35 +634,24 @@
 												},
 												"userProperties": [],
 												"typeProperties": {
-													"storedProcedureName": "[[etl].[usp_audit_log]",
+													"storedProcedureName": "[[etl].[usp_log_adf_activity]",
 													"storedProcedureParameters": {
 														"activity_name": {
-															"value": {
-																"value": "Copy_SQL_Incremental_Load",
-																"type": "Expression"
-															},
+															"value": "Copy_SQL_Incremental_Load",
 															"type": "String"
 														},
 														"end_time": {
 															"value": {
-																"value": "@utcNow()",
+																"value": "@activity('Copy_SQL_Incremental_Load').ExecutionEndTime",
 																"type": "Expression"
 															},
 															"type": "DateTime"
 														},
 														"error_message": {
 															"value": {
-																"value": "@activity('Copy_SQL_Incremental_Load').error.message",
+																"value": "@activity('Copy_SQL_Incremental_Load').output.errors",
 																"type": "Expression"
 															},
-															"type": "String"
-														},
-														"job_name": {
-															"value": null,
-															"type": "String"
-														},
-														"job_run_id": {
-															"value": null,
 															"type": "String"
 														},
 														"layer": {
@@ -723,17 +660,6 @@
 														},
 														"load_type": {
 															"value": "Incremental",
-															"type": "String"
-														},
-														"orchestrator": {
-															"value": "ADF",
-															"type": "String"
-														},
-														"pipeline_name": {
-															"value": {
-																"value": "@pipeline().Pipeline",
-																"type": "Expression"
-															},
 															"type": "String"
 														},
 														"pipeline_run_id": {
@@ -756,17 +682,13 @@
 														},
 														"start_time": {
 															"value": {
-																"value": "@activity('Copy_SQL_Incremental_Load').ExecutionStartTime\n",
+																"value": "@activity('Copy_SQL_Incremental_Load').ExecutionStartTime",
 																"type": "Expression"
 															},
 															"type": "DateTime"
 														},
 														"status": {
 															"value": "Fail",
-															"type": "String"
-														},
-														"task_run_id": {
-															"value": null,
 															"type": "String"
 														}
 													}
@@ -797,31 +719,20 @@
 												},
 												"userProperties": [],
 												"typeProperties": {
-													"storedProcedureName": "[[etl].[usp_audit_log]",
+													"storedProcedureName": "[[etl].[usp_log_adf_activity]",
 													"storedProcedureParameters": {
 														"activity_name": {
-															"value": {
-																"value": "Copy_SQL_Incremental_Load",
-																"type": "Expression"
-															},
+															"value": "Copy_SQL_Incremental_Load",
 															"type": "String"
 														},
 														"end_time": {
 															"value": {
-																"value": "@utcNow()",
+																"value": "@activity('Copy_SQL_Incremental_Load').ExecutionEndTime",
 																"type": "Expression"
 															},
 															"type": "DateTime"
 														},
 														"error_message": {
-															"value": null,
-															"type": "String"
-														},
-														"job_name": {
-															"value": null,
-															"type": "String"
-														},
-														"job_run_id": {
 															"value": null,
 															"type": "String"
 														},
@@ -831,17 +742,6 @@
 														},
 														"load_type": {
 															"value": "Incremental",
-															"type": "String"
-														},
-														"orchestrator": {
-															"value": "ADF",
-															"type": "String"
-														},
-														"pipeline_name": {
-															"value": {
-																"value": "@pipeline().Pipeline",
-																"type": "Expression"
-															},
 															"type": "String"
 														},
 														"pipeline_run_id": {
@@ -875,10 +775,6 @@
 														"status": {
 															"value": "Success",
 															"type": "String"
-														},
-														"task_run_id": {
-															"value": null,
-															"type": "String"
 														}
 													}
 												},
@@ -897,6 +793,8 @@
 						"name": "Get_Metadata_CSV",
 						"description": "It finds the list of source csv files.",
 						"type": "GetMetadata",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Set_Run_Start_At",
@@ -936,9 +834,11 @@
 						"name": "Foreach_Source_CSV",
 						"description": "It iterates over the source CSV files provided by metadata activity.",
 						"type": "ForEach",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
-								"activity": "Get_Metadata_CSV",
+								"activity": "Filter_CSV_Files",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -947,7 +847,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Get_Metadata_CSV').output.childItems",
+								"value": "@activity('Filter_CSV_Files').output.Value",
 								"type": "Expression"
 							},
 							"activities": [
@@ -1038,28 +938,20 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "[[etl].[usp_audit_log]",
+										"storedProcedureName": "[[etl].[usp_log_adf_activity]",
 										"storedProcedureParameters": {
 											"activity_name": {
-												"value": "Copy CSV Files",
+												"value": "Copy_Source_CSV",
 												"type": "String"
 											},
 											"end_time": {
 												"value": {
-													"value": "@utcNow()",
+													"value": "@activity('Copy_Source_CSV').ExecutionEndTime",
 													"type": "Expression"
 												},
 												"type": "DateTime"
 											},
 											"error_message": {
-												"value": null,
-												"type": "String"
-											},
-											"job_name": {
-												"value": null,
-												"type": "String"
-											},
-											"job_run_id": {
 												"value": null,
 												"type": "String"
 											},
@@ -1069,17 +961,6 @@
 											},
 											"load_type": {
 												"value": "Full",
-												"type": "String"
-											},
-											"orchestrator": {
-												"value": "ADF",
-												"type": "String"
-											},
-											"pipeline_name": {
-												"value": {
-													"value": "@pipeline().Pipeline",
-													"type": "Expression"
-												},
 												"type": "String"
 											},
 											"pipeline_run_id": {
@@ -1113,10 +994,6 @@
 											"status": {
 												"value": "Success",
 												"type": "String"
-											},
-											"task_run_id": {
-												"value": null,
-												"type": "String"
 											}
 										}
 									},
@@ -1146,7 +1023,7 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"storedProcedureName": "[[etl].[usp_audit_log]",
+										"storedProcedureName": "[[etl].[usp_log_adf_activity]",
 										"storedProcedureParameters": {
 											"activity_name": {
 												"value": "Copy_Source_CSV",
@@ -1154,21 +1031,16 @@
 											},
 											"end_time": {
 												"value": {
-													"value": "@utcNow()",
+													"value": "@activity('Copy_Source_CSV').ExecutionEndTime",
 													"type": "Expression"
 												},
 												"type": "DateTime"
 											},
 											"error_message": {
-												"value": "",
-												"type": "String"
-											},
-											"job_name": {
-												"value": null,
-												"type": "String"
-											},
-											"job_run_id": {
-												"value": null,
+												"value": {
+													"value": "@activity('Copy_Source_CSV').Error.message",
+													"type": "Expression"
+												},
 												"type": "String"
 											},
 											"layer": {
@@ -1177,17 +1049,6 @@
 											},
 											"load_type": {
 												"value": "Full",
-												"type": "String"
-											},
-											"orchestrator": {
-												"value": "ADF",
-												"type": "String"
-											},
-											"pipeline_name": {
-												"value": {
-													"value": "@pipeline().Pipeline",
-													"type": "Expression"
-												},
 												"type": "String"
 											},
 											"pipeline_run_id": {
@@ -1216,11 +1077,7 @@
 												"type": "DateTime"
 											},
 											"status": {
-												"value": "Failed",
-												"type": "String"
-											},
-											"task_run_id": {
-												"value": null,
+												"value": "Fail",
 												"type": "String"
 											}
 										}
@@ -1237,6 +1094,8 @@
 						"name": "Databricks_Job",
 						"description": "This job triggers the databricks pipeline for silver and gold data.",
 						"type": "DatabricksJob",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Foreach_Source_CSV",
@@ -1269,16 +1128,89 @@
 								"pipeline_run_id": {
 									"value": "@pipeline().RunId",
 									"type": "Expression"
-								},
-								"pipeline_name": {
-									"value": "@pipeline().Pipeline",
-									"type": "Expression"
 								}
 							}
 						},
 						"linkedServiceName": {
 							"referenceName": "LS_azure_databricks",
 							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Pipeline_Audit",
+						"description": "This is used to capture the pipeline details.",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Set_Run_Start_At",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[etl].[usp_log_pipeline_run]",
+							"storedProcedureParameters": {
+								"pipeline_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"pipeline_run_id": {
+									"value": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"run_date": {
+									"value": {
+										"value": "@formatDateTime(variables('run_start_at'),'yyyy-MM-dd')",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_sql_db",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Filter_CSV_Files",
+						"description": "This activity filters CSV files from source folder.",
+						"type": "Filter",
+						"state": "Inactive",
+						"onInactiveMarkAs": "Succeeded",
+						"dependsOn": [
+							{
+								"activity": "Get_Metadata_CSV",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Check_Folder').output.childItems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@endswith(item().name, '.csv')",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -1297,9 +1229,9 @@
 				"[concat(variables('factoryId'), '/datasets/DS_Control_Table')]",
 				"[concat(variables('factoryId'), '/datasets/DS_CSV_Metadata')]",
 				"[concat(variables('factoryId'), '/linkedServices/LS_azure_databricks')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_sql_db')]",
 				"[concat(variables('factoryId'), '/datasets/DS_CSV_Source')]",
 				"[concat(variables('factoryId'), '/datasets/DS_ADLS_Bronze')]",
-				"[concat(variables('factoryId'), '/linkedServices/LS_sql_db')]",
 				"[concat(variables('factoryId'), '/datasets/DS_SQL_Source')]",
 				"[concat(variables('factoryId'), '/linkedServices/LS_storage_account')]"
 			]
@@ -1601,21 +1533,13 @@
 				"description": "It trigger the data pipeline every night at 1 am.",
 				"annotations": [],
 				"runtimeState": "Stopped",
-				"pipelines": [
-					{
-						"pipelineReference": {
-							"referenceName": "atliq_commerce_ingestion",
-							"type": "PipelineReference"
-						},
-						"parameters": {}
-					}
-				],
+				"pipelines": [],
 				"type": "ScheduleTrigger",
 				"typeProperties": {
 					"recurrence": {
 						"frequency": "Day",
 						"interval": 1,
-						"startTime": "2026-08-20T01:00:00",
+						"startTime": "2026-08-23T01:00:00",
 						"timeZone": "India Standard Time",
 						"schedule": {
 							"minutes": [
@@ -1628,9 +1552,7 @@
 					}
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/atliq_commerce_ingestion')]"
-			]
+			"dependsOn": []
 		}
 	]
 }
