@@ -1,3 +1,10 @@
+"""Bronze-to-Silver pipeline for the customers table.
+
+Reads Bronze customer records, applies cleaning/standardization
+transforms, writes a full-refresh Silver table, and logs an audit
+record for the run (success or failure).
+"""
+
 import argparse
 from datetime import datetime, timezone
 from pyspark.sql import DataFrame, SparkSession, functions as F
@@ -45,6 +52,22 @@ def run(
 ) -> None:
     """
     Run the Bronze-to-Silver customers pipeline.
+
+    Transforms and writes the Silver table, then writes a Success
+    audit log with the resulting row count. On failure, writes a
+    Fail audit log with the error message and re-raises.
+
+    Args:
+        spark: Active SparkSession.
+        pipeline_run_id: Orchestration-level run identifier.
+        job_name: Databricks job name.
+        job_run_id: Databricks job run identifier.
+        task_name: Databricks task name.
+        task_run_id: Databricks task run identifier.
+
+    Raises:
+        Exception: Re-raises any error from transform/write after
+            logging it and recording a Fail audit entry.
     """
 
     start_time = datetime.now(timezone.utc)
@@ -130,6 +153,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 def main() -> None:
+    """Parse CLI args, initialize Spark, and run the pipeline."""
 
     args = parse_args()
 

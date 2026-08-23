@@ -1,3 +1,10 @@
+"""Bronze-to-Silver incremental pipeline for the order_items table.
+
+Reads a single Bronze ingestion-date partition, cleans/dedupes it,
+inserts new records into the Silver table via merge, and logs an
+audit record for the run (success or failure).
+"""
+
 import argparse
 from datetime import datetime, timezone
 from pyspark.sql import DataFrame, SparkSession, functions as F
@@ -52,6 +59,24 @@ def run(
 ) -> None:
     """
     Run the Bronze-to-Silver order_items incremental pipeline.
+
+    Transforms the batch, merges new records into the Silver table
+    on order_item_id, then writes a Success audit log with the
+    insert count. On failure, writes a Fail audit log with the
+    error message and re-raises.
+
+    Args:
+        spark: Active SparkSession.
+        run_date: Bronze ingestion-date partition to process.
+        pipeline_run_id: Orchestration-level run identifier.
+        job_name: Databricks job name.
+        job_run_id: Databricks job run identifier.
+        task_name: Databricks task name.
+        task_run_id: Databricks task run identifier.
+
+    Raises:
+        Exception: Re-raises any error from transform/merge after
+            logging it and recording a Fail audit entry.
     """
 
     start_time = datetime.now(timezone.utc)

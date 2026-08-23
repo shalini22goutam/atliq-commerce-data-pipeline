@@ -1,3 +1,10 @@
+"""Bronze-to-Silver incremental upsert pipeline for the payments table.
+
+Reads a single Bronze ingestion-date partition, keeps the latest
+version of each payment, upserts into the Silver table, and logs an
+audit record for the run (success or failure).
+"""
+
 import argparse
 from datetime import datetime, timezone
 from pyspark.sql import DataFrame, SparkSession, functions as F
@@ -15,8 +22,6 @@ logger = get_logger(__name__)
 
 TABLE_NAME = "payments"
 SILVER_TABLE = get_silver_table(TABLE_NAME)
-
-logger = get_logger(__name__)
 
 def transform(spark: SparkSession, run_date: str) -> DataFrame:
     """
@@ -64,6 +69,25 @@ def run(
 ) -> None:
     """
     Run the Bronze-to-Silver payments incremental upsert pipeline.
+
+    Transforms the batch, upserts it into the Silver table on
+    payment_id (updating rows with a newer updated_at, inserting
+    new ones), then writes a Success audit log with the combined
+    insert+update count. On failure, writes a Fail audit log with
+    the error message and re-raises.
+
+    Args:
+        spark: Active SparkSession.
+        run_date: Bronze ingestion-date partition to process.
+        pipeline_run_id: Orchestration-level run identifier.
+        job_name: Databricks job name.
+        job_run_id: Databricks job run identifier.
+        task_name: Databricks task name.
+        task_run_id: Databricks task run identifier.
+
+    Raises:
+        Exception: Re-raises any error from transform/upsert after
+            logging it and recording a Fail audit entry.
     """
 
     start_time = datetime.now(timezone.utc)
@@ -166,15 +190,12 @@ def run(
                 spark=spark,
                 run_date=run_date,
                 pipeline_run_id=pipeline_run_id,
-                pipeline_name=pipeline_name,
-                orchestrator = "Databricks Job",
                 job_name=job_name,
                 job_run_id=job_run_id,
                 task_name=task_name,
                 task_run_id=task_run_id,
                 layer="Silver",
                 source_name=TABLE_NAME,
-                activity_name="Data Transformation: orders",
                 load_type="Incremental",
                 status="Fail",
                 row_count=None,
