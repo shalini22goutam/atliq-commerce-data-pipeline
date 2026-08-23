@@ -18,8 +18,6 @@ resources:
           spark_python_task:
             python_file: databricks_jobs/src/silver/customers.py
             parameters:
-              - --pipeline_name
-              - "{{job.parameters.pipeline_name}}"
               - --pipeline_run_id
               - "{{job.parameters.pipeline_run_id}}"
               - --job_name
@@ -33,11 +31,11 @@ resources:
             source: GIT
           existing_cluster_id: 0818-034717-qk7hyzdn
         - task_key: Transform_Marketing_Spend
+          depends_on:
+            - task_key: Create_Catalog_Schema
           spark_python_task:
             python_file: databricks_jobs/src/silver/marketing_spend.py
             parameters:
-              - --pipeline_name
-              - "{{job.parameters.pipeline_name}}"
               - --pipeline_run_id
               - "{{job.parameters.pipeline_run_id}}"
               - --job_name
@@ -51,13 +49,13 @@ resources:
             source: GIT
           existing_cluster_id: 0818-034717-qk7hyzdn
         - task_key: Transform_Order_Items
+          depends_on:
+            - task_key: Create_Catalog_Schema
           spark_python_task:
             python_file: databricks_jobs/src/silver/order_items.py
             parameters:
               - --run_date
               - "{{job.parameters.run_date}}"
-              - --pipeline_name
-              - "{{job.parameters.pipeline_name}}"
               - --pipeline_run_id
               - "{{job.parameters.pipeline_run_id}}"
               - --job_name
@@ -71,13 +69,13 @@ resources:
             source: GIT
           existing_cluster_id: 0818-034717-qk7hyzdn
         - task_key: Transform_Orders
+          depends_on:
+            - task_key: Create_Catalog_Schema
           spark_python_task:
             python_file: databricks_jobs/src/silver/orders.py
             parameters:
               - --run_date
               - "{{job.parameters.run_date}}"
-              - --pipeline_name
-              - "{{job.parameters.pipeline_name}}"
               - --pipeline_run_id
               - "{{job.parameters.pipeline_run_id}}"
               - --job_name
@@ -91,13 +89,13 @@ resources:
             source: GIT
           existing_cluster_id: 0818-034717-qk7hyzdn
         - task_key: Transform_Payments
+          depends_on:
+            - task_key: Create_Catalog_Schema
           spark_python_task:
             python_file: databricks_jobs/src/silver/payments.py
             parameters:
               - --run_date
               - "{{job.parameters.run_date}}"
-              - --pipeline_name
-              - "{{job.parameters.pipeline_name}}"
               - --pipeline_run_id
               - "{{job.parameters.pipeline_run_id}}"
               - --job_name
@@ -111,11 +109,11 @@ resources:
             source: GIT
           existing_cluster_id: 0818-034717-qk7hyzdn
         - task_key: Transform_Products
+          depends_on:
+            - task_key: Create_Catalog_Schema
           spark_python_task:
             python_file: databricks_jobs/src/silver/products.py
             parameters:
-              - --pipeline_name
-              - "{{job.parameters.pipeline_name}}"
               - --pipeline_run_id
               - "{{job.parameters.pipeline_run_id}}"
               - --job_name
@@ -129,11 +127,11 @@ resources:
             source: GIT
           existing_cluster_id: 0818-034717-qk7hyzdn
         - task_key: Transform_Supplier_Price_List
+          depends_on:
+            - task_key: Create_Catalog_Schema
           spark_python_task:
             python_file: databricks_jobs/src/silver/supplier_price_list.py
             parameters:
-              - --pipeline_name
-              - "{{job.parameters.pipeline_name}}"
               - --pipeline_run_id
               - "{{job.parameters.pipeline_run_id}}"
               - --job_name
@@ -176,8 +174,6 @@ resources:
       queue:
         enabled: true
       parameters:
-        - name: pipeline_name
-          default: ""
         - name: pipeline_run_id
           default: ""
         - name: run_date
