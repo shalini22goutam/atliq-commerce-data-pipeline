@@ -1,5 +1,5 @@
 {
-	"name": "atliq_commerce_ingestion_copy1",
+	"name": "atliq_commerce_ingestion",
 	"properties": {
 		"description": "This pipeline copies raw data from Azure SQL database tables and copies to bronze container of ADLS gen2 storage account",
 		"activities": [
