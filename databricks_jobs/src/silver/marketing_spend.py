@@ -45,7 +45,6 @@ def transform(spark: SparkSession) -> DataFrame:
 def run(
     spark: SparkSession,
     pipeline_run_id: str,
-    pipeline_name: str,
     job_name: str,
     job_run_id: str,
     task_name: str,
@@ -78,17 +77,14 @@ def run(
             spark=spark,
             run_date=None,
             pipeline_run_id=pipeline_run_id,
-            pipeline_name=pipeline_name,
-            orchestrator = "Databricks Job",
             job_name=job_name,
             job_run_id=job_run_id,
             task_name=task_name,
             task_run_id=task_run_id,
             layer="Silver",
             source_name=TABLE_NAME,
-            activity_name="Data Transformation: marketing_spend",
-            load_type="FULL_REFRESH",
-            status="SUCCESS",
+            load_type="Full Load",
+            status="Success",
             row_count=row_count,
             error_message=None,
             start_time=start_time,
@@ -107,17 +103,14 @@ def run(
                 spark=spark,
                 run_date=None,
                 pipeline_run_id=pipeline_run_id,
-                pipeline_name=pipeline_name,
-                orchestrator = "Databricks Job",
                 job_name=job_name,
                 job_run_id=job_run_id,
                 task_name=task_name,
                 task_run_id=task_run_id,
                 layer="Silver",
                 source_name=TABLE_NAME,
-                activity_name="Data Transformation: marketing_spend",
-                load_type="FULL_REFRESH",
-                status="FAIL",
+                load_type="Full Load",
+                status="Fail",
                 row_count=None,
                 error_message=str(e)[:4000],
                 start_time=start_time,
@@ -136,7 +129,6 @@ def parse_args() -> argparse.Namespace:
         description="Silver marketing spend pipeline",
     )
 
-    parser.add_argument("--pipeline_name", required=True)
     parser.add_argument("--pipeline_run_id",required=True)
     parser.add_argument("--job_name", required=True)
     parser.add_argument("--job_run_id", required=True)
@@ -155,7 +147,6 @@ def main() -> None:
     run(
         spark=spark,
         pipeline_run_id=args.pipeline_run_id,
-        pipeline_name=args.pipeline_name,
         job_name=args.job_name,
         job_run_id=args.job_run_id,
         task_name=args.task_name,

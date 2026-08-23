@@ -23,15 +23,12 @@ JDBC_URL = (
 AUDIT_SCHEMA = StructType([
     StructField("run_date", StringType(), True),
     StructField("pipeline_run_id", StringType(), True),
-    StructField("pipeline_name", StringType(), True),
-    StructField("orchestrator", StringType(), True),
     StructField("job_name", StringType(), True),
     StructField("job_run_id", StringType(), True),
     StructField("task_name", StringType(), True),
     StructField("task_run_id", StringType(), True),
     StructField("layer", StringType(), True),
     StructField("source_name", StringType(), True),
-    StructField("activity_name", StringType(), True),
     StructField("load_type", StringType(), True),
     StructField("status", StringType(), True),
     StructField("row_count", IntegerType(), True),
@@ -48,15 +45,12 @@ def write_audit_log(
     spark: SparkSession,
     run_date: str,
     pipeline_run_id: str,
-    pipeline_name: str,
-    orchestrator: str,
     job_name: str,
     job_run_id: str,
     task_name: str,
     task_run_id: str,
     layer: str,
     source_name: str,
-    activity_name: str,
     load_type: str,
     status: str,
     row_count: int | None = None,
@@ -78,15 +72,12 @@ def write_audit_log(
         [
             (   run_date,
                 pipeline_run_id,
-                pipeline_name,
-                orchestrator,
                 job_name,
                 job_run_id,
                 task_name,
                 task_run_id,
                 layer,
                 source_name,
-                activity_name,
                 load_type,
                 status,
                 row_count,
@@ -102,7 +93,7 @@ def write_audit_log(
         audit_df.write
         .format("jdbc")
         .option("url", JDBC_URL)
-        .option("dbtable", "etl.audit_log")
+        .option("dbtable", "etl.databricks_audit_log")
         .option("user", USERNAME)
         .option("password", PASSWORD)
         .mode("append")
