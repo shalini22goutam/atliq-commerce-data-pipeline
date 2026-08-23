@@ -73,35 +73,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/atliq_trigger')]",
-			"type": "Microsoft.DataFactory/factories/triggers",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"description": "It trigger the data pipeline every night at 1 am.",
-				"annotations": [],
-				"runtimeState": "Stopped",
-				"pipelines": [],
-				"type": "ScheduleTrigger",
-				"typeProperties": {
-					"recurrence": {
-						"frequency": "Day",
-						"interval": 1,
-						"startTime": "2026-08-23T01:00:00",
-						"timeZone": "India Standard Time",
-						"schedule": {
-							"minutes": [
-								0
-							],
-							"hours": [
-								1
-							]
-						}
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/DS_ADLS_Bronze')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -1111,8 +1082,6 @@
 						"name": "Get_Metadata_CSV",
 						"description": "It finds the list of source csv files.",
 						"type": "GetMetadata",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Set_Run_Start_At",
@@ -1152,8 +1121,6 @@
 						"name": "Foreach_Source_CSV",
 						"description": "It iterates over the source CSV files provided by metadata activity.",
 						"type": "ForEach",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Filter_CSV_Files",
@@ -1412,8 +1379,6 @@
 						"name": "Databricks_Job",
 						"description": "This job triggers the databricks pipeline for silver and gold data.",
 						"type": "DatabricksJob",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Foreach_Source_CSV",
@@ -1509,8 +1474,6 @@
 						"name": "Filter_CSV_Files",
 						"description": "This activity filters CSV files from source folder.",
 						"type": "Filter",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Get_Metadata_CSV",
@@ -1522,7 +1485,7 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Check_Folder').output.childItems",
+								"value": "@activity('Get_Metadata_CSV').output.childItems",
 								"type": "Expression"
 							},
 							"condition": {
@@ -1552,6 +1515,45 @@
 				"[concat(variables('factoryId'), '/datasets/DS_ADLS_Bronze')]",
 				"[concat(variables('factoryId'), '/datasets/DS_SQL_Source')]",
 				"[concat(variables('factoryId'), '/linkedServices/LS_storage_account')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/atliq_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "It trigger the data pipeline every night at 9 pm.",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "atliq_commerce_ingestion",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2026-08-23T21:00:00",
+						"timeZone": "India Standard Time",
+						"schedule": {
+							"minutes": [
+								10
+							],
+							"hours": [
+								21
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/atliq_commerce_ingestion')]"
 			]
 		}
 	]
