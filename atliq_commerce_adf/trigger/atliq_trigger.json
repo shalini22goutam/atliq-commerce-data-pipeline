@@ -1,7 +1,7 @@
 {
 	"name": "atliq_trigger",
 	"properties": {
-		"description": "It trigger the data pipeline every night at 1 am.",
+		"description": "It trigger the data pipeline every night at 9 pm.",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
