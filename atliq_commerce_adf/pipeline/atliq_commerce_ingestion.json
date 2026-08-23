@@ -348,7 +348,10 @@
 													"type": "String"
 												},
 												"end_time": {
-													"value": "@activity('Copy_SQL_Full_Load').ExecutionEndTime",
+													"value": {
+														"value": "@activity('Copy_SQL_Full_Load').ExecutionEndTime",
+														"type": "Expression"
+													},
 													"type": "DateTime"
 												},
 												"error_message": {
@@ -593,7 +596,10 @@
 													"type": "String"
 												},
 												"end_time": {
-													"value": "@activity('Copy_SQL_Incremental_Load').ExecutionEndTime",
+													"value": {
+														"value": "@activity('Copy_SQL_Incremental_Load').ExecutionEndTime",
+														"type": "Expression"
+													},
 													"type": "DateTime"
 												},
 												"error_message": {
@@ -623,7 +629,10 @@
 													"type": "Int64"
 												},
 												"source_name": {
-													"value": "@concat(item().source_schema, '.', item().table_name)",
+													"value": {
+														"value": "@concat(item().source_schema, '.', item().table_name)",
+														"type": "Expression"
+													},
 													"type": "String"
 												},
 												"start_time": {
@@ -705,11 +714,17 @@
 													"type": "Int64"
 												},
 												"source_name": {
-													"value": "@concat(item().source_schema, '.', item().table_name)",
+													"value": {
+														"value": "@concat(item().source_schema, '.', item().table_name)",
+														"type": "Expression"
+													},
 													"type": "String"
 												},
 												"start_time": {
-													"value": "@activity('Copy_SQL_Incremental_Load').ExecutionStartTime",
+													"value": {
+														"value": "@activity('Copy_SQL_Incremental_Load').ExecutionStartTime",
+														"type": "Expression"
+													},
 													"type": "DateTime"
 												},
 												"status": {
@@ -733,8 +748,6 @@
 				"name": "Get_Metadata_CSV",
 				"description": "It finds the list of source csv files.",
 				"type": "GetMetadata",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set_Run_Start_At",
@@ -773,8 +786,6 @@
 				"name": "Foreach_Source_CSV",
 				"description": "It iterates over the source CSV files provided by metadata activity.",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Filter_CSV_Files",
@@ -910,15 +921,24 @@
 										"type": "String"
 									},
 									"row_count": {
-										"value": "@activity('Copy_Source_CSV').output.rowsCopied",
+										"value": {
+											"value": "@activity('Copy_Source_CSV').output.rowsCopied",
+											"type": "Expression"
+										},
 										"type": "Int64"
 									},
 									"source_name": {
-										"value": "@item().name",
+										"value": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
 										"type": "String"
 									},
 									"start_time": {
-										"value": "@activity('Copy_Source_CSV').ExecutionStartTime",
+										"value": {
+											"value": "@activity('Copy_Source_CSV').ExecutionStartTime",
+											"type": "Expression"
+										},
 										"type": "DateTime"
 									},
 									"status": {
@@ -1024,8 +1044,6 @@
 				"name": "Databricks_Job",
 				"description": "This job triggers the databricks pipeline for silver and gold data.",
 				"type": "DatabricksJob",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Foreach_Source_CSV",
@@ -1121,8 +1139,6 @@
 				"name": "Filter_CSV_Files",
 				"description": "This activity filters CSV files from source folder.",
 				"type": "Filter",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Get_Metadata_CSV",
@@ -1134,7 +1150,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Check_Folder').output.childItems",
+						"value": "@activity('Get_Metadata_CSV').output.childItems",
 						"type": "Expression"
 					},
 					"condition": {
