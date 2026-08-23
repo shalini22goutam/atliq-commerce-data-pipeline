@@ -35,8 +35,7 @@ def read_bronze_batch(spark: SparkSession, adls_dir: str, run_date: str) -> Data
 
 def dedupe_latest(df: DataFrame, key_col: str, order_col: str) -> DataFrame:
     """
-    Keep the latest record for each key based on the
-    specified ordering column.
+    Keep the latest record for each key based on the specified ordering column.
     """
 
     window_spec = (
