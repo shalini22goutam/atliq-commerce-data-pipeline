@@ -9,4 +9,5 @@ atliq_gold_dbt/.user.yml
 /.git
 /.vscode
 .DS_Store
+streaming_phase2/airflow/logs
 

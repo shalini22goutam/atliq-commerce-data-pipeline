@@ -21,7 +21,7 @@ Set these environment variables (or use a .env file):
 import os
 import random
 import argparse
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 
 import pyodbc
 from dotenv import load_dotenv
@@ -54,7 +54,8 @@ def simulate(n_orders: int):
     products = cur.execute("SELECT product_id, unit_price FROM dbo.products").fetchall()
 
     today = date.today()
-    now = datetime.now()
+    #now = datetime.now()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     created_orders = 0
 
     for _ in range(n_orders):
