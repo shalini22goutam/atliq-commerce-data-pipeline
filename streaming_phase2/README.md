@@ -8,13 +8,13 @@ Unlike a traditional batch pipeline, which processes data periodically, this sol
 
 The streaming pipeline is designed to operate alongside the Phase 1 batch pipeline, providing a faster path for operational and near-real-time analytics.
 
+---
 ### High-Level Architecture
 
 
-
+![atliq-commerce-data-pipeline](images/phase2_architecture.webp)
 
 ---
-
 # 📂 Project Structure
 
 ```text
@@ -35,10 +35,6 @@ The streaming pipeline is designed to operate alongside the Phase 1 batch pipeli
 └── README.md
 ```
 
-The project structure follows the separation between the event producer, Databricks streaming implementation, and Airflow orchestration components.
-
----
-
 
 ## 🎯 Project Objectives
 
@@ -56,25 +52,6 @@ The main objectives of Phase 2 are:
 * Implement Airflow-based data quality and operational maintenance.
 * Generate a daily analytical summary from the streaming data.
 
----
-
-# 🛠️ Technology Stack
-
-| Component           | Technology                      |
-| ------------------- | ------------------------------- |
-| Event Producer      | Python                          |
-| Event Streaming     | Apache Kafka                    |
-| Kafka Platform      | Confluent Cloud                 |
-| Stream Processing   | Databricks Structured Streaming |
-| Storage             | Delta Lake / Unity Catalog      |
-| Data Architecture   | Medallion Architecture          |
-| Orchestration       | Apache Airflow                  |
-| Airflow Environment | Docker / Local                  |
-| Programming         | Python / PySpark                |
-| Version Control     | Git / GitHub                    |
-
-
----
 
 # 🔄 End-to-End Data Flow
 
@@ -83,7 +60,6 @@ The main objectives of Phase 2 are:
 The first component of the pipeline is a Kafka environment hosted on **Confluent Cloud**. A Kafka cluster and topic are created to receive live order events.
 
 ### Kafka Topic
-
 ```text
 atliq.orders.events
 ```
@@ -130,9 +106,6 @@ Python Producer
 Kafka Topic
 atliq.orders.events
 ```
-
-Kafka configuration and credentials are kept outside the source code using environment-based configuration. Real credentials should never be committed to GitHub.
-
 ---
 
 # ⚡ 3. Databricks Structured Streaming
@@ -194,8 +167,6 @@ Duplicate events are removed using:
 event_id
 ```
 
-Since `event_id` uniquely identifies an event, it is used as the deduplication key.
-
 #### Watermarking
 
 A **10-minute watermark** is applied to the event timestamp.
@@ -245,9 +216,7 @@ Streaming Notebook
      └── Gold updated
 ```
 
-This allows the streaming tables to continuously reflect newly arriving events.
-
-The trigger configuration is an operational setting and is independent of the core Bronze/Silver/Gold transformation logic.
+This allows the streaming tables to continuously reflect newly arriving events. The trigger configuration is an operational setting and is independent of the core Bronze/Silver/Gold transformation logic.
 
 ---
 
@@ -294,11 +263,6 @@ This acts as a freshness gate and helps identify problems such as a stopped prod
 ## 8.2 Optimize Silver and Gold Tables
 
 The second Airflow task performs table maintenance. Streaming workloads can create many small files over time. Therefore, the Silver and Gold tables are periodically optimized using:
-
-```sql
-OPTIMIZE
-```
-
 This helps maintain efficient storage and query performance as the volume of streaming data grows.
 
 ---
@@ -324,18 +288,9 @@ This provides a convenient table for daily-level analysis without requiring user
 
 # 🔗 Complete Pipeline
 
-The complete Phase 2 pipeline is illustrated below:
 
-![AtliQ Commerce Phase 2 Real-Time Streaming Pipeline](images/architecture.png)
+![atliq-commerce-data-pipeline](images/streaming_flow.png)
 
-**Data Flow:** `Python Producer → Kafka → Databricks Streaming → Bronze → Silver → Gold → Airflow`
-
-
-### Data Flow
-
-**Python Producer → Kafka → Databricks Streaming → Bronze → Silver → Gold → Airflow**
-
-Each streaming layer maintains its own checkpoint to independently track streaming progress and state.
 
 # 🔐 Security Considerations
 
@@ -401,67 +356,6 @@ Verify that:
 
 The requirements specifically use stopping the producer and triggering the DAG as a validation scenario for the freshness check.
 
----
-
-# ⚖️ Phase 1 Batch Lane vs Phase 2 Streaming Lane
-
-Phase 2 is designed as a **speed lane** that runs alongside the Phase 1 batch pipeline.
-
-```text
-Phase 1 — Batch Lane
-
-OLTP
- │
- ▼
-ADF
- │
- ▼
-Medallion
- │
- ▼
-Fabric
-
-
-Phase 2 — Streaming Lane
-
-Order Events
- │
- ▼
-Kafka
- │
- ▼
-Databricks Structured Streaming
- │
- ▼
-Delta Tables
- │
- ▼
-Airflow
-```
-
-The two approaches serve different business requirements.
-
-### Batch Processing
-
-Batch processing is appropriate when:
-
-* Data does not need to be available immediately.
-* Daily or periodic reporting is sufficient.
-* Large volumes of data can be processed together.
-* Business decisions are not dependent on real-time information.
-
-### Streaming Processing
-
-Streaming is appropriate when:
-
-* Events arrive continuously.
-* The business needs frequently updated information.
-* Operational monitoring is required.
-* Delays of hours are not acceptable.
-
-Phase 2 therefore complements rather than replaces the Phase 1 batch pipeline.
-
----
 
 # 💡 Key Design Decisions
 
@@ -506,6 +400,24 @@ Airflow separates operational concerns from the core streaming transformations b
 ```text
 Freshness → Maintenance → Daily Rollup
 ```
+
+---
+
+# 🛠️ Technology Stack
+
+| Component           | Technology                      |
+| ------------------- | ------------------------------- |
+| Event Producer      | Python                          |
+| Event Streaming     | Apache Kafka                    |
+| Kafka Platform      | Confluent Cloud                 |
+| Stream Processing   | Databricks Structured Streaming |
+| Storage             | Delta Lake / Unity Catalog      |
+| Data Architecture   | Medallion Architecture          |
+| Orchestration       | Apache Airflow                  |
+| Airflow Environment | Docker / Local                  |
+| Programming         | Python / PySpark                |
+| Version Control     | Git / GitHub                    |
+
 
 ---
 
