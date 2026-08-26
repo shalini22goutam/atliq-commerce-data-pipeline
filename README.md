@@ -6,26 +6,12 @@ An end-to-end data engineering project that syncs data from a live operational (
 
 > This is the **batch pipeline (Phase 1)**. For the companion real-time streaming lane, see [`streaming_pipeline_kafka`](./streaming_pipeline_kafka) — Phase 2.
 
+
+## High-Level Architecture
+
 The pipeline follows a **Bronze → Silver → Gold** medallion architecture:
 
-```
-SOURCES                 INGEST (ADF)         TRANSFORM (Databricks)        SERVE
-─────────────           ────────────         ───────────────────────      ─────────
-Azure SQL (OLTP)                              Bronze (raw Parquet)
-  customers      ─┐                             │
-  products        │     ┌──────────────┐        ▼
-  orders          ├────▶│ Metadata-    │──▶  Silver (Delta, MERGE/UC)
-  order_items     │     │ driven copy  │        │
-  payments       ─┘     └──────────────┘        ▼
-                                             Gold (star schema, dbt)   ──▶  Microsoft Fabric
-CSV files       ─┐                                                          (Power BI)
-  supplier price │
-  marketing spend┘
-
-Incremental sync every night: OLTP ──▶ Bronze ──▶ Silver ──▶ Gold ──▶ Fabric
-
-Wrapped in Git + CI/CD + audit logging + data-quality tests
-```
+![atliq-commerce-data-pipeline](diagrams/atliq_commerce_architecture.svg)
 
 ## 📂 Table of Contents
 
@@ -58,27 +44,43 @@ Data flows through three progressively cleaner layers:
 - **Silver** — cleaned, de-duplicated, governed Delta tables in Unity Catalog
 - **Gold** — a denormalized star schema (fact + dimension tables) built with dbt, ready for reporting
 
+## 📂 Repository Structure
+
+The project is organized into folders by layer/responsibility, matching the architecture described above:
+
+```
+.
+├── atliq_commerce_adf/          
+│                                 
+├── databricks_silver_transform/  
+│                                 
+├── atliq_dbt_gold/                
+│                                 
+├── fabric_analytics/             
+│                                 
+├── audit/                        
+│                                 
+├── streaming_pipeline_kafka/      
+│                                 
+├── .github/
+│   └── workflows/                
+└── README.md
+```
+
 ## ⚖️ Batch vs. Streaming
 
 The two approaches serve different business requirements.
 
-### Batch Processing
+![atliq-commerce-data-pipeline](diagrams/batch_vs_stream.png)
 
-Batch processing is appropriate when:
 
-* Data does not need to be available immediately.
-* Daily or periodic reporting is sufficient.
-* Large volumes of data can be processed together.
-* Business decisions are not dependent on real-time information.
+| **Batch Processing**                                           | **Streaming Processing**                           |
+| -------------------------------------------------------------- | -------------------------------------------------- |
+| Data does not need to be available immediately.                | Events arrive continuously.                        |
+| Daily or periodic reporting is sufficient.                     | The business needs frequently updated information. |
+| Large volumes of data can be processed together.               | Operational monitoring is required.                |
+| Business decisions are not dependent on real-time information. | Delays of hours are not acceptable.                |
 
-### Streaming Processing
-
-Streaming is appropriate when:
-
-* Events arrive continuously.
-* The business needs frequently updated information.
-* Operational monitoring is required.
-* Delays of hours are not acceptable.
 
 Phase 2 therefore complements rather than replaces the Phase 1 batch pipeline. This project (Phase 1) covers the nightly batch sync described below; see [`streaming_pipeline_kafka`](./streaming_pipeline_kafka) for the real-time lane.
 
@@ -197,21 +199,20 @@ The project is organized into folders by layer/responsibility, matching the arch
 
 ```
 .
-├── atliq_commerce_adf/          # Ingestion — ADF pipeline, linked services, datasets,
-│                                 # and the metadata-driven Bronze layer setup
-├── databricks_silver_transform/  # Databricks job — Silver layer PySpark transformations,
-│                                 # plus the dbt task that builds Gold, chained in the same job
-├── atliq_dbt_gold/                # dbt project — staging models (reading Silver) and
-│                                 # Gold mart models (fact_sales, dim_customer, dim_product,
-│                                 # dim_date), tests, and profiles
-├── fabric_analytics/             # Microsoft Fabric — OneLake shortcut to the Gold external
-│                                 # location, semantic model, and the Power BI report
-├── audit/                        # DDL and scripts for the three audit tables (pipeline run,
-│                                 # ADF activity, Databricks job) used for monitoring
-├── streaming_pipeline_kafka/      # Separate, minor side project — a Kafka-based streaming
-│                                 # pipeline, built independently of the main nightly batch flow
+├── atliq_commerce_adf/          
+│                                 
+├── databricks_silver_transform/  
+│                                 
+├── atliq_dbt_gold/                
+│                                 
+├── fabric_analytics/             
+│                                 
+├── audit/                        
+│                                 
+├── streaming_pipeline_kafka/      
+│                                 
 ├── .github/
-│   └── workflows/                # CI workflow (dbt build validation on pull request)
+│   └── workflows/                
 └── README.md
 ```
 
