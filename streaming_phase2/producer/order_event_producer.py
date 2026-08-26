@@ -1,20 +1,3 @@
-"""
-AtliQ Commerce — Phase 2 (LEARNER STARTER)
-Live Order Event Producer — stream simulated order events to Kafka.
-
-YOUR JOB: complete the TODOs. The event shapes and helper pieces are given so
-you focus on the Kafka parts: configuring the producer and publishing events.
-
-Prereqs:
-    pip install confluent-kafka python-dotenv
-.env (next to this file — copy .env.example):
-    KAFKA_BOOTSTRAP=pkc-xxxxx.region.provider.confluent.cloud:9092
-    KAFKA_API_KEY=...
-    KAFKA_API_SECRET=...
-    KAFKA_TOPIC=atliq.orders.events
-
-Run:  python order_event_producer.py --rate 2 --duration 300
-"""
 import os
 import json
 import time
@@ -38,14 +21,10 @@ PRODUCT_PRICES = {1: 2499, 2: 3299, 3: 1799, 4: 1499, 5: 4999, 6: 899, 7: 1299,
 
 
 def make_producer() -> Producer:
-    # TODO 1: return a confluent_kafka.Producer configured for Confluent Cloud.
-    # You need: bootstrap.servers, security.protocol=SASL_SSL,
-    # sasl.mechanisms=PLAIN, sasl.username (API key), sasl.password (API secret).
-    # Read the values from environment variables (see .env.example).
     conf = {
         "bootstrap.servers": os.environ.get("KAFKA_BOOTSTRAP"),
-        "security.protocol": "SASL_SSL",   # encrypted connection to the cloud
-        "sasl.mechanisms":   "PLAIN",      # username/password auth
+        "security.protocol": "SASL_SSL",   
+        "sasl.mechanisms":   "PLAIN",     
         "sasl.username":     os.environ.get("KAFKA_API_KEY"),
         "sasl.password":     os.environ.get("KAFKA_API_SECRET"),
         }
@@ -118,18 +97,12 @@ def run(rate: float, duration: int):
                 events = [base_event("order_cancelled", open_orders.pop(random.randrange(len(open_orders))))]
 
             for ev in events:
-                # TODO 2: publish the event to Kafka.
-                # - key: str(ev["order_id"])  (why the order_id? think partitioning)
-                # - value: the event as a JSON string
-                # - add a delivery callback that prints success/failure
-                # Then call producer.poll(0) after the loop iteration.
                 producer.produce(
                     topic=topic,
                     key=str(ev["order_id"]) ,
                     value=json.dumps(ev),
                     callback=delivery_report,
                 )
-                #raise NotImplementedError("TODO 2: produce the event")
                 sent += 1
 
             producer.poll(0)
@@ -137,8 +110,6 @@ def run(rate: float, duration: int):
     except KeyboardInterrupt:
         print("\nStopping ...")
     finally:
-        # TODO 3: make sure every buffered message is actually delivered
-        # before the script exits. (One method call — look up flush.)
         producer.flush() 
         print(f"Done. {sent} events sent.")
 
