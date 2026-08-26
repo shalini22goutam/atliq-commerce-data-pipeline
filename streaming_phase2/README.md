@@ -8,6 +8,8 @@ Unlike a traditional batch pipeline, which processes data periodically, this sol
 
 The streaming pipeline is designed to operate alongside the Phase 1 batch pipeline, providing a faster path for operational and near-real-time analytics.
 
+> This folder corresponds to `streaming_pipeline_kafka` in the parent AtliQ Commerce repository.
+
 ---
 ### High-Level Architecture
 
@@ -74,7 +76,7 @@ The Python producer publishes events continuously to this topic. Each event cont
 * `product_id`
 * `order_amount`
 * `city`
-* `payment method`
+* `payment_method`
 
 The `event_id` provides a unique identifier for each event and is used for deduplication in the Silver layer.
 
@@ -182,7 +184,7 @@ atliq.streaming.silver_order_events
 
 # 🥇 6. Gold Layer
 
-The Gold layer contains business-oriented streaming aggregations derived from the Silver data. The Gold aggregation uses event-time windows to summarize streaming activity. 
+The Gold layer contains business-oriented streaming aggregations derived from the Silver data. The Gold aggregation uses event-time windows to summarize streaming activity.
 The requirements specify aggregation of `payment_received` events into **5-minute windows**.
 
 The Gold layer contains:
@@ -222,7 +224,7 @@ This allows the streaming tables to continuously reflect newly arriving events. 
 
 # 🛡️ 8. Airflow Orchestration
 
-Apache Airflow is used for operational management of the streaming pipeline.
+Apache Airflow is used for operational management of the streaming pipeline. The DAG runs on a scheduled basis (e.g. hourly), which pairs with the 2-hour lookback in the freshness check below — giving each run at least one full cycle of buffer before a genuinely stale pipeline gets flagged.
 
 The Airflow DAG handles three major responsibilities:
 
@@ -262,7 +264,7 @@ This acts as a freshness gate and helps identify problems such as a stopped prod
 
 ## 8.2 Optimize Silver and Gold Tables
 
-The second Airflow task performs table maintenance. Streaming workloads can create many small files over time. Therefore, the Silver and Gold tables are periodically optimized using:
+The second Airflow task performs table maintenance. Streaming workloads can create many small files over time. Therefore, the Silver and Gold tables are periodically optimized using Delta Lake's `OPTIMIZE` command (compacting small files into larger ones), with `VACUUM` used separately to clean up stale, unreferenced data files.
 This helps maintain efficient storage and query performance as the volume of streaming data grows.
 
 ---
@@ -418,6 +420,41 @@ Freshness → Maintenance → Daily Rollup
 | Programming         | Python / PySpark                |
 | Version Control     | Git / GitHub                    |
 
+---
+
+# ▶️ Getting Started
+
+### 1. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Configure Kafka credentials
+
+Copy the environment template and fill in your Confluent Cloud credentials:
+
+```bash
+cp producer/.env.example producer/.env
+```
+
+Then edit `producer/.env` with your Kafka bootstrap server, API key, and API secret. This file is git-ignored and should never be committed.
+
+### 3. Start the event producer
+
+```bash
+python producer/order_event_producer.py
+```
+
+This begins publishing simulated order events continuously to the `atliq.orders.events` Kafka topic. Leave it running to keep the streaming pipeline fed.
+
+### 4. Run the Databricks streaming notebook
+
+Import `databricks/01_kafka_stream_processing.py` into your Databricks workspace, attach it to a cluster with access to the Kafka credentials, and run it (or attach the configured trigger for automatic execution). This starts the Bronze → Silver → Gold streaming queries.
+
+### 5. Deploy the Airflow DAG
+
+Place `airflow/dags/atliq_streaming_ops_dag.py` in your Airflow `dags/` folder (Docker or local Airflow environment) and enable the DAG. It will run on its configured schedule, performing the freshness check, table optimization, and daily summary refresh.
 
 ---
 
