@@ -16,7 +16,7 @@
 				"typeProperties": {
 					"variableName": "run_start_at",
 					"value": {
-						"value": "@convertTimeZone(utcNow(), 'UTC', 'India Standard Time')",
+						"value": "@utcNow()",
 						"type": "Expression"
 					}
 				}
