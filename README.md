@@ -16,6 +16,7 @@ The pipeline follows a **Bronze → Silver → Gold** medallion architecture:
 ## 📂 Table of Contents
 
 - [Architecture Overview](#-architecture-overview)
+- [Repository Structure](#-repository-structure)
 - [Batch vs. Streaming](#-batch-vs-streaming)
 - [Tech Stack](#️-tech-stack)
 - [Data Model](#-data-model)
@@ -30,7 +31,6 @@ The pipeline follows a **Bronze → Silver → Gold** medallion architecture:
   - [8. CI/CD](#8-cicd)
 - [Idempotency](#-idempotency)
 - [Timestamp Consistency](#-timestamp-consistency)
-- [Repository Structure](#-repository-structure)
 - [Getting Started](#️-getting-started)
 - [Expected Outcome](#-expected-outcome)
 
@@ -66,6 +66,18 @@ The project is organized into folders by layer/responsibility, matching the arch
 │   └── workflows/                
 └── README.md
 ```
+
+| Folder | Purpose |
+|---|---|
+| `atliq_commerce_adf` | Ingestion layer — the generic, metadata-driven ADF pipeline that lands source data into Bronze |
+| `databricks_silver_transform` | Transformation layer — Bronze to Silver PySpark notebooks, with the dbt Gold build chained in as a task in the same job |
+| `atliq_dbt_gold` | Modeling layer — the dbt Core project that builds the Gold star schema from Silver |
+| `fabric_analytics` | Reporting layer — the Fabric shortcut, semantic model, and Power BI report built on Gold |
+| `audit` | Audit layer — DDL and supporting scripts for the pipeline run, ADF activity, and Databricks job audit tables |
+| `streaming_pipeline_kafka` | A separate, minor Kafka-based streaming pipeline project, built independently of the main nightly batch pipeline |
+
+---
+
 
 ## ⚖️ Batch vs. Streaming
 
@@ -193,39 +205,6 @@ Running the nightly job twice in a row produces the same row counts and the same
 
 Since timestamps are generated and compared across several different systems — Azure SQL, ADF, Databricks, and dbt — all watermark and audit timestamps are standardized to **UTC** throughout the pipeline. This avoids subtle bugs where a local time zone offset causes rows to be skipped or reprocessed incorrectly during the incremental watermark comparison.
 
-## 📂 Repository Structure
-
-The project is organized into folders by layer/responsibility, matching the architecture described above:
-
-```
-.
-├── atliq_commerce_adf/          
-│                                 
-├── databricks_silver_transform/  
-│                                 
-├── atliq_dbt_gold/                
-│                                 
-├── fabric_analytics/             
-│                                 
-├── audit/                        
-│                                 
-├── streaming_pipeline_kafka/      
-│                                 
-├── .github/
-│   └── workflows/                
-└── README.md
-```
-
-| Folder | Purpose |
-|---|---|
-| `atliq_commerce_adf` | Ingestion layer — the generic, metadata-driven ADF pipeline that lands source data into Bronze |
-| `databricks_silver_transform` | Transformation layer — Bronze to Silver PySpark notebooks, with the dbt Gold build chained in as a task in the same job |
-| `atliq_dbt_gold` | Modeling layer — the dbt Core project that builds the Gold star schema from Silver |
-| `fabric_analytics` | Reporting layer — the Fabric shortcut, semantic model, and Power BI report built on Gold |
-| `audit` | Audit layer — DDL and supporting scripts for the pipeline run, ADF activity, and Databricks job audit tables |
-| `streaming_pipeline_kafka` | A separate, minor Kafka-based streaming pipeline project, built independently of the main nightly batch pipeline |
-
----
 
 ## ▶️ Getting Started
 
