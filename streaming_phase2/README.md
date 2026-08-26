@@ -10,55 +10,6 @@ The streaming pipeline is designed to operate alongside the Phase 1 batch pipeli
 
 ### High-Level Architecture
 
-```text
-                    ┌──────────────────────┐
-                    │  Local Python        │
-                    │  Event Producer      │
-                    └──────────┬───────────┘
-                               │
-                               │ JSON Events
-                               ▼
-                    ┌──────────────────────┐
-                    │  Confluent Cloud     │
-                    │  Apache Kafka         │
-                    │  atliq.orders.events  │
-                    └──────────┬───────────┘
-                               │
-                               │ Streaming
-                               ▼
-                ┌──────────────────────────────┐
-                │ Databricks Structured        │
-                │ Streaming                    │
-                └──────────────┬───────────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │       Bronze         │
-                    │  Raw Kafka Events    │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │       Silver         │
-                    │ Parsed & Cleansed    │
-                    │ Deduplicated         │
-                    │ Watermarked          │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │        Gold          │
-                    │ Aggregated Streaming │
-                    │ Analytics            │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │       Airflow        │
-                    │ Quality / Optimize / │
-                    │ Daily Summary        │
-                    └──────────────────────┘
-```
 
 ---
 
@@ -167,19 +118,6 @@ Kafka configuration and credentials are kept outside the source code using envir
 A Databricks notebook handles the complete streaming pipeline.
 
 The notebook processes the data through three independent layers:
-
-```text
-Kafka
-  │
-  ▼
-Bronze
-  │
-  ▼
-Silver
-  │
-  ▼
-Gold
-```
 
 Each layer has its own streaming query and its own checkpoint location.
 
