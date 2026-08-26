@@ -13,6 +13,7 @@ The pipeline follows a **Bronze → Silver → Gold** medallion architecture:
 
 ![atliq-commerce-data-pipeline](diagrams/atliq_commerce_architecture.svg)
 
+
 ## 📂 Table of Contents
 
 - [Architecture Overview](#-architecture-overview)
@@ -33,6 +34,7 @@ The pipeline follows a **Bronze → Silver → Gold** medallion architecture:
 - [Timestamp Consistency](#-timestamp-consistency)
 - [Getting Started](#️-getting-started)
 - [Expected Outcome](#-expected-outcome)
+  
 
 ## 🏗️ Architecture Overview
 
@@ -76,8 +78,6 @@ The project is organized into folders by layer/responsibility, matching the arch
 | `audit` | Audit layer — DDL and supporting scripts for the pipeline run, ADF activity, and Databricks job audit tables |
 | `streaming_pipeline_kafka` | A separate, minor Kafka-based streaming pipeline project, built independently of the main nightly batch pipeline |
 
----
-
 
 ## ⚖️ Batch vs. Streaming
 
@@ -95,6 +95,7 @@ The two approaches serve different business requirements.
 
 
 Phase 2 therefore complements rather than replaces the Phase 1 batch pipeline. This project (Phase 1) covers the nightly batch sync described below; see [`streaming_pipeline_kafka`](./streaming_pipeline_kafka) for the real-time lane.
+
 
 ## 🛠️ Tech Stack
 
@@ -126,6 +127,7 @@ dim_customer ── fact_sales ── dim_product
 | `dim_customer` | One row per customer — name, city, signup cohort |
 | `dim_product` | One row per product — name, category, unit price, supplier cost, unit margin |
 | `dim_date` | One row per calendar day — day, month, quarter, year, weekday |
+
 
 ## 🔄 Implementation Walkthrough
 
