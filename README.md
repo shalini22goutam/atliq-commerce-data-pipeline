@@ -13,6 +13,11 @@ The pipeline follows a **Bronze → Silver → Gold** medallion architecture:
 
 ![atliq-commerce-data-pipeline](diagrams/atliq_commerce_architecture.svg)
 
+## ADF workflow
+
+
+![atliq-commerce-data-pipeline](diagrams/ingestion_flow.png)
+
 
 ## 📂 Table of Contents
 
