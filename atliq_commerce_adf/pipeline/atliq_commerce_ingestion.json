@@ -805,7 +805,14 @@
 							"name": "Copy_Source_CSV",
 							"description": "It copies csv files from source to bronze.",
 							"type": "Copy",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Delete_CSV_Folder",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -1035,6 +1042,35 @@
 							"linkedServiceName": {
 								"referenceName": "LS_sql_db",
 								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Delete_CSV_Folder",
+							"description": "It deletes existing folder.",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DS_ADLS_Bronze",
+									"type": "DatasetReference",
+									"parameters": {
+										"table_name": "@replace(item().name,'.csv','')"
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
 							}
 						}
 					]
