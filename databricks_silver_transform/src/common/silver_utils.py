@@ -1,6 +1,6 @@
 from pyspark.sql import DataFrame, SparkSession, Window, functions as F
 from delta.tables import DeltaTable
-from databricks_jobs.src.common.constants import (
+from databricks_silver_transform.src.common.constants import (
     BRONZE_PATH,
     CATALOG_NAME,
     SILVER_SCHEMA,
