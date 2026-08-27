@@ -1,0 +1,1596 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "atliq-commerce-adf"
+		},
+		"LS_storage_account_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'LS_storage_account'"
+		},
+		"LS_azure_databricks_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0818-034717-qk7hyzdn"
+		},
+		"LS_key_vault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://atliqcommerce.vault.azure.net/"
+		},
+		"LS_sql_db_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "atliq-sql-server.database.windows.net"
+		},
+		"LS_sql_db_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "atliq_commerce"
+		},
+		"LS_sql_db_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "atliq_admin"
+		},
+		"LS_storage_account_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://atliqcommerce.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/atliq_commerce_ingestion')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This pipeline copies raw data from Azure SQL database tables and copies to bronze container of ADLS gen2 storage account",
+				"activities": [
+					{
+						"name": "Set_Run_Start_At",
+						"description": "It captures the start time of the pipeline.",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "run_start_at",
+							"value": {
+								"value": "@utcNow()",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Lookup_Control_Table",
+						"type": "Lookup",
+						"dependsOn": [
+							{
+								"activity": "Set_Run_Start_At",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT\n    source_schema,\n    table_name,\n    load_type,\n    watermark_column,\n    last_loaded_at\nFROM etl.control_table;\n",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "DS_Control_Table",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach_Control_Table",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup_Control_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup_Control_Table').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "If_Load_Type",
+									"type": "IfCondition",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(item().load_type, 'incremental')",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "Copy_SQL_Full_Load",
+												"description": "It copies the data for full load type.",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "Delete_Full_Load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderQuery": {
+															"value": "SELECT *\nFROM [@{item().source_schema}].[@{item().table_name}]",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "ParquetSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "ParquetWriteSettings"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "DS_SQL_Source",
+														"type": "DatasetReference",
+														"parameters": {
+															"schema": {
+																"value": "@item().source_schema",
+																"type": "Expression"
+															},
+															"table_name": {
+																"value": "@item().table_name",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "DS_ADLS_Bronze",
+														"type": "DatasetReference",
+														"parameters": {
+															"table_name": {
+																"value": "@item().table_name",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "Update_Watermark_Full",
+												"description": "It updates the watermark column for full load.",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Copy_SQL_Full_Load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[etl].[usp_update_watermark]",
+													"storedProcedureParameters": {
+														"table_name": {
+															"value": {
+																"value": "@item().table_name",
+																"type": "Expression"
+															}
+														},
+														"run_start_at": {
+															"value": {
+																"value": "@variables('run_start_at')",
+																"type": "Expression"
+															}
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "LS_sql_db",
+													"type": "LinkedServiceReference"
+												}
+											},
+											{
+												"name": "Delete_Full_Load",
+												"description": "It deletes the folder of full load type tables.",
+												"type": "Delete",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"dataset": {
+														"referenceName": "DS_ADLS_Bronze",
+														"type": "DatasetReference",
+														"parameters": {
+															"table_name": {
+																"value": "@item().table_name",
+																"type": "Expression"
+															}
+														}
+													},
+													"enableLogging": false,
+													"storeSettings": {
+														"type": "AzureBlobFSReadSettings",
+														"recursive": true,
+														"enablePartitionDiscovery": false
+													}
+												}
+											},
+											{
+												"name": "Copy_FullLoad_Audit_Success",
+												"description": "This activity logs failure event post copy activity.",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Copy_SQL_Full_Load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[etl].[usp_log_adf_activity]",
+													"storedProcedureParameters": {
+														"activity_name": {
+															"value": "Copy_SQL_Full_Load",
+															"type": "String"
+														},
+														"end_time": {
+															"value": {
+																"value": "@activity('Copy_SQL_Full_Load').ExecutionEndTime",
+																"type": "Expression"
+															},
+															"type": "DateTime"
+														},
+														"error_message": {
+															"value": null,
+															"type": "String"
+														},
+														"layer": {
+															"value": "Bronze",
+															"type": "String"
+														},
+														"load_type": {
+															"value": "Full",
+															"type": "String"
+														},
+														"pipeline_run_id": {
+															"value": {
+																"value": "@pipeline().RunId",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"row_count": {
+															"value": {
+																"value": "@activity('Copy_SQL_Full_Load').output.rowsCopied",
+																"type": "Expression"
+															},
+															"type": "Int64"
+														},
+														"source_name": {
+															"value": {
+																"value": "@concat(item().source_schema, '.', item().table_name)",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"start_time": {
+															"value": {
+																"value": "@activity('Copy_SQL_Full_Load').ExecutionStartTime",
+																"type": "Expression"
+															},
+															"type": "DateTime"
+														},
+														"status": {
+															"value": "Success",
+															"type": "String"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "LS_sql_db",
+													"type": "LinkedServiceReference"
+												}
+											},
+											{
+												"name": "Copy_FullLoad_Audit_Fail",
+												"description": "This activity logs failure event post copy activity.",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Copy_SQL_Full_Load",
+														"dependencyConditions": [
+															"Failed"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[etl].[usp_log_adf_activity]",
+													"storedProcedureParameters": {
+														"activity_name": {
+															"value": "Copy_SQL_Full_Load",
+															"type": "String"
+														},
+														"end_time": {
+															"value": {
+																"value": "@activity('Copy_SQL_Full_Load').ExecutionEndTime",
+																"type": "Expression"
+															},
+															"type": "DateTime"
+														},
+														"error_message": {
+															"value": {
+																"value": "@activity('Copy_SQL_Full_Load').output.errors\n",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"layer": {
+															"value": "Bronze",
+															"type": "String"
+														},
+														"load_type": {
+															"value": "Full",
+															"type": "String"
+														},
+														"pipeline_run_id": {
+															"value": {
+																"value": "@pipeline().RunId",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"row_count": {
+															"value": null,
+															"type": "Int64"
+														},
+														"source_name": {
+															"value": {
+																"value": "@concat(item().source_schema, '.', item().table_name)",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"start_time": {
+															"value": {
+																"value": "@activity('Copy_SQL_Full_Load').ExecutionStartTime",
+																"type": "Expression"
+															},
+															"type": "DateTime"
+														},
+														"status": {
+															"value": "Fail",
+															"type": "String"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "LS_sql_db",
+													"type": "LinkedServiceReference"
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "Copy_SQL_Incremental_Load",
+												"description": "It copies data in incremental batches.",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "Delete_Incremental_Folder",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "AzureSqlSource",
+														"sqlReaderQuery": {
+															"value": "SELECT *\nFROM [@{item().source_schema}].[@{item().table_name}]\nWHERE [@{item().watermark_column}] > '@{item().last_loaded_at}';",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "ParquetSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "ParquetWriteSettings"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "DS_SQL_Source",
+														"type": "DatasetReference",
+														"parameters": {
+															"schema": {
+																"value": "@item().source_schema\n",
+																"type": "Expression"
+															},
+															"table_name": {
+																"value": "@item().table_name",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "DS_ADLS_Bronze",
+														"type": "DatasetReference",
+														"parameters": {
+															"table_name": {
+																"value": "@concat(\n    item().table_name,\n    '/ingest_date=',\n    formatDateTime(variables('run_start_at'),'yyyy-MM-dd')\n)",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "Update_Watermark_Incremental",
+												"description": "It updates the watermark for incremental load in control table.",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Copy_SQL_Incremental_Load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[etl].[usp_update_watermark]",
+													"storedProcedureParameters": {
+														"table_name": {
+															"value": {
+																"value": "@item().table_name",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"run_start_at": {
+															"value": {
+																"value": "@variables('run_start_at')",
+																"type": "Expression"
+															},
+															"type": "Datetime"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "LS_sql_db",
+													"type": "LinkedServiceReference"
+												}
+											},
+											{
+												"name": "Delete_Incremental_Folder",
+												"description": "It deletes the folder for particular day to eliminate duplicate as part of retry activity.",
+												"type": "Delete",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"dataset": {
+														"referenceName": "DS_ADLS_Bronze",
+														"type": "DatasetReference",
+														"parameters": {
+															"table_name": {
+																"value": "@concat(\n    item().table_name,\n    '/ingest_date=',\n    formatDateTime(variables('run_start_at'),'yyyy-MM-dd')\n)",
+																"type": "Expression"
+															}
+														}
+													},
+													"logStorageSettings": {
+														"linkedServiceName": {
+															"referenceName": "LS_storage_account",
+															"type": "LinkedServiceReference"
+														},
+														"path": "raw"
+													},
+													"enableLogging": true,
+													"storeSettings": {
+														"type": "AzureBlobFSReadSettings",
+														"recursive": true,
+														"enablePartitionDiscovery": false
+													}
+												}
+											},
+											{
+												"name": "Copy_Incremental_Audit_Fail",
+												"description": "This activity logs failure event post copy activity.",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Copy_SQL_Incremental_Load",
+														"dependencyConditions": [
+															"Failed"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[etl].[usp_log_adf_activity]",
+													"storedProcedureParameters": {
+														"activity_name": {
+															"value": "Copy_SQL_Incremental_Load",
+															"type": "String"
+														},
+														"end_time": {
+															"value": {
+																"value": "@activity('Copy_SQL_Incremental_Load').ExecutionEndTime",
+																"type": "Expression"
+															},
+															"type": "DateTime"
+														},
+														"error_message": {
+															"value": {
+																"value": "@activity('Copy_SQL_Incremental_Load').output.errors",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"layer": {
+															"value": "Bronze",
+															"type": "String"
+														},
+														"load_type": {
+															"value": "Incremental",
+															"type": "String"
+														},
+														"pipeline_run_id": {
+															"value": {
+																"value": "@pipeline().RunId",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"row_count": {
+															"value": null,
+															"type": "Int64"
+														},
+														"source_name": {
+															"value": {
+																"value": "@concat(item().source_schema, '.', item().table_name)",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"start_time": {
+															"value": {
+																"value": "@activity('Copy_SQL_Incremental_Load').ExecutionStartTime",
+																"type": "Expression"
+															},
+															"type": "DateTime"
+														},
+														"status": {
+															"value": "Fail",
+															"type": "String"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "LS_sql_db",
+													"type": "LinkedServiceReference"
+												}
+											},
+											{
+												"name": "Copy_Incremental_Audit_Success",
+												"description": "This activity logs failure event post copy activity.",
+												"type": "SqlServerStoredProcedure",
+												"dependsOn": [
+													{
+														"activity": "Copy_SQL_Incremental_Load",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"storedProcedureName": "[[etl].[usp_log_adf_activity]",
+													"storedProcedureParameters": {
+														"activity_name": {
+															"value": "Copy_SQL_Incremental_Load",
+															"type": "String"
+														},
+														"end_time": {
+															"value": {
+																"value": "@activity('Copy_SQL_Incremental_Load').ExecutionEndTime",
+																"type": "Expression"
+															},
+															"type": "DateTime"
+														},
+														"error_message": {
+															"value": null,
+															"type": "String"
+														},
+														"layer": {
+															"value": "Bronze",
+															"type": "String"
+														},
+														"load_type": {
+															"value": "Incremental",
+															"type": "String"
+														},
+														"pipeline_run_id": {
+															"value": {
+																"value": "@pipeline().RunId",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"row_count": {
+															"value": {
+																"value": "@activity('Copy_SQL_Incremental_Load').output.rowsCopied",
+																"type": "Expression"
+															},
+															"type": "Int64"
+														},
+														"source_name": {
+															"value": {
+																"value": "@concat(item().source_schema, '.', item().table_name)",
+																"type": "Expression"
+															},
+															"type": "String"
+														},
+														"start_time": {
+															"value": {
+																"value": "@activity('Copy_SQL_Incremental_Load').ExecutionStartTime",
+																"type": "Expression"
+															},
+															"type": "DateTime"
+														},
+														"status": {
+															"value": "Success",
+															"type": "String"
+														}
+													}
+												},
+												"linkedServiceName": {
+													"referenceName": "LS_sql_db",
+													"type": "LinkedServiceReference"
+												}
+											}
+										]
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Get_Metadata_CSV",
+						"description": "It finds the list of source csv files.",
+						"type": "GetMetadata",
+						"dependsOn": [
+							{
+								"activity": "Set_Run_Start_At",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "DS_CSV_Metadata",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"fieldList": [
+								"childItems"
+							],
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							},
+							"formatSettings": {
+								"type": "DelimitedTextReadSettings"
+							}
+						}
+					},
+					{
+						"name": "Foreach_Source_CSV",
+						"description": "It iterates over the source CSV files provided by metadata activity.",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Filter_CSV_Files",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Filter_CSV_Files').output.Value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy_Source_CSV",
+									"description": "It copies csv files from source to bronze.",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Delete_CSV_Folder",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "DS_CSV_Source",
+											"type": "DatasetReference",
+											"parameters": {
+												"file_name": {
+													"value": "@item().name",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DS_ADLS_Bronze",
+											"type": "DatasetReference",
+											"parameters": {
+												"table_name": "@replace(item().name,'.csv','')"
+											}
+										}
+									]
+								},
+								{
+									"name": "Copy_CSV_Audit_Success",
+									"description": "This activity logs success event post copy activity.",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Copy_Source_CSV",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[etl].[usp_log_adf_activity]",
+										"storedProcedureParameters": {
+											"activity_name": {
+												"value": "Copy_Source_CSV",
+												"type": "String"
+											},
+											"end_time": {
+												"value": {
+													"value": "@activity('Copy_Source_CSV').ExecutionEndTime",
+													"type": "Expression"
+												},
+												"type": "DateTime"
+											},
+											"error_message": {
+												"value": null,
+												"type": "String"
+											},
+											"layer": {
+												"value": "Bronze",
+												"type": "String"
+											},
+											"load_type": {
+												"value": "Full",
+												"type": "String"
+											},
+											"pipeline_run_id": {
+												"value": {
+													"value": "@pipeline().RunId",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"row_count": {
+												"value": {
+													"value": "@activity('Copy_Source_CSV').output.rowsCopied",
+													"type": "Expression"
+												},
+												"type": "Int64"
+											},
+											"source_name": {
+												"value": {
+													"value": "@item().name",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"start_time": {
+												"value": {
+													"value": "@activity('Copy_Source_CSV').ExecutionStartTime",
+													"type": "Expression"
+												},
+												"type": "DateTime"
+											},
+											"status": {
+												"value": "Success",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "LS_sql_db",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Copy_CSV_Audit_Failure",
+									"description": "This activity logs failure event post copy activity.",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "Copy_Source_CSV",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[etl].[usp_log_adf_activity]",
+										"storedProcedureParameters": {
+											"activity_name": {
+												"value": "Copy_Source_CSV",
+												"type": "String"
+											},
+											"end_time": {
+												"value": {
+													"value": "@activity('Copy_Source_CSV').ExecutionEndTime",
+													"type": "Expression"
+												},
+												"type": "DateTime"
+											},
+											"error_message": {
+												"value": {
+													"value": "@activity('Copy_Source_CSV').Error.message",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"layer": {
+												"value": "Bronze",
+												"type": "String"
+											},
+											"load_type": {
+												"value": "Full",
+												"type": "String"
+											},
+											"pipeline_run_id": {
+												"value": {
+													"value": "@pipeline().RunId",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"row_count": {
+												"value": null,
+												"type": "Int64"
+											},
+											"source_name": {
+												"value": {
+													"value": "@item().name",
+													"type": "Expression"
+												},
+												"type": "String"
+											},
+											"start_time": {
+												"value": {
+													"value": "@activity('Copy_Source_CSV').ExecutionStartTime",
+													"type": "Expression"
+												},
+												"type": "DateTime"
+											},
+											"status": {
+												"value": "Fail",
+												"type": "String"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "LS_sql_db",
+										"type": "LinkedServiceReference"
+									}
+								},
+								{
+									"name": "Delete_CSV_Folder",
+									"description": "It deletes existing folder.",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "DS_ADLS_Bronze",
+											"type": "DatasetReference",
+											"parameters": {
+												"table_name": "@replace(item().name,'.csv','')"
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
+						}
+					},
+					{
+						"name": "Databricks_Job",
+						"description": "This job triggers the databricks pipeline for silver and gold data.",
+						"type": "DatabricksJob",
+						"dependsOn": [
+							{
+								"activity": "Foreach_Source_CSV",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "ForEach_Control_Table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"jobId": "573381468266883",
+							"jobParameters": {
+								"run_date": {
+									"value": "@formatDateTime(variables('run_start_at'),'yyyy-MM-dd')",
+									"type": "Expression"
+								},
+								"pipeline_run_id": {
+									"value": "@pipeline().RunId",
+									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_azure_databricks",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Pipeline_Audit",
+						"description": "This is used to capture the pipeline details.",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Set_Run_Start_At",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[etl].[usp_log_pipeline_run]",
+							"storedProcedureParameters": {
+								"pipeline_name": {
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"pipeline_run_id": {
+									"value": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"run_date": {
+									"value": {
+										"value": "@formatDateTime(variables('run_start_at'),'yyyy-MM-dd')",
+										"type": "Expression"
+									},
+									"type": "String"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "LS_sql_db",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Filter_CSV_Files",
+						"description": "This activity filters CSV files from source folder.",
+						"type": "Filter",
+						"dependsOn": [
+							{
+								"activity": "Get_Metadata_CSV",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Get_Metadata_CSV').output.childItems",
+								"type": "Expression"
+							},
+							"condition": {
+								"value": "@endswith(item().name, '.csv')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"run_start_at": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2026-08-18T14:07:08Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_Control_Table')]",
+				"[concat(variables('factoryId'), '/datasets/DS_CSV_Metadata')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_azure_databricks')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_sql_db')]",
+				"[concat(variables('factoryId'), '/datasets/DS_CSV_Source')]",
+				"[concat(variables('factoryId'), '/datasets/DS_ADLS_Bronze')]",
+				"[concat(variables('factoryId'), '/linkedServices/LS_storage_account')]",
+				"[concat(variables('factoryId'), '/datasets/DS_SQL_Source')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_ADLS_Bronze')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This parameterized dataset points to bronze container in ADLS gen2.",
+				"linkedServiceName": {
+					"referenceName": "LS_storage_account",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"table_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": {
+							"value": "bronze/@{dataset().table_name}",
+							"type": "Expression"
+						},
+						"fileSystem": "lakehouse"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_storage_account')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_Metadata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This is the pointer to csv source files.",
+				"linkedServiceName": {
+					"referenceName": "LS_storage_account",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "csv",
+						"fileSystem": "source"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "spend_date",
+						"type": "String"
+					},
+					{
+						"name": "channel",
+						"type": "String"
+					},
+					{
+						"name": "campaign",
+						"type": "String"
+					},
+					{
+						"name": "spend_amount",
+						"type": "String"
+					},
+					{
+						"name": "clicks",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_storage_account')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_Source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_storage_account",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"file_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().file_name",
+							"type": "Expression"
+						},
+						"folderPath": "csv",
+						"fileSystem": "source"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_storage_account')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Control_Table')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This dataset points to control table.",
+				"linkedServiceName": {
+					"referenceName": "LS_sql_db",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "table_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "source_schema",
+						"type": "nvarchar"
+					},
+					{
+						"name": "load_type",
+						"type": "nvarchar"
+					},
+					{
+						"name": "watermark_column",
+						"type": "nvarchar"
+					},
+					{
+						"name": "last_loaded_at",
+						"type": "datetime2",
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": "etl",
+					"table": "control_table"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_sql_db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_SQL_Source')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This parameterized dataset points to Azure SQL database.",
+				"linkedServiceName": {
+					"referenceName": "LS_sql_db",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"schema": {
+						"type": "string"
+					},
+					"table_name": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().table_name",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_sql_db')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_azure_databricks')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This service is used to connect to Azure Databricks.",
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7405613786725931.11.azuredatabricks.net",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "LS_key_vault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "atliq-databricks-token",
+						"secretVersion": "8538aa80e4684a51941790f0c4ecec91"
+					},
+					"existingClusterId": "[parameters('LS_azure_databricks_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_key_vault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_key_vault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This linked service creates connection to key vault.",
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('LS_key_vault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_sql_db')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This service created connection to SQL database.",
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('LS_sql_db_properties_typeProperties_server')]",
+					"database": "[parameters('LS_sql_db_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('LS_sql_db_properties_typeProperties_userName')]",
+					"password": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "LS_key_vault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "atliq-sql-db",
+						"secretVersion": "a01706fa97704866b63b958c19f366ad"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_key_vault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_storage_account')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This linked service created connection to ADLS storage account.",
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('LS_storage_account_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('LS_storage_account_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/atliq_trigger')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "It trigger the data pipeline every night at 9 pm.",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "atliq_commerce_ingestion",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2026-08-23T21:00:00",
+						"timeZone": "India Standard Time",
+						"schedule": {
+							"minutes": [
+								10
+							],
+							"hours": [
+								21
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/atliq_commerce_ingestion')]"
+			]
+		}
+	]
+}
