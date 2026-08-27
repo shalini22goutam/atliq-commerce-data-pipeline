@@ -9,14 +9,14 @@ resources:
         - task_key: Create_Catalog_Schema
           sql_task:
             file:
-              path: databricks_jobs/src/setup/create_catalog_schemas.sql
+              path: databricks_silver_transform/src/setup/create_catalog_schemas.sql
               source: GIT
             warehouse_id: ca0f9a13b145c8c5
         - task_key: Transform_Customers
           depends_on:
             - task_key: Create_Catalog_Schema
           spark_python_task:
-            python_file: databricks_jobs/src/silver/customers.py
+            python_file: databricks_silver_transform/src/silver/customers.py
             parameters:
               - --pipeline_run_id
               - "{{job.parameters.pipeline_run_id}}"
@@ -34,7 +34,7 @@ resources:
           depends_on:
             - task_key: Create_Catalog_Schema
           spark_python_task:
-            python_file: databricks_jobs/src/silver/marketing_spend.py
+            python_file: databricks_silver_transform/src/silver/marketing_spend.py
             parameters:
               - --pipeline_run_id
               - "{{job.parameters.pipeline_run_id}}"
@@ -52,7 +52,7 @@ resources:
           depends_on:
             - task_key: Create_Catalog_Schema
           spark_python_task:
-            python_file: databricks_jobs/src/silver/order_items.py
+            python_file: databricks_silver_transform/src/silver/order_items.py
             parameters:
               - --run_date
               - "{{job.parameters.run_date}}"
@@ -72,7 +72,7 @@ resources:
           depends_on:
             - task_key: Create_Catalog_Schema
           spark_python_task:
-            python_file: databricks_jobs/src/silver/orders.py
+            python_file: databricks_silver_transform/src/silver/orders.py
             parameters:
               - --run_date
               - "{{job.parameters.run_date}}"
@@ -92,7 +92,7 @@ resources:
           depends_on:
             - task_key: Create_Catalog_Schema
           spark_python_task:
-            python_file: databricks_jobs/src/silver/payments.py
+            python_file: databricks_silver_transform/src/silver/payments.py
             parameters:
               - --run_date
               - "{{job.parameters.run_date}}"
@@ -112,7 +112,7 @@ resources:
           depends_on:
             - task_key: Create_Catalog_Schema
           spark_python_task:
-            python_file: databricks_jobs/src/silver/products.py
+            python_file: databricks_silver_transform/src/silver/products.py
             parameters:
               - --pipeline_run_id
               - "{{job.parameters.pipeline_run_id}}"
@@ -130,7 +130,7 @@ resources:
           depends_on:
             - task_key: Create_Catalog_Schema
           spark_python_task:
-            python_file: databricks_jobs/src/silver/supplier_price_list.py
+            python_file: databricks_silver_transform/src/silver/supplier_price_list.py
             parameters:
               - --pipeline_run_id
               - "{{job.parameters.pipeline_run_id}}"
@@ -157,7 +157,7 @@ resources:
             project_directory: atliq_gold_dbt
             commands:
               - dbt deps
-              - dbt build
+              - "dbt build "
             schema: gold
             warehouse_id: ca0f9a13b145c8c5
             catalog: atliq
