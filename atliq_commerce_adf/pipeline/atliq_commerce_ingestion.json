@@ -869,7 +869,10 @@
 									"referenceName": "DS_ADLS_Bronze",
 									"type": "DatasetReference",
 									"parameters": {
-										"table_name": "@replace(item().name,'.csv','')"
+										"table_name": {
+											"value": "@replace(item().name,'.cs','')",
+											"type": "Expression"
+										}
 									}
 								}
 							]
