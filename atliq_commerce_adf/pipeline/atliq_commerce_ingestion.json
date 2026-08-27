@@ -43,7 +43,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT\n    source_schema,\n    table_name,\n    load_type,\n    watermark_column,\n    last_loaded_at\nFROM etl.control_table;\n",
+						"sqlReaderQuery": "SELECT\n    source_schema2,\n    table_name,\n    load_type,\n    watermark_column,\n    last_loaded_at\nFROM etl.control_table;\n",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
