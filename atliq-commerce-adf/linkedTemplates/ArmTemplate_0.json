@@ -96,7 +96,7 @@
 							"value": "bronze/@{dataset().table_name}",
 							"type": "Expression"
 						},
-						"fileSystem": "lakehouses"
+						"fileSystem": "lakehouse"
 					},
 					"compressionCodec": "snappy"
 				},
