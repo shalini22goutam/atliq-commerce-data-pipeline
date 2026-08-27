@@ -870,7 +870,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"table_name": {
-											"value": "@replace(item().name,'.cs','')",
+											"value": "@replace(item().name,'.csv','')",
 											"type": "Expression"
 										}
 									}
