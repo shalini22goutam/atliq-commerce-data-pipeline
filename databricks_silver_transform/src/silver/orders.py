@@ -230,7 +230,8 @@ def main() -> None:
 
     run(
         spark=spark,
-        run_date=args.run_date,
+        #run_date=args.run_date,
+        run_date='2026-08-30',
         pipeline_run_id=args.pipeline_run_id,
         job_name=args.job_name,
         job_run_id=args.job_run_id,
