@@ -120,3 +120,5 @@ if __name__ == "__main__":
     ap.add_argument("--duration", type=int, default=300)
     args = ap.parse_args()
     run(args.rate, args.duration)
+
+#python order_event_producer.py --rate 2 --duration 300

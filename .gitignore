@@ -9,5 +9,7 @@ atliq_gold_dbt/.user.yml
 /.git
 /.vscode
 .DS_Store
-streaming_phase2/airflow/logs
+streaming_pipeline_kafka/airflow/logs
+streaming_pipeline_kafka/airflow/dags/__pycache__
+
 
