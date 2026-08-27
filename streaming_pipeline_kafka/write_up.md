@@ -1,4 +1,4 @@
-# A Half-Page Write-Up: How the Speed Lane Relates to Phase 1's Batch Lane — When Does a Business Need Each?
+# Write-Up: How the Speed Lane Relates to Phase 1's Batch Lane — When Does a Business Need Each?
 
 ### 1. HOW the speed lane relates to Phase 1's batch lane — when does a business need each?
 
@@ -6,7 +6,7 @@ The batch lane is needed for reporting and analysis based on accumulated histori
 
 ### 2. WHY Gold windows appear late?
 
-A window groups events within a specific time range. Events may arrive late, so Spark cannot immediately consider the window complete.
+A window groups events within a specific time range. Events may arrive late, so Spark cannot immediately consider the window complete. 
 
 - 2.1 **Follow-up:** Windows only appear after they close — the watermark must pass the window's end first. So rows show up 10–15 minutes behind real time. That is correctness (waiting for late events), not a bug. Explain WHY?
 
@@ -14,7 +14,8 @@ Once the watermark passes the window's end time, Spark finalizes the window. Thi
 
 - 2.2 **Follow-up:** WHY a window appears after the watermark passes its end?
 
-The 10-minute watermark allows Spark to accept late-arriving events and include them in the correct window.
+ Spark waits for possible late-arriving events before finalizing the window's result. The 10-minute watermark allows Spark to accept late-arriving events and include them in the correct window.
+
 
 > #### Conclusion
 > 
