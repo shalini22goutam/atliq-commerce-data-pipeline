@@ -10,15 +10,15 @@ The streaming pipeline is designed to operate alongside the Phase 1 batch pipeli
 
 > This folder corresponds to `streaming_pipeline_kafka` in the parent AtliQ Commerce repository.
 
-## Assignment Walkthrough
+## Walkthrough Video
 
-[![Assignment Walkthrough](https://img.shields.io/badge/Assignment%20Walkthrough-Google%20Drive-blue?logo=googledrive&logoColor=white)](https://drive.google.com/drive/folders/18Y1uYlN1mrlzrxd6-vVsJuqG1Yl2RrTb?usp=sharing)
+[![Walkthrough Video](https://img.shields.io/badge/Walkthrough%20Video-Google%20Drive-blue?logo=googledrive&logoColor=white)](https://drive.google.com/drive/folders/18Y1uYlN1mrlzrxd6-vVsJuqG1Yl2RrTb?usp=sharing)
 
 ---
 
 ## Index
 
-1. [Assignment Walkthrough](#assignment-walkthrough)
+1. [Walkthrough Video](#walkthrough-video)
 2. [High-Level Architecture](#high-level-architecture)
 3. [Project Structure](#project-structure)
 4. [Project Objectives](#project-objectives)
@@ -58,21 +58,13 @@ The streaming pipeline is designed to operate alongside the Phase 1 batch pipeli
 ```text
 .
 ├── producer/
-│   ├── order_event_producer.py
-│   └── .env.example
 │
 ├── databricks/
-│   └── 01_kafka_stream_processing.py
 │
 ├── airflow/
-│   └── dags/
-│       └── atliq_streaming_ops_dag.py
-│
+│   
 ├── docs/
-│   └── diagrams/
-│       ├── phase2_architecture.webp
-│       └── streaming_flow.png
-│
+│  
 ├── requirements.txt
 │
 └── README.md
