@@ -10,7 +10,7 @@ An end-to-end data engineering project that syncs data from a live operational (
 
 ## Table of Contents
 
-1. [Walkthrough Video](#assignment-walkthrough)
+1. [Walkthrough Video](#walkthrough-video)
 2. [High-Level Architecture](#high-level-architecture)
 3. [ADF Workflow](#adf-workflow)
 4. [Architecture Overview](#architecture-overview)
@@ -34,9 +34,9 @@ An end-to-end data engineering project that syncs data from a live operational (
 
 ---
 
-##  Walkthrough Video
+## Walkthrough Video
 
-[![Assignment Walkthrough](https://img.shields.io/badge/Assignment%20Walkthrough-Google%20Drive-blue?logo=googledrive&logoColor=white)](https://drive.google.com/drive/folders/18Y1uYlN1mrlzrxd6-vVsJuqG1Yl2RrTb?usp=sharing)
+[![Walkthrough Video](https://img.shields.io/badge/Walkthrough%20Video-Google%20Drive-blue?logo=googledrive&logoColor=white)](https://drive.google.com/drive/folders/18Y1uYlN1mrlzrxd6-vVsJuqG1Yl2RrTb?usp=sharing)
 
 ---
 
@@ -115,7 +115,7 @@ The project is organized into folders by layer/responsibility, matching the arch
 
 The two approaches serve different business requirements.
 
-![atliq-commerce-data-pipeline](docs/diagrams/batch_vs_stream.png)
+![atliq-commerce-data-pipeline](diagrams/batch_vs_stream.png)
 
 | **Batch Processing**                                           | **Streaming Processing**                           |
 | -------------------------------------------------------------- | -------------------------------------------------- |
