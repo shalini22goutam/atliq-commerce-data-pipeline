@@ -1,11 +1,44 @@
 # AtliQ Commerce — End-to-End Data Engineering Pipeline
 
-## 📌 Overview
+## Overview
 
 An end-to-end data engineering project that syncs data from a live operational (OLTP) database into an analytics warehouse (OLAP), every night, and serves it through a Power BI dashboard in Microsoft Fabric — without ever touching the live application database for reporting.
 
 > This is the **batch pipeline (Phase 1)**. For the companion real-time streaming lane, see [`streaming_pipeline_kafka`](./streaming_pipeline_kafka) — Phase 2.
 
+---
+
+## Table of Contents
+
+1. [Walkthrough Video](#assignment-walkthrough)
+2. [High-Level Architecture](#high-level-architecture)
+3. [ADF Workflow](#adf-workflow)
+4. [Architecture Overview](#architecture-overview)
+5. [Repository Structure](#repository-structure)
+6. [Batch vs. Streaming](#batch-vs-streaming)
+7. [Tech Stack](#tech-stack)
+8. [Data Model](#data-model)
+9. [Implementation Walkthrough](#implementation-walkthrough)
+   - [1. OLTP Setup](#1-oltp-setup)
+   - [2. Ingestion — Bronze Layer (Azure Data Factory)](#2-ingestion--bronze-layer-azure-data-factory)
+   - [3. Transformation — Silver Layer (Databricks)](#3-transformation--silver-layer-databricks)
+   - [4. Modeling — Gold Layer (dbt Core)](#4-modeling--gold-layer-dbt-core)
+   - [5. Orchestration](#5-orchestration)
+   - [6. Audit & Monitoring](#6-audit--monitoring)
+   - [7. Reporting (Microsoft Fabric)](#7-reporting-microsoft-fabric)
+   - [8. CI/CD](#8-cicd)
+10. [Idempotency](#idempotency)
+11. [Timestamp Consistency](#timestamp-consistency)
+12. [Getting Started](#getting-started)
+13. [Expected Outcome](#expected-outcome)
+
+---
+
+##  Walkthrough Video
+
+[![Assignment Walkthrough](https://img.shields.io/badge/Assignment%20Walkthrough-Google%20Drive-blue?logo=googledrive&logoColor=white)](https://drive.google.com/drive/folders/18Y1uYlN1mrlzrxd6-vVsJuqG1Yl2RrTb?usp=sharing)
+
+---
 
 ## High-Level Architecture
 
@@ -13,35 +46,19 @@ The pipeline follows a **Bronze → Silver → Gold** medallion architecture:
 
 ![atliq-commerce-data-pipeline](docs/diagrams/atliq_commerce_architecture.svg)
 
-## ADF workflow
+[⬆ back to top](#table-of-contents)
 
+---
+
+## ADF Workflow
 
 ![atliq-commerce-data-pipeline](docs/diagrams/ingestion_flow.png)
 
+[⬆ back to top](#table-of-contents)
 
-## 📂 Table of Contents
+---
 
-- [Architecture Overview](#-architecture-overview)
-- [Repository Structure](#-repository-structure)
-- [Batch vs. Streaming](#-batch-vs-streaming)
-- [Tech Stack](#️-tech-stack)
-- [Data Model](#-data-model)
-- [Implementation Walkthrough](#-implementation-walkthrough)
-  - [1. OLTP Setup](#1-oltp-setup)
-  - [2. Ingestion — Bronze Layer (Azure Data Factory)](#2-ingestion--bronze-layer-azure-data-factory)
-  - [3. Transformation — Silver Layer (Databricks)](#3-transformation--silver-layer-databricks)
-  - [4. Modeling — Gold Layer (dbt Core)](#4-modeling--gold-layer-dbt-core)
-  - [5. Orchestration](#5-orchestration)
-  - [6. Audit & Monitoring](#6-audit--monitoring)
-  - [7. Reporting (Microsoft Fabric)](#7-reporting-microsoft-fabric)
-  - [8. CI/CD](#8-cicd)
-- [Idempotency](#-idempotency)
-- [Timestamp Consistency](#-timestamp-consistency)
-- [Getting Started](#️-getting-started)
-- [Expected Outcome](#-expected-outcome)
-  
-
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 The core problem: running analytics queries directly against the live OLTP database slows down the application. This project solves it by maintaining two databases — a normalized OLTP store for transactions and a denormalized OLAP star schema for reporting — kept in sync by an automated nightly pipeline.
 
@@ -51,45 +68,54 @@ Data flows through three progressively cleaner layers:
 - **Silver** — cleaned, de-duplicated, governed Delta tables in Unity Catalog
 - **Gold** — a denormalized star schema (fact + dimension tables) built with dbt, ready for reporting
 
-## 📂 Repository Structure
+[⬆ back to top](#table-of-contents)
+
+---
+
+## Repository Structure
 
 The project is organized into folders by layer/responsibility, matching the architecture described above:
 
-```
+```text
 .
-├── atliq_commerce_adf/          
-│                                 
-├── databricks_silver_transform/  
-│                                 
-├── atliq_dbt_gold/                
-│                                 
-├── fabric_analytics/             
-│                                 
-├── audit/                        
-│                                 
-├── streaming_pipeline_kafka/      
-│                                 
 ├── .github/
-│   └── workflows/                
-└── README.md
+│   └── workflows/
+├── atliq_commerce_adf/
+├── atliq_gold_dbt/
+├── audit/
+├── databricks_silver_transform/
+├── docs/
+├── fabric_analytics/
+├── powerbi_report/
+├── raw_sources/
+├── streaming_pipeline_kafka/
+├── .gitignore
+├── README.md
+└── requirements.txt
 ```
 
 | Folder | Purpose |
 |---|---|
+| `.github/workflows` | CI — GitHub Actions workflow(s) that validate the dbt project on pull requests |
 | `atliq_commerce_adf` | Ingestion layer — the generic, metadata-driven ADF pipeline that lands source data into Bronze |
-| `databricks_silver_transform` | Transformation layer — Bronze to Silver PySpark notebooks, with the dbt Gold build chained in as a task in the same job |
-| `atliq_dbt_gold` | Modeling layer — the dbt Core project that builds the Gold star schema from Silver |
-| `fabric_analytics` | Reporting layer — the Fabric shortcut, semantic model, and Power BI report built on Gold |
+| `atliq_gold_dbt` | Modeling layer — the dbt Core project that builds the Gold star schema from Silver |
 | `audit` | Audit layer — DDL and supporting scripts for the pipeline run, ADF activity, and Databricks job audit tables |
+| `databricks_silver_transform` | Transformation layer — Bronze to Silver PySpark notebooks, with the dbt Gold build chained in as a task in the same job |
+| `docs` | Architecture diagrams and other supporting documentation referenced throughout this README |
+| `fabric_analytics` | Reporting layer — the Fabric shortcut and semantic model built on Gold |
+| `powerbi_report` | The Power BI report(s) built on top of the Fabric semantic model |
+| `raw_sources` | Raw CSV source files (e.g. supplier price list, marketing spend) used alongside the SQL sources |
 | `streaming_pipeline_kafka` | A separate, minor Kafka-based streaming pipeline project, built independently of the main nightly batch pipeline |
 
+[⬆ back to top](#table-of-contents)
 
-## ⚖️ Batch vs. Streaming
+---
+
+## Batch vs. Streaming
 
 The two approaches serve different business requirements.
 
-![atliq-commerce-data-pipeline](diagrams/batch_vs_stream.png)
-
+![atliq-commerce-data-pipeline](docs/diagrams/batch_vs_stream.png)
 
 | **Batch Processing**                                           | **Streaming Processing**                           |
 | -------------------------------------------------------------- | -------------------------------------------------- |
@@ -98,11 +124,13 @@ The two approaches serve different business requirements.
 | Large volumes of data can be processed together.               | Operational monitoring is required.                |
 | Business decisions are not dependent on real-time information. | Delays of hours are not acceptable.                |
 
-
 Phase 2 therefore complements rather than replaces the Phase 1 batch pipeline. This project (Phase 1) covers the nightly batch sync described below; see [`streaming_pipeline_kafka`](./streaming_pipeline_kafka) for the real-time lane.
 
+[⬆ back to top](#table-of-contents)
 
-## 🛠️ Tech Stack
+---
+
+## Tech Stack
 
 | Layer | Tool |
 |---|---|
@@ -114,13 +142,17 @@ Phase 2 therefore complements rather than replaces the Phase 1 batch pipeline. T
 | Reporting | Microsoft Fabric (Power BI) |
 | Version control / CI | Git + GitHub (GitHub Actions) |
 
-## 🧩 Data Model
+[⬆ back to top](#table-of-contents)
+
+---
+
+## Data Model
 
 **OLTP (3NF, built for writing)** — five normalized tables: `customers`, `products`, `orders`, `order_items`, `payments`. Each carries a watermark column (`updated_at` or `created_at` for insert-only `order_items`) that drives incremental extraction.
 
 **OLAP (star schema, built for reading)**:
 
-```
+```text
               dim_date
                  │
 dim_customer ── fact_sales ── dim_product
@@ -133,15 +165,18 @@ dim_customer ── fact_sales ── dim_product
 | `dim_product` | One row per product — name, category, unit price, supplier cost, unit margin |
 | `dim_date` | One row per calendar day — day, month, quarter, year, weekday |
 
+[⬆ back to top](#table-of-contents)
 
-## 🔄 Implementation Walkthrough
+---
 
-### 🗄️ 1. OLTP Setup
+## Implementation Walkthrough
+
+### 1. OLTP Setup
 
 - Provisioned an **Azure SQL Database** and ran the schema and seed scripts in order to create and populate the five OLTP tables (`customers`, `products`, `orders`, `order_items`, `payments`), plus the **ETL control table** that drives ingestion.
 - Provisioned an **ADLS Gen2** storage account with a source directory to hold the raw CSV inputs (supplier price list, marketing spend), alongside the SQL sources.
 
-### 🥉 2. Ingestion — Bronze Layer (Azure Data Factory)
+### 2. Ingestion — Bronze Layer (Azure Data Factory)
 
 Built a single **generic, metadata-driven** ADF pipeline rather than one pipeline per table:
 
@@ -153,7 +188,7 @@ Built a single **generic, metadata-driven** ADF pipeline rather than one pipelin
 - **Retry-safe writes:** before every copy — for both full-load SQL tables and the CSV files, as well as for the specific incremental date partition — the target location is deleted first, then the copy runs. This means a retried run overwrites cleanly instead of appending duplicate data, for both full and incremental loads.
 - Bronze remains raw, append-only Parquet — no cleaning or de-duplication happens at this stage.
 
-### 🥈 3. Transformation — Silver Layer (Databricks)
+### 3. Transformation — Silver Layer (Databricks)
 
 Once ingestion completes, ADF triggers a **Databricks job** that transforms Bronze into Silver:
 
@@ -161,7 +196,7 @@ Once ingestion completes, ADF triggers a **Databricks job** that transforms Bron
 - **Incremental tables** (`orders`, `order_items`, `payments`) are read from the current run's dated Bronze batch, collapsed to the latest version per business key, and **MERGE**d (upserted) into their Silver Delta tables. This is what keeps the load idempotent — re-running the same batch never produces duplicates.
 - Silver tables are the governed, query-ready source of truth in Unity Catalog.
 
-### 🥇 4. Modeling — Gold Layer (dbt Core)
+### 4. Modeling — Gold Layer (dbt Core)
 
 A **dbt task**, chained after the Silver transformation within the same Databricks job, builds the Gold star schema:
 
@@ -169,11 +204,11 @@ A **dbt task**, chained after the Silver transformation within the same Databric
 - **Mart models** (`fact_sales`, `dim_customer`, `dim_product`, `dim_date`) are built on top of staging and materialized as external Delta tables at a known ADLS path, so Fabric can read them directly.
 - dbt **tests** (uniqueness, not-null, referential integrity between fact and dimension keys) act as data-quality gates — bad data fails the build rather than reaching the dashboard.
 
-### 🔁 5. Orchestration
+### 5. Orchestration
 
 The Databricks job (Silver transformation + dbt Gold build, as chained tasks within one job) is triggered directly from the ADF pipeline once ingestion succeeds. The full chain — ADF ingest → Databricks Silver → dbt Gold — runs as a single nightly, end-to-end sequence.
 
-### 🛡️ 6. Audit & Monitoring
+### 6. Audit & Monitoring
 
 A three-tier audit design tracks every run end to end:
 
@@ -187,18 +222,22 @@ Both the ADF activity audit and the Databricks job audit tables reference the pa
 
 An **email alert** is configured on the Databricks job so that if any task fails, a failure notification is sent directly to the project owner's email, rather than relying on someone noticing a stale dashboard the next morning.
 
-### 📊 7. Reporting (Microsoft Fabric)
+### 7. Reporting (Microsoft Fabric)
 
 - Gold tables are exposed to Fabric via a **OneLake shortcut** pointing at the Gold ADLS location — no data copy required.
 - A **semantic model** was built on top of the shortcut, with relationships from `fact_sales` to each dimension table.
 - A **Power BI report** was built on the semantic model to answer the core business questions (revenue trend, top products, top cities, new vs. returning customers).
 
-### 🚀 8. CI/CD
+### 8. CI/CD
 
 - The dbt project's connection details are read from environment variables (no secrets committed), sourced from **GitHub Secrets** in CI.
 - A **GitHub Actions workflow** validates the dbt project (`dbt build`) automatically whenever a pull request is raised from a feature branch, before code merges into main.
 
-## 🔂 Idempotency
+[⬆ back to top](#table-of-contents)
+
+---
+
+## Idempotency
 
 The pipeline is designed to produce identical results no matter how many times it runs for the same period:
 
@@ -208,12 +247,19 @@ The pipeline is designed to produce identical results no matter how many times i
 
 Running the nightly job twice in a row produces the same row counts and the same `gross_revenue` totals.
 
-## 🕒 Timestamp Consistency
+[⬆ back to top](#table-of-contents)
+
+---
+
+## Timestamp Consistency
 
 Since timestamps are generated and compared across several different systems — Azure SQL, ADF, Databricks, and dbt — all watermark and audit timestamps are standardized to **UTC** throughout the pipeline. This avoids subtle bugs where a local time zone offset causes rows to be skipped or reprocessed incorrectly during the incremental watermark comparison.
 
+[⬆ back to top](#table-of-contents)
 
-## ▶️ Getting Started
+---
+
+## Getting Started
 
 ### 1. Set up the OLTP source
 
@@ -233,19 +279,21 @@ Deploy the notebooks from `databricks_silver_transform/` as a Databricks job wit
 
 ### 5. Configure dbt
 
-Set up `atliq_dbt_gold/profiles.yml` (or environment variables) with your Databricks connection details, and confirm the `dbt build` runs cleanly against Silver.
+Set up `atliq_gold_dbt/profiles.yml` (or environment variables) with your Databricks connection details, and confirm the `dbt build` runs cleanly against Silver.
 
 ### 6. Connect Fabric
 
-Create a OneLake shortcut pointing at the Gold ADLS location, build the semantic model, and publish the Power BI report from `fabric_analytics/`.
+Create a OneLake shortcut pointing at the Gold ADLS location, build the semantic model, and publish the Power BI report from `fabric_analytics/` / `powerbi_report/`.
 
 ### 7. Enable CI/CD
 
 Add your Databricks connection details as GitHub Secrets, then confirm the GitHub Actions workflow in `.github/workflows/` runs `dbt build` automatically on pull requests.
 
+[⬆ back to top](#table-of-contents)
+
 ---
 
-## 🎯 Expected Outcome
+## Expected Outcome
 
 At the end of the pipeline, the project provides:
 
@@ -257,3 +305,5 @@ At the end of the pipeline, the project provides:
 * A live Power BI report in Microsoft Fabric, sourced directly from Gold via a OneLake shortcut.
 * CI validation of every dbt change before it merges.
 * A complete, idempotent batch data engineering workflow using ADF, Databricks, dbt, and Fabric.
+
+[⬆ back to top](#table-of-contents)
