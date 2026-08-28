@@ -163,7 +163,7 @@ def run(
             task_name=task_name,
             task_run_id=task_run_id,
             layer="Silver",
-            source_name=SILVER_TABLE,
+            source_name=TABLE_NAME,
             load_type="Incremental",
             status="Success",
             row_count=insert_count + update_count,
@@ -189,7 +189,7 @@ def run(
                 task_name=task_name,
                 task_run_id=task_run_id,
                 layer="Silver",
-                source_name=SILVER_TABLE,
+                source_name=TABLE_NAME,
                 load_type="Incremental",
                 status="Fail",
                 row_count=None,
@@ -230,7 +230,8 @@ def main() -> None:
 
     run(
         spark=spark,
-        run_date=args.run_date,
+        #run_date=args.run_date,
+        run_date='2026-08-31',
         pipeline_run_id=args.pipeline_run_id,
         job_name=args.job_name,
         job_run_id=args.job_run_id,
