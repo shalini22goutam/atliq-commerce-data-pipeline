@@ -1,6 +1,6 @@
 # AtliQ Commerce — Phase 2: Real-Time Streaming Pipeline
 
-## 📌 Overview
+## Overview
 
 Phase 2 extends the AtliQ Commerce data platform with a **real-time streaming lane** for continuously arriving order events.
 
@@ -10,14 +10,50 @@ The streaming pipeline is designed to operate alongside the Phase 1 batch pipeli
 
 > This folder corresponds to `streaming_pipeline_kafka` in the parent AtliQ Commerce repository.
 
----
-### High-Level Architecture
+## Assignment Walkthrough
 
+[![Assignment Walkthrough](https://img.shields.io/badge/Assignment%20Walkthrough-Google%20Drive-blue?logo=googledrive&logoColor=white)](https://drive.google.com/drive/folders/18Y1uYlN1mrlzrxd6-vVsJuqG1Yl2RrTb?usp=sharing)
+
+---
+
+## Index
+
+1. [Assignment Walkthrough](#assignment-walkthrough)
+2. [High-Level Architecture](#high-level-architecture)
+3. [Project Structure](#project-structure)
+4. [Project Objectives](#project-objectives)
+5. [End-to-End Data Flow](#end-to-end-data-flow)
+   - [1. Kafka Setup](#1-kafka-setup)
+   - [2. Python Event Producer](#2-python-event-producer)
+   - [3. Databricks Structured Streaming](#3-databricks-structured-streaming)
+   - [4. Bronze Layer](#4-bronze-layer)
+   - [5. Silver Layer](#5-silver-layer)
+   - [6. Gold Layer](#6-gold-layer)
+   - [7. Automated Streaming Execution](#7-automated-streaming-execution)
+   - [8. Airflow Orchestration](#8-airflow-orchestration)
+     - [8.1 Data Quality / Freshness Check](#81-data-quality--freshness-check)
+     - [8.2 Optimize Silver and Gold Tables](#82-optimize-silver-and-gold-tables)
+     - [8.3 Daily Summary Table](#83-daily-summary-table)
+6. [Complete Pipeline Diagram](#complete-pipeline-diagram)
+7. [Security Considerations](#security-considerations)
+8. [Validation and Monitoring](#validation-and-monitoring)
+9. [Key Design Decisions](#key-design-decisions)
+10. [Technology Stack](#technology-stack)
+11. [Getting Started](#getting-started)
+12. [Expected Outcome](#expected-outcome)
+13. [Conclusion](#conclusion)
+
+---
+
+## High-Level Architecture
 
 ![atliq-commerce-data-pipeline](docs/diagrams/phase2_architecture.webp)
 
+[⬆ back to top](#index)
+
 ---
-# 📂 Project Structure
+
+## Project Structure
 
 ```text
 .
@@ -32,13 +68,21 @@ The streaming pipeline is designed to operate alongside the Phase 1 batch pipeli
 │   └── dags/
 │       └── atliq_streaming_ops_dag.py
 │
+├── docs/
+│   └── diagrams/
+│       ├── phase2_architecture.webp
+│       └── streaming_flow.png
+│
 ├── requirements.txt
 │
 └── README.md
 ```
 
+[⬆ back to top](#index)
 
-## 🎯 Project Objectives
+---
+
+## Project Objectives
 
 The main objectives of Phase 2 are:
 
@@ -54,14 +98,17 @@ The main objectives of Phase 2 are:
 * Implement Airflow-based data quality and operational maintenance.
 * Generate a daily analytical summary from the streaming data.
 
+[⬆ back to top](#index)
 
-# 🔄 End-to-End Data Flow
+---
 
-## 1. Kafka Setup
+## End-to-End Data Flow
+
+### 1. Kafka Setup
 
 The first component of the pipeline is a Kafka environment hosted on **Confluent Cloud**. A Kafka cluster and topic are created to receive live order events.
 
-### Kafka Topic
+**Kafka Topic**
 ```text
 atliq.orders.events
 ```
@@ -84,7 +131,7 @@ The Kafka message key is based on `order_id`, which helps keep events belonging 
 
 ---
 
-# 🐍 2. Python Event Producer
+### 2. Python Event Producer
 
 A Python producer application is responsible for generating continuous order events.
 
@@ -98,8 +145,6 @@ The producer:
 
 Once the producer is started, the events can be observed in the Confluent Cloud Kafka topic.
 
-Example:
-
 ```text
 Python Producer
       │
@@ -108,28 +153,27 @@ Python Producer
 Kafka Topic
 atliq.orders.events
 ```
+
 ---
 
-# ⚡ 3. Databricks Structured Streaming
+### 3. Databricks Structured Streaming
 
-A Databricks notebook handles the complete streaming pipeline. The notebook processes the data through three independent layers:
+A Databricks notebook handles the complete streaming pipeline. The notebook processes the data through three independent layers.
 
 Each layer has its own streaming query and its own checkpoint location. Separate checkpoints are important because checkpoints maintain the progress and state of individual streaming queries and therefore should not be shared between independent streams.
 
 ---
 
-# 🥉 4. Bronze Layer
+### 4. Bronze Layer
 
 The Bronze layer captures the Kafka events in their raw form.
 
-### Source
-
+**Source**
 ```text
 Kafka Topic - atliq.orders.events
 ```
 
-### Target
-
+**Target**
 ```text
 atliq.streaming.bronze_order_events
 ```
@@ -147,61 +191,40 @@ No business-level JSON parsing or transformation is performed at this stage. Thi
 
 ---
 
-# 🥈 5. Silver Layer
+### 5. Silver Layer
 
 The Silver layer reads the streaming data from the Bronze table and performs data preparation and cleansing.
 
-### Main Transformations
+**Main Transformations**
 
-#### JSON Parsing
+- **JSON Parsing** — The raw JSON payload is parsed using an explicit schema. The required business fields are extracted from the JSON event.
+- **Timestamp Conversion** — The event timestamp is converted into an appropriate Spark timestamp type for event-time processing.
+- **Deduplication** — Duplicate events are removed using `event_id`.
+- **Watermarking** — A **10-minute watermark** is applied to the event timestamp. Watermarking allows the streaming pipeline to handle reasonably late-arriving events while allowing Spark to eventually clean up old streaming state.
 
-The raw JSON payload is parsed using an explicit schema. The required business fields are extracted from the JSON event.
-
-#### Timestamp Conversion
-
-The event timestamp is converted into an appropriate Spark timestamp type for event-time processing.
-
-#### Deduplication
-
-Duplicate events are removed using:
-
-```text
-event_id
-```
-
-#### Watermarking
-
-A **10-minute watermark** is applied to the event timestamp.
-
-Watermarking allows the streaming pipeline to handle reasonably late-arriving events while allowing Spark to eventually clean up old streaming state.
-
-### Target
-
+**Target**
 ```text
 atliq.streaming.silver_order_events
 ```
+
 ---
 
-# 🥇 6. Gold Layer
+### 6. Gold Layer
 
-The Gold layer contains business-oriented streaming aggregations derived from the Silver data. The Gold aggregation uses event-time windows to summarize streaming activity.
-The requirements specify aggregation of `payment_received` events into **5-minute windows**.
+The Gold layer contains business-oriented streaming aggregations derived from the Silver data. The Gold aggregation uses event-time windows to summarize streaming activity. The requirements specify aggregation of `payment_received` events into **5-minute windows**.
 
 The Gold layer contains:
-
 ```text
 atliq.streaming.gold_revenue_5min
 ```
 
+**Why Gold results can appear late**
 
-### Why Gold Results Can Appear Late
-
-Gold results are not necessarily available immediately after an event arrives. A window is emitted after the window closes and the watermark advances beyond the window's end time.
-Because the Silver layer uses a 10-minute watermark, Gold results can therefore appear behind real time. This delay is expected and allows the pipeline to accommodate late-arriving events.
+Gold results are not necessarily available immediately after an event arrives. A window is emitted after the window closes and the watermark advances beyond the window's end time. Because the Silver layer uses a 10-minute watermark, Gold results can therefore appear behind real time. This delay is expected and allows the pipeline to accommodate late-arriving events.
 
 ---
 
-# 🔁 7. Automated Streaming Execution
+### 7. Automated Streaming Execution
 
 The Databricks notebook has a configured trigger so that the streaming processing is executed automatically rather than requiring the notebook to be manually started for every batch of incoming events.
 
@@ -222,7 +245,7 @@ This allows the streaming tables to continuously reflect newly arriving events. 
 
 ---
 
-# 🛡️ 8. Airflow Orchestration
+### 8. Airflow Orchestration
 
 Apache Airflow is used for operational management of the streaming pipeline. The DAG runs on a scheduled basis (e.g. hourly), which pairs with the 2-hour lookback in the freshness check below — giving each run at least one full cycle of buffer before a genuinely stale pipeline gets flagged.
 
@@ -239,13 +262,9 @@ The Airflow DAG handles three major responsibilities:
 
 The three tasks are executed sequentially. The project requirements specify that the DAG performs these tasks on a scheduled basis.
 
----
-
-## 8.1 Data Quality / Freshness Check
+#### 8.1 Data Quality / Freshness Check
 
 The first Airflow task verifies whether streaming events have been received recently. The check looks for events within the **previous two hours**.
-
-### Expected behavior
 
 ```text
 Events received in last 2 hours?
@@ -257,19 +276,13 @@ Events received in last 2 hours?
  Continue    Fail DAG
 ```
 
-If events are present, the pipeline proceeds to the next task. If no events have arrived during the required period, the data-quality task fails.
-This acts as a freshness gate and helps identify problems such as a stopped producer or interrupted ingestion pipeline.
+If events are present, the pipeline proceeds to the next task. If no events have arrived during the required period, the data-quality task fails. This acts as a freshness gate and helps identify problems such as a stopped producer or interrupted ingestion pipeline.
 
----
+#### 8.2 Optimize Silver and Gold Tables
 
-## 8.2 Optimize Silver and Gold Tables
+The second Airflow task performs table maintenance. Streaming workloads can create many small files over time. Therefore, the Silver and Gold tables are periodically optimized using Delta Lake's `OPTIMIZE` command (compacting small files into larger ones), with `VACUUM` used separately to clean up stale, unreferenced data files. This helps maintain efficient storage and query performance as the volume of streaming data grows.
 
-The second Airflow task performs table maintenance. Streaming workloads can create many small files over time. Therefore, the Silver and Gold tables are periodically optimized using Delta Lake's `OPTIMIZE` command (compacting small files into larger ones), with `VACUUM` used separately to clean up stale, unreferenced data files.
-This helps maintain efficient storage and query performance as the volume of streaming data grows.
-
----
-
-## 8.3 Daily Summary Table
+#### 8.3 Daily Summary Table
 
 The third Airflow task creates or refreshes a daily analytical summary. The summary provides daily business metrics such as:
 
@@ -279,33 +292,34 @@ The third Airflow task creates or refreshes a daily analytical summary. The summ
 * Revenue
 
 Target table:
-
 ```text
 gold_daily_summary
 ```
 
 This provides a convenient table for daily-level analysis without requiring users to repeatedly aggregate the underlying streaming data.
 
+[⬆ back to top](#index)
+
 ---
 
-# 🔗 Complete Pipeline
-
+## Complete Pipeline Diagram
 
 ![atliq-commerce-data-pipeline](docs/diagrams/streaming_flow.png)
 
+[⬆ back to top](#index)
 
-# 🔐 Security Considerations
+---
+
+## Security Considerations
 
 Kafka credentials and other sensitive configuration values should not be committed to the repository.
 
 Use an environment file locally:
-
 ```text
 .env
 ```
 
 and provide only a template in GitHub:
-
 ```text
 .env.example
 ```
@@ -320,33 +334,23 @@ Never commit:
 * Access tokens
 * Other sensitive connection information
 
+[⬆ back to top](#index)
+
 ---
 
-# 📊 Validation and Monitoring
+## Validation and Monitoring
 
 The implementation includes multiple validation points.
 
-### Kafka Validation
+**Kafka Validation**
 
-Confirm that events are successfully published to:
+Confirm that events are successfully published to `atliq.orders.events` and are visible in the Confluent Cloud topic.
 
-```text
-atliq.orders.events
-```
+**Databricks Validation**
 
-and are visible in the Confluent Cloud topic.
+Verify that records are flowing through Bronze → Silver → Gold and that the corresponding streaming tables are being updated.
 
-### Databricks Validation
-
-Verify that records are flowing through:
-
-```text
-Bronze → Silver → Gold
-```
-
-and that the corresponding streaming tables are being updated.
-
-### Airflow Validation
+**Airflow Validation**
 
 Verify that:
 
@@ -358,17 +362,17 @@ Verify that:
 
 The requirements specifically use stopping the producer and triggering the DAG as a validation scenario for the freshness check.
 
+[⬆ back to top](#index)
 
-# 💡 Key Design Decisions
+---
 
-### 1. Kafka as the Event Streaming Layer
+## Key Design Decisions
 
+**1. Kafka as the Event Streaming Layer**
 Kafka decouples event generation from downstream processing and provides a scalable mechanism for continuously ingesting events.
 
-### 2. Medallion Architecture
-
+**2. Medallion Architecture**
 The Bronze/Silver/Gold structure separates:
-
 ```text
 Raw Data
    ↓
@@ -376,89 +380,83 @@ Cleaned & Prepared Data
    ↓
 Business-Level Analytics
 ```
-
 This improves maintainability, traceability, and downstream usability.
 
-### 3. `event_id` for Deduplication
-
+**3. `event_id` for Deduplication**
 `event_id` uniquely identifies an event and is therefore used to prevent duplicate events from entering the Silver layer.
 
-### 4. `order_id` as Kafka Key
-
+**4. `order_id` as Kafka Key**
 Using `order_id` as the Kafka key helps ensure that events belonging to the same order are routed to the same partition, preserving ordering within that partition.
 
-### 5. Watermarking
-
+**5. Watermarking**
 A 10-minute watermark provides a balance between allowing late-arriving events and allowing the streaming engine to advance and clean up state.
 
-### 6. Independent Checkpoints
-
+**6. Independent Checkpoints**
 Bronze, Silver, and Gold each use separate checkpoint locations to independently maintain streaming progress and state.
 
-### 7. Airflow for Operational Management
-
+**7. Airflow for Operational Management**
 Airflow separates operational concerns from the core streaming transformations by handling:
-
 ```text
 Freshness → Maintenance → Daily Rollup
 ```
 
----
-
-# 🛠️ Technology Stack
-
-| Component           | Technology                      |
-| ------------------- | ------------------------------- |
-| Event Producer      | Python                          |
-| Event Streaming     | Apache Kafka                    |
-| Kafka Platform      | Confluent Cloud                 |
-| Stream Processing   | Databricks Structured Streaming |
-| Storage             | Delta Lake / Unity Catalog      |
-| Data Architecture   | Medallion Architecture          |
-| Orchestration       | Apache Airflow                  |
-| Airflow Environment | Docker / Local                  |
-| Programming         | Python / PySpark                |
-| Version Control     | Git / GitHub                    |
+[⬆ back to top](#index)
 
 ---
 
-# ▶️ Getting Started
+## Technology Stack
 
-### 1. Install dependencies
+| Component            | Technology                      |
+| --------------------- | -------------------------------- |
+| Event Producer         | Python                           |
+| Event Streaming        | Apache Kafka                     |
+| Kafka Platform          | Confluent Cloud                  |
+| Stream Processing       | Databricks Structured Streaming  |
+| Storage                 | Delta Lake / Unity Catalog       |
+| Data Architecture       | Medallion Architecture           |
+| Orchestration           | Apache Airflow                   |
+| Airflow Environment     | Docker / Local                   |
+| Programming             | Python / PySpark                 |
+| Version Control         | Git / GitHub                     |
 
+[⬆ back to top](#index)
+
+---
+
+## Getting Started
+
+**1. Install dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Configure Kafka credentials
+**2. Configure Kafka credentials**
 
 Copy the environment template and fill in your Confluent Cloud credentials:
-
 ```bash
 cp producer/.env.example producer/.env
 ```
-
 Then edit `producer/.env` with your Kafka bootstrap server, API key, and API secret. This file is git-ignored and should never be committed.
 
-### 3. Start the event producer
-
+**3. Start the event producer**
 ```bash
 python producer/order_event_producer.py
 ```
-
 This begins publishing simulated order events continuously to the `atliq.orders.events` Kafka topic. Leave it running to keep the streaming pipeline fed.
 
-### 4. Run the Databricks streaming notebook
+**4. Run the Databricks streaming notebook**
 
 Import `databricks/01_kafka_stream_processing.py` into your Databricks workspace, attach it to a cluster with access to the Kafka credentials, and run it (or attach the configured trigger for automatic execution). This starts the Bronze → Silver → Gold streaming queries.
 
-### 5. Deploy the Airflow DAG
+**5. Deploy the Airflow DAG**
 
 Place `airflow/dags/atliq_streaming_ops_dag.py` in your Airflow `dags/` folder (Docker or local Airflow environment) and enable the DAG. It will run on its configured schedule, performing the freshness check, table optimization, and daily summary refresh.
 
+[⬆ back to top](#index)
+
 ---
 
-# 🚀 Expected Outcome
+## Expected Outcome
 
 At the end of the pipeline, the project provides:
 
@@ -473,12 +471,16 @@ At the end of the pipeline, the project provides:
 * Daily business-level summary data.
 * A complete real-time data engineering workflow using Kafka, Databricks, Delta Lake, and Airflow.
 
+[⬆ back to top](#index)
+
 ---
 
-# 📝 Conclusion
+## Conclusion
 
 This Phase 2 implementation demonstrates an end-to-end **real-time data engineering architecture**.
 
 The solution combines event generation, Kafka-based ingestion, Databricks Structured Streaming, Medallion architecture, Delta Lake storage, watermarking, deduplication, windowed aggregations, and Airflow-based operational orchestration.
 
 The result is a scalable streaming lane capable of processing continuously arriving order events while maintaining data quality, performance, and analytical usability.
+
+[⬆ back to top](#index)
