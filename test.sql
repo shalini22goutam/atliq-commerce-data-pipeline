@@ -1,1 +1,0 @@
-select * from etl.adf_audit_logs
