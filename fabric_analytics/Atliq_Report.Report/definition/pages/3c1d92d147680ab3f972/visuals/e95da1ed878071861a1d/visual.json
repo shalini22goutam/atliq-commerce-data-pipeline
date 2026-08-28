@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "e95da1ed878071861a1d",
+  "position": {
+    "x": 861.80734856007939,
+    "y": 120.11916583912611,
+    "z": 11000,
+    "height": 53.386295928500495,
+    "width": 387.05064548162858,
+    "tabOrder": 11000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Revenue from orders marked as Returned",
+                    "textStyle": {
+                      "fontFamily": "Candara",
+                      "fontSize": "16pt"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

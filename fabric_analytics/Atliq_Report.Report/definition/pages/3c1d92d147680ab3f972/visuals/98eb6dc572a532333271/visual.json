@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "98eb6dc572a532333271",
+  "position": {
+    "x": 1397.5769612711022,
+    "y": 120.11916583912611,
+    "z": 12000,
+    "height": 59.106256206554114,
+    "width": 488.10327706057592,
+    "tabOrder": 12000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Gross Revenue minus Returned Revenue",
+                    "textStyle": {
+                      "fontFamily": "Candara",
+                      "fontSize": "16pt"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

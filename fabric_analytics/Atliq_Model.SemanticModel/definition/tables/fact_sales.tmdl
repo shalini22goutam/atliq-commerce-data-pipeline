@@ -2,6 +2,43 @@ table fact_sales
 	lineageTag: d51123db-a891-4999-8a93-0cec34cf882e
 	sourceLineageTag: [gold].[fact_sales]
 
+	measure net_revenue = [gross_revenue]-[returned_revenue]
+		lineageTag: 4bf9c082-5765-4c8b-b0b5-81bfd893c282
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure gross_revenue =
+			
+			CALCULATE(
+			    SUM(fact_sales[revenue]),
+			    KEEPFILTERS(fact_sales[status] <> "Cancelled")
+			)
+		lineageTag: fdffd25c-02ee-4805-8f9a-32eae83c2d7e
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure returned_revenue =
+			
+			CALCULATE(
+			    SUM(fact_sales[revenue]),
+			    KEEPFILTERS(fact_sales[status] = "Returned")
+			)
+		lineageTag: 712df4f7-cea1-4a5f-a143-d07813584151
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Customers = DISTINCTCOUNT(fact_sales[customer_id])
+		formatString: 0
+		lineageTag: 4c6e91dd-253d-4478-9c10-79e38178da57
+
+		changedProperty = Name
+
 	column order_item_id
 		dataType: int64
 		formatString: 0
@@ -74,23 +111,51 @@ table fact_sales
 
 		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
 
-	column gross_revenue
-		dataType: double
-		lineageTag: cc990355-6195-4c45-bb15-ff32559f2b22
-		sourceLineageTag: gross_revenue
-		summarizeBy: sum
-		sourceColumn: gross_revenue
-
-		annotation SummarizationSetBy = Automatic
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
-
 	column status
 		dataType: string
 		lineageTag: b9e01e81-892c-40be-b0e0-c065f87d9dc0
 		sourceLineageTag: status
 		summarizeBy: none
 		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column revenue
+		dataType: double
+		lineageTag: 23d0f1ab-eb64-4119-a25b-cbaba047aa47
+		sourceLineageTag: revenue
+		summarizeBy: sum
+		sourceColumn: revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column customer_key
+		dataType: string
+		lineageTag: f8813073-765f-43ab-b557-c9c6dc39c50b
+		sourceLineageTag: customer_key
+		summarizeBy: none
+		sourceColumn: customer_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_key
+		dataType: string
+		lineageTag: a38b5a38-14ce-4332-ab4d-3ed077462cd2
+		sourceLineageTag: product_key
+		summarizeBy: none
+		sourceColumn: product_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column updated_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 85f235d1-933f-4a8a-a671-f77280546f64
+		sourceLineageTag: updated_at
+		summarizeBy: none
+		sourceColumn: updated_at
 
 		annotation SummarizationSetBy = Automatic
 

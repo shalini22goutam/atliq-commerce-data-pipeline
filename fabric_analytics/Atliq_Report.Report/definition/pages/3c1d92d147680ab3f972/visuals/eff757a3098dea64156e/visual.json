@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "eff757a3098dea64156e",
+  "position": {
+    "x": 160.15888778550146,
+    "y": 120.11916583912611,
+    "z": 10000,
+    "height": 26.693147964250247,
+    "width": 463.31678252234354,
+    "tabOrder": 10000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Total revenue  excluding Cancelled orders",
+                    "textStyle": {
+                      "fontFamily": "Candara",
+                      "fontSize": "16pt"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

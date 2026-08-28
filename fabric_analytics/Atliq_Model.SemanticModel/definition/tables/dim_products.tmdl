@@ -66,6 +66,15 @@ table dim_products
 
 		annotation PBI_FormatHint = {"currencyCulture":"en-GB"}
 
+	column product_key
+		dataType: string
+		lineageTag: 38203031-bbd0-4205-84bf-86773b057faa
+		sourceLineageTag: product_key
+		summarizeBy: none
+		sourceColumn: product_key
+
+		annotation SummarizationSetBy = Automatic
+
 	partition dim_products = entity
 		mode: directLake
 		source

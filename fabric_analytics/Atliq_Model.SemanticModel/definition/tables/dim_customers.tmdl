@@ -49,6 +49,24 @@ table dim_customers
 
 		annotation SummarizationSetBy = Automatic
 
+	column signup_month = FORMAT(dim_customers[signup_date], "YYYY-MM")
+		lineageTag: 087dca3b-551d-4fa8-bb61-55b7cef8b2d0
+		summarizeBy: none
+		expressionContext: userContext
+
+		changedProperty = Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_key
+		dataType: string
+		lineageTag: 16f156fa-f57c-498d-b336-266d6e5bd039
+		sourceLineageTag: customer_key
+		summarizeBy: none
+		sourceColumn: customer_key
+
+		annotation SummarizationSetBy = Automatic
+
 	partition dim_customers = entity
 		mode: directLake
 		source
