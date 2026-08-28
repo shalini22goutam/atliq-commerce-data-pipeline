@@ -11,12 +11,12 @@ An end-to-end data engineering project that syncs data from a live operational (
 
 The pipeline follows a **Bronze → Silver → Gold** medallion architecture:
 
-![atliq-commerce-data-pipeline](diagrams/atliq_commerce_architecture.svg)
+![atliq-commerce-data-pipeline](docs/diagrams/atliq_commerce_architecture.svg)
 
 ## ADF workflow
 
 
-![atliq-commerce-data-pipeline](diagrams/ingestion_flow.png)
+![atliq-commerce-data-pipeline](docs/diagrams/ingestion_flow.png)
 
 
 ## 📂 Table of Contents

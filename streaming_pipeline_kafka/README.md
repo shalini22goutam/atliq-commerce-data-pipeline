@@ -14,7 +14,7 @@ The streaming pipeline is designed to operate alongside the Phase 1 batch pipeli
 ### High-Level Architecture
 
 
-![atliq-commerce-data-pipeline](images/phase2_architecture.webp)
+![atliq-commerce-data-pipeline](docs/diagrams/phase2_architecture.webp)
 
 ---
 # 📂 Project Structure
@@ -291,7 +291,7 @@ This provides a convenient table for daily-level analysis without requiring user
 # 🔗 Complete Pipeline
 
 
-![atliq-commerce-data-pipeline](images/streaming_flow.png)
+![atliq-commerce-data-pipeline](docs/diagrams/streaming_flow.png)
 
 
 # 🔐 Security Considerations
